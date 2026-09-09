@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Play free Minesweeper online in beginner, intermediate, or expert mode.">
+<link rel="canonical" href="https://endlessweep.com/">
 <title>Minesweeper Online</title>
 <style>
   :root { color-scheme: light; --ink:#182230; --muted:#64748b; --panel:#fff; --line:#d8e0ea; --blue:#2563eb; --cell:#dbe5ef; --open:#f8fafc; }
@@ -31,6 +32,12 @@
   .n1 { color:#2563eb; } .n2 { color:#15803d; } .n3 { color:#dc2626; } .n4 { color:#7c3aed; } .n5,.n6,.n7,.n8 { color:#9f1239; }
   #message { min-height:28px; margin:14px 0 0; text-align:center; color:var(--muted); font-weight:600; }
   .tip { margin:20px auto 0; max-width:620px; color:var(--muted); text-align:center; font-size:14px; }
+  .learn { max-width:680px; margin:28px auto 0; padding-top:22px; border-top:1px solid var(--line); text-align:center; }
+  .learn h2 { margin:0 0 8px; font-size:20px; }
+  .learn p { margin:0 0 12px; color:var(--muted); }
+  .links { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; }
+  .links a { color:var(--blue); font-weight:700; text-decoration:none; padding:7px 10px; }
+  .links a:hover { text-decoration:underline; }
   @media (max-width:520px) { main { padding-top:22px; } .stats { gap:6px; } .stat { min-width:92px; padding:7px 8px; } }
 </style>
 </head>
@@ -47,6 +54,15 @@
   <div class="game-wrap"><div id="board" aria-label="Minesweeper board"></div></div>
   <p id="message" role="status">Click a square to start.</p>
   <p class="tip">Desktop: left-click to reveal, right-click to flag. Mobile: switch between reveal and flag mode.</p>
+  <section class="learn" aria-labelledby="learn-title">
+    <h2 id="learn-title">Learn Minesweeper</h2>
+    <p>Learn the rules, improve your logic, and recognize common number patterns.</p>
+    <nav class="links" aria-label="Minesweeper guides">
+      <a href="/how-to-play-minesweeper/">How to Play</a>
+      <a href="/minesweeper-strategy/">Strategy &amp; Tips</a>
+      <a href="/minesweeper-patterns/">Number Patterns</a>
+    </nav>
+  </section>
 </main>
 <script>
 const levels={beginner:[9,9,10],intermediate:[16,16,40],expert:[30,16,99]};
@@ -60,6 +76,9 @@ function render(i){const c=cells[i],b=board.children[i];b.className='cell '+(c.o
 function reveal(i){if(ended||cells[i].open||cells[i].flag)return;if(!started)start(i);const c=cells[i];c.open=true;if(c.mine){ended=true;clearInterval(timer);cells.forEach((x,n)=>{if(x.mine)x.open=true;render(n)});message.textContent='Boom. Try again.';return}render(i);if(!c.count)neighbors(i).forEach(reveal);if(cells.filter(x=>x.open||x.mine).length===cells.length){ended=true;clearInterval(timer);message.textContent=`You cleared the board in ${seconds} seconds!`;cells.forEach((x,n)=>{if(x.mine&&!x.flag){x.flag=true;flags++}render(n)})}}
 function toggleFlag(i){if(ended||cells[i].open)return;if(!started)start(i);const c=cells[i];c.flag=!c.flag;flags+=c.flag?1:-1;minesEl.textContent=mineCount-flags;render(i)}
 modeBtn.addEventListener('click',()=>{mode=mode==='reveal'?'flag':'reveal';modeBtn.textContent=`Mode: ${mode[0].toUpperCase()+mode.slice(1)}`});difficulty.addEventListener('change',newGame);document.querySelector('#new-game').addEventListener('click',newGame);newGame();
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"VideoGame","name":"Minesweeper Online","gamePlatform":["Web browser","Mobile browser"],"genre":"Puzzle","url":"https://endlessweep.com/","description":"Play free Minesweeper online in beginner, intermediate, or expert mode."}
 </script>
 </body>
 </html>
