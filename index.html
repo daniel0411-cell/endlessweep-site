@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Play free Minesweeper online in beginner, intermediate, or expert mode.">
+<meta name="description" content="Play free Minesweeper online in Beginner, Intermediate, or Expert mode on desktop or mobile. No download or sign-up required.">
 <link rel="canonical" href="https://endlessweep.com/">
-<title>Minesweeper Online</title>
+<title>Free Minesweeper Online - Beginner, Intermediate &amp; Expert</title>
 <style>
   :root { color-scheme: light; --ink:#182230; --muted:#64748b; --panel:#fff; --line:#d8e0ea; --blue:#2563eb; --cell:#dbe5ef; --open:#f8fafc; }
   * { box-sizing:border-box; }
@@ -18,6 +18,7 @@
   select, button { min-height:42px; border:1px solid var(--line); border-radius:7px; background:var(--panel); color:var(--ink); font:inherit; padding:0 14px; cursor:pointer; }
   button:hover, select:hover { border-color:var(--blue); }
   .primary { background:var(--blue); border-color:var(--blue); color:#fff; font-weight:700; }
+  #mode { display:none; }
   .stats { display:flex; justify-content:center; gap:10px; margin-bottom:16px; }
   .stat { min-width:112px; padding:8px 12px; background:var(--panel); border:1px solid var(--line); border-radius:7px; text-align:center; }
   .stat strong { display:block; font-size:22px; font-variant-numeric:tabular-nums; }
@@ -38,17 +39,17 @@
   .links { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; }
   .links a { color:var(--blue); font-weight:700; text-decoration:none; padding:7px 10px; }
   .links a:hover { text-decoration:underline; }
-  @media (max-width:520px) { main { padding-top:22px; } .stats { gap:6px; } .stat { min-width:92px; padding:7px 8px; } }
+  @media (max-width:520px) { main { padding-top:22px; } .stats { gap:6px; } .stat { min-width:92px; padding:7px 8px; } #mode { display:inline-block; } }
 </style>
 </head>
 <body>
 <main>
-  <header><h1>Minesweeper</h1><p>Clear the board without hitting a mine.</p></header>
+  <header><h1>Free Minesweeper Online</h1><p>Play Beginner, Intermediate, or Expert Minesweeper on desktop or mobile.</p></header>
   <div class="toolbar">
     <label for="difficulty">Difficulty</label>
     <select id="difficulty"><option value="beginner">Beginner · 9 × 9</option><option value="intermediate">Intermediate · 16 × 16</option><option value="expert">Expert · 30 × 16</option></select>
     <button class="primary" id="new-game">New game</button>
-    <button id="mode" hidden>Mode: Reveal</button>
+    <button id="mode">Mode: Reveal</button>
   </div>
   <div class="stats"><div class="stat"><strong id="mines">10</strong><span>Mines left</span></div><div class="stat"><strong id="time">0</strong><span>Seconds</span></div></div>
   <div class="game-wrap"><div id="board" aria-label="Minesweeper board"></div></div>
@@ -78,7 +79,7 @@ function toggleFlag(i){if(ended||cells[i].open)return;if(!started)start(i);const
 modeBtn.addEventListener('click',()=>{mode=mode==='reveal'?'flag':'reveal';modeBtn.textContent=`Mode: ${mode[0].toUpperCase()+mode.slice(1)}`});difficulty.addEventListener('change',newGame);document.querySelector('#new-game').addEventListener('click',newGame);newGame();
 </script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"VideoGame","name":"Minesweeper Online","gamePlatform":["Web browser","Mobile browser"],"genre":"Puzzle","url":"https://endlessweep.com/","description":"Play free Minesweeper online in beginner, intermediate, or expert mode."}
+{"@context":"https://schema.org","@type":"VideoGame","name":"Free Minesweeper Online","url":"https://endlessweep.com/","description":"Play free Minesweeper online in Beginner, Intermediate, or Expert mode on desktop or mobile.","genre":"Puzzle","gamePlatform":["Web browser","Mobile browser"],"inLanguage":"en"}
 </script>
 </body>
 </html>
