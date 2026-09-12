@@ -7,18 +7,23 @@
 <link rel="canonical" href="https://endlessweep.com/">
 <title>Free Minesweeper Online - Beginner, Intermediate &amp; Expert</title>
 <style>
-  :root { color-scheme: light; --ink:#182230; --muted:#64748b; --panel:#fff; --line:#d8e0ea; --blue:#2563eb; --cell:#dbe5ef; --open:#f8fafc; }
+  :root { color-scheme: light; --ink:#182230; --muted:#64748b; --panel:#fff; --line:#d8e0ea; --blue:#2563eb; --cell:#dbe5ef; --open:#f8fafc; --page:#eef3f8; }
+  :root.dark { color-scheme: dark; --ink:#e5edf7; --muted:#9aabc0; --panel:#1e293b; --line:#40516a; --blue:#60a5fa; --cell:#475569; --open:#263449; --page:#111827; }
   * { box-sizing:border-box; }
-  body { margin:0; min-height:100vh; background:#eef3f8; color:var(--ink); font:16px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif; }
+  body { margin:0; min-height:100vh; background:var(--page); color:var(--ink); font:16px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif; }
   main { width:min(100% - 24px, 920px); margin:0 auto; padding:32px 0 48px; }
   header { text-align:center; margin-bottom:22px; }
   h1 { margin:0 0 4px; font-size:clamp(28px,6vw,46px); letter-spacing:0; }
   header p { margin:0; color:var(--muted); }
   .toolbar { display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center; margin-bottom:16px; }
   select, button { min-height:42px; border:1px solid var(--line); border-radius:7px; background:var(--panel); color:var(--ink); font:inherit; padding:0 14px; cursor:pointer; }
+  .customize { display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:center; margin:0 auto 16px; color:var(--muted); font-size:14px; }
+  .customize input { width:64px; min-height:38px; border:1px solid var(--line); border-radius:6px; background:var(--panel); color:var(--ink); font:inherit; padding:0 8px; }
+  .customize button { min-height:38px; }
   button:hover, select:hover { border-color:var(--blue); }
   .primary { background:var(--blue); border-color:var(--blue); color:#fff; font-weight:700; }
   #mode { display:none; }
+  .secondary { padding:0 11px; }
   .stats { display:flex; justify-content:center; gap:10px; margin-bottom:16px; }
   .stat { min-width:112px; padding:8px 12px; background:var(--panel); border:1px solid var(--line); border-radius:7px; text-align:center; }
   .stat strong { display:block; font-size:22px; font-variant-numeric:tabular-nums; }
@@ -47,11 +52,20 @@
   <header><h1>Free Minesweeper Online</h1><p>Play Beginner, Intermediate, or Expert Minesweeper on desktop or mobile.</p></header>
   <div class="toolbar">
     <label for="difficulty">Difficulty</label>
-    <select id="difficulty"><option value="beginner">Beginner · 9 × 9</option><option value="intermediate">Intermediate · 16 × 16</option><option value="expert">Expert · 30 × 16</option></select>
+    <select id="difficulty"><option value="beginner">Beginner · 9 × 9</option><option value="intermediate">Intermediate · 16 × 16</option><option value="expert">Expert · 30 × 16</option><option value="custom">Custom</option></select>
     <button class="primary" id="new-game">New game</button>
+    <button class="secondary" id="pause" aria-pressed="false">Pause</button>
     <button id="mode">Mode: Reveal</button>
+    <button class="secondary" id="theme">Dark mode</button>
+    <button class="secondary" id="fullscreen">Fullscreen</button>
   </div>
   <div class="stats"><div class="stat"><strong id="mines">10</strong><span>Mines left</span></div><div class="stat"><strong id="time">0</strong><span>Seconds</span></div></div>
+  <div class="customize" aria-label="Custom board settings">
+    <label for="custom-width">Width</label><input id="custom-width" type="number" min="5" max="40" value="9">
+    <label for="custom-height">Height</label><input id="custom-height" type="number" min="5" max="30" value="9">
+    <label for="custom-mines">Mines</label><input id="custom-mines" type="number" min="1" value="10">
+    <button id="custom-game">Custom game</button>
+  </div>
   <div class="game-wrap"><div id="board" aria-label="Minesweeper board"></div></div>
   <p id="message" role="status">Click a square to start.</p>
   <p class="tip">Desktop: left-click to reveal, right-click to flag. Mobile: switch between reveal and flag mode.</p>
@@ -62,21 +76,31 @@
       <a href="/how-to-play-minesweeper/">How to Play</a>
       <a href="/minesweeper-strategy/">Strategy &amp; Tips</a>
       <a href="/minesweeper-patterns/">Number Patterns</a>
+      <a href="/minesweeper-statistics/">Statistics</a>
     </nav>
   </section>
 </main>
 <script>
 const levels={beginner:[9,9,10],intermediate:[16,16,40],expert:[30,16,99]};
-const board=document.querySelector('#board'), difficulty=document.querySelector('#difficulty'), minesEl=document.querySelector('#mines'), timeEl=document.querySelector('#time'), message=document.querySelector('#message'), modeBtn=document.querySelector('#mode');
-let width,height,mineCount,cells=[],started=false,ended=false,flags=0,seconds=0,timer,mode='reveal',pressTimer;
+const board=document.querySelector('#board'), difficulty=document.querySelector('#difficulty'), minesEl=document.querySelector('#mines'), timeEl=document.querySelector('#time'), message=document.querySelector('#message'), modeBtn=document.querySelector('#mode'), pauseBtn=document.querySelector('#pause'), themeBtn=document.querySelector('#theme'), fullscreenBtn=document.querySelector('#fullscreen');
+const customWidth=document.querySelector('#custom-width'), customHeight=document.querySelector('#custom-height'), customMines=document.querySelector('#custom-mines');
+const storageKey='endlessweep-stats';
+let width,height,mineCount,cells=[],started=false,ended=false,paused=false,flags=0,seconds=0,timer,mode='reveal',pressTimer,currentLevel='beginner';
+function loadStats(){try{return JSON.parse(localStorage.getItem(storageKey))||{}}catch{return {}}}
+function saveResult(won){const stats=loadStats(),key=currentLevel;stats[key]??={played:0,wins:0,best:null};stats[key].played++;if(won){stats[key].wins++;if(stats[key].best===null||seconds<stats[key].best)stats[key].best=seconds}localStorage.setItem(storageKey,JSON.stringify(stats))}
+function setTheme(dark){document.documentElement.classList.toggle('dark',dark);themeBtn.textContent=dark?'Light mode':'Dark mode';localStorage.setItem('endlessweep-theme',dark?'dark':'light')}
 function neighbors(i){const x=i%width,y=Math.floor(i/width),out=[];for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){if(!dx&&!dy)continue;const nx=x+dx,ny=y+dy;if(nx>=0&&nx<width&&ny>=0&&ny<height)out.push(ny*width+nx)}return out}
-function newGame(){clearInterval(timer);[width,height,mineCount]=levels[difficulty.value];cells=Array.from({length:width*height},()=>({mine:false,open:false,flag:false,count:0}));started=ended=false;flags=seconds=0;mode='reveal';modeBtn.textContent='Mode: Reveal';minesEl.textContent=mineCount;timeEl.textContent=0;message.textContent='Click a square to start.';board.style.gridTemplateColumns=`repeat(${width}, auto)`;board.innerHTML='';cells.forEach((_,i)=>{const b=document.createElement('button');b.className='cell';b.setAttribute('aria-label',`Hidden square ${i+1}`);b.addEventListener('click',()=>{if(mode==='flag')toggleFlag(i);else reveal(i)});b.addEventListener('contextmenu',e=>{e.preventDefault();toggleFlag(i)});b.addEventListener('pointerdown',e=>{if(e.pointerType==='touch')pressTimer=setTimeout(()=>toggleFlag(i),500)});b.addEventListener('pointerup',()=>clearTimeout(pressTimer));b.addEventListener('pointerleave',()=>clearTimeout(pressTimer));board.appendChild(b)})}
+function newGame(level=difficulty.value){if(level==='custom'){customGame();return}clearInterval(timer);currentLevel=level;[width,height,mineCount]=levels[level];resetBoard()}
+function customGame(){const w=Math.max(5,Math.min(40,Number(customWidth.value)||9)),h=Math.max(5,Math.min(30,Number(customHeight.value)||9)),max=w*h-9,m=Math.max(1,Math.min(max,Number(customMines.value)||10));customWidth.value=w;customHeight.value=h;customMines.value=m;clearInterval(timer);currentLevel='custom';difficulty.value='custom';[width,height,mineCount]=[w,h,m];resetBoard()}
+function resetBoard(){cells=Array.from({length:width*height},()=>({mine:false,open:false,flag:false,count:0}));started=ended=paused=false;flags=seconds=0;mode='reveal';modeBtn.textContent='Mode: Reveal';pauseBtn.textContent='Pause';pauseBtn.setAttribute('aria-pressed','false');minesEl.textContent=mineCount;timeEl.textContent=0;message.textContent='Click a square to start.';board.style.gridTemplateColumns=`repeat(${width}, auto)`;board.innerHTML='';cells.forEach((_,i)=>{const b=document.createElement('button');b.className='cell';b.setAttribute('aria-label',`Hidden square ${i+1}`);b.addEventListener('click',()=>{if(paused)return;if(mode==='flag')toggleFlag(i);else reveal(i)});b.addEventListener('contextmenu',e=>{e.preventDefault();if(!paused)toggleFlag(i)});b.addEventListener('pointerdown',e=>{if(e.pointerType==='touch'&&!paused)pressTimer=setTimeout(()=>toggleFlag(i),500)});b.addEventListener('pointerup',()=>clearTimeout(pressTimer));b.addEventListener('pointerleave',()=>clearTimeout(pressTimer));board.appendChild(b)})}
 function plant(first){const safe=new Set([first,...neighbors(first)]),pool=cells.map((_,i)=>i).filter(i=>!safe.has(i));for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}pool.slice(0,mineCount).forEach(i=>cells[i].mine=true);cells.forEach((c,i)=>c.count=neighbors(i).filter(n=>cells[n].mine).length)}
-function start(i){plant(i);started=true;timer=setInterval(()=>{seconds++;timeEl.textContent=seconds},1000)}
+function start(i){plant(i);started=true;timer=setInterval(()=>{if(!paused){seconds++;timeEl.textContent=seconds}},1000)}
 function render(i){const c=cells[i],b=board.children[i];b.className='cell '+(c.open?'open ':'')+(c.flag?'flag ':'')+(c.mine&&ended?'mine ':'')+(c.open&&c.count?'n'+c.count:'');b.textContent=c.flag?'⚑':c.open?(c.mine?'✹':c.count||''):'';b.setAttribute('aria-label',c.open?(c.mine?'Mine':`${c.count||'Empty'} square`):(c.flag?'Flagged square':'Hidden square'))}
-function reveal(i){if(ended||cells[i].open||cells[i].flag)return;if(!started)start(i);const c=cells[i];c.open=true;if(c.mine){ended=true;clearInterval(timer);cells.forEach((x,n)=>{if(x.mine)x.open=true;render(n)});message.textContent='Boom. Try again.';return}render(i);if(!c.count)neighbors(i).forEach(reveal);if(cells.filter(x=>x.open||x.mine).length===cells.length){ended=true;clearInterval(timer);message.textContent=`You cleared the board in ${seconds} seconds!`;cells.forEach((x,n)=>{if(x.mine&&!x.flag){x.flag=true;flags++}render(n)})}}
-function toggleFlag(i){if(ended||cells[i].open)return;if(!started)start(i);const c=cells[i];c.flag=!c.flag;flags+=c.flag?1:-1;minesEl.textContent=mineCount-flags;render(i)}
-modeBtn.addEventListener('click',()=>{mode=mode==='reveal'?'flag':'reveal';modeBtn.textContent=`Mode: ${mode[0].toUpperCase()+mode.slice(1)}`});difficulty.addEventListener('change',newGame);document.querySelector('#new-game').addEventListener('click',newGame);newGame();
+function chord(i){if(ended||!cells[i].open||!cells[i].count)return;const around=neighbors(i),flagCount=around.filter(n=>cells[n].flag).length;if(flagCount===cells[i].count)around.filter(n=>!cells[n].open&&!cells[n].flag).forEach(reveal)}
+function reveal(i){if(ended||paused||cells[i].open||cells[i].flag)return;if(!started)start(i);const c=cells[i];c.open=true;if(c.mine){ended=true;clearInterval(timer);cells.forEach((x,n)=>{if(x.mine)x.open=true;render(n)});saveResult(false);message.textContent='Boom. Try again.';return}render(i);if(!c.count)neighbors(i).forEach(reveal);if(cells.filter(x=>x.open||x.mine).length===cells.length){ended=true;clearInterval(timer);saveResult(true);message.textContent=`You cleared the board in ${seconds} seconds!`;cells.forEach((x,n)=>{if(x.mine&&!x.flag){x.flag=true;flags++}render(n)})}}
+function toggleFlag(i){if(ended||paused||cells[i].open)return;if(!started)start(i);const c=cells[i];c.flag=!c.flag;flags+=c.flag?1:-1;minesEl.textContent=mineCount-flags;render(i)}
+function togglePause(){if(ended)return;paused=!paused;pauseBtn.textContent=paused?'Resume':'Pause';pauseBtn.setAttribute('aria-pressed',String(paused));message.textContent=paused?'Game paused.':'Game in progress.'}
+modeBtn.addEventListener('click',()=>{mode=mode==='reveal'?'flag':'reveal';modeBtn.textContent=`Mode: ${mode[0].toUpperCase()+mode.slice(1)}`});difficulty.addEventListener('change',()=>newGame());document.querySelector('#new-game').addEventListener('click',()=>newGame());document.querySelector('#custom-game').addEventListener('click',customGame);pauseBtn.addEventListener('click',togglePause);themeBtn.addEventListener('click',()=>setTheme(!document.documentElement.classList.contains('dark')));fullscreenBtn.addEventListener('click',()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen());board.addEventListener('dblclick',e=>{const b=e.target.closest('.cell');if(b)chord([...board.children].indexOf(b))});setTheme(localStorage.getItem('endlessweep-theme')==='dark');newGame();
 </script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"VideoGame","name":"Free Minesweeper Online","url":"https://endlessweep.com/","description":"Play free Minesweeper online in Beginner, Intermediate, or Expert mode on desktop or mobile.","genre":"Puzzle","gamePlatform":["Web browser","Mobile browser"],"inLanguage":"en"}

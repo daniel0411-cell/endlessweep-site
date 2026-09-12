@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Review your local Minesweeper games, wins, win rate, and best times for Beginner, Intermediate, Expert, and custom boards.">
+<link rel="canonical" href="https://endlessweep.com/minesweeper-statistics/">
+<title>Minesweeper Statistics and Best Times</title>
+<style>
+:root{--ink:#172033;--muted:#5f6f82;--line:#d5dee9;--blue:#2563eb;--panel:#fff;--page:#eef3f8}*{box-sizing:border-box}body{margin:0;background:var(--page);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}main{width:min(100% - 28px,820px);margin:auto;padding:30px 0 52px}header{text-align:center;margin-bottom:22px}h1{margin:0 0 8px;font-size:clamp(28px,6vw,44px);line-height:1.2}header p{margin:0;color:var(--muted)}a{color:var(--blue);font-weight:700;text-decoration:none}.cta{display:inline-block;padding:10px 16px;border-radius:7px;background:var(--blue);color:#fff;margin-top:16px}.content{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:24px}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;margin:18px 0}th,td{padding:12px 10px;border-bottom:1px solid var(--line);text-align:left}th{color:var(--muted);font-size:13px}td strong{font-variant-numeric:tabular-nums}.note{padding:12px 14px;background:#f5f8fb;border-left:3px solid var(--blue)}footer{text-align:center;margin-top:24px;color:var(--muted)}footer nav{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin-top:16px}
+</style>
+</head>
+<body><main>
+<header><h1>Minesweeper Statistics</h1><p>Track your local games and best times without an account.</p><a class="cta" href="/">Play Minesweeper</a></header>
+<article class="content"><p class="note">Your statistics are stored only in this browser. They are not uploaded or shared.</p><div class="table-wrap"><table><thead><tr><th>Difficulty</th><th>Games</th><th>Wins</th><th>Win rate</th><th>Best time</th></tr></thead><tbody id="stats"><tr><td colspan="5">No games recorded yet.</td></tr></tbody></table></div><p>Start a game to build your personal record. Best times are saved separately for Beginner, Intermediate, Expert, and Custom boards.</p></article>
+<footer><a class="cta" href="/">Play Free Minesweeper Online</a><nav><a href="/how-to-play-minesweeper/">Rules and Controls</a><a href="/minesweeper-strategy/">Strategy and Tips</a><a href="/minesweeper-patterns/">Number Patterns</a></nav></footer>
+</main>
+<script>
+const labels={beginner:'Beginner',intermediate:'Intermediate',expert:'Expert',custom:'Custom'},stats=document.querySelector('#stats');let data={};try{data=JSON.parse(localStorage.getItem('endlessweep-stats'))||{}}catch{}
+const rows=Object.keys(labels).filter(key=>data[key]?.played).map(key=>{const s=data[key],rate=Math.round(s.wins/s.played*100);return `<tr><td>${labels[key]}</td><td>${s.played}</td><td>${s.wins}</td><td>${rate}%</td><td><strong>${s.best===null?'—':`${s.best}s`}</strong></td></tr>`});if(rows.length)stats.innerHTML=rows.join('');
+</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Minesweeper Statistics and Best Times","description":"Review local Minesweeper games, wins, win rate, and best times.","inLanguage":"en","mainEntityOfPage":{"@type":"WebPage","@id":"https://endlessweep.com/minesweeper-statistics/"}}</script>
+</body></html>
