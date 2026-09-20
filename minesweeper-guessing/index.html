@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Learn when guessing is unavoidable in Minesweeper, how to spot 50/50 situations, compare mine probabilities, and reduce risky clicks.">
+<link rel="canonical" href="https://endlessweep.com/minesweeper-guessing/">
+<title>Minesweeper Guessing: Probability, 50/50s and No-Guess Play</title>
+<style>
+:root{--ink:#182230;--muted:#64748b;--line:#d8e0ea;--blue:#2563eb;--panel:#fff;--safe:#dcfce7;--risk:#fee2e2}*{box-sizing:border-box}body{margin:0;background:#eef3f8;color:var(--ink);font:16px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif}main{width:min(100% - 28px,820px);margin:auto;padding:30px 0 50px}header,footer{text-align:center}h1{margin:0 0 8px;font-size:clamp(28px,6vw,44px);line-height:1.15}header p,footer{color:var(--muted)}nav{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin:18px 0}a{color:var(--blue);font-weight:700;text-decoration:none}.cta{display:inline-block;padding:10px 15px;border-radius:7px;background:var(--blue);color:#fff}.content{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:24px}h2{margin:26px 0 7px;font-size:23px}h2:first-child{margin-top:0}.note{padding:12px 14px;background:#f1f5f9;border-left:3px solid var(--blue)}.example{display:grid;grid-template-columns:repeat(2,64px);gap:5px;width:max-content;margin:14px auto}.cell{display:grid;place-items:center;width:64px;height:52px;border:1px solid var(--line);background:var(--risk);font-weight:800}.cell.safe{background:var(--safe)}ul,ol{padding-left:22px}@media(max-width:520px){.content{padding:18px}}
+</style>
+</head>
+<body><main>
+<header><h1>Minesweeper Guessing and Probability</h1><p>Make sure the board is truly uncertain before you take a risk.</p><nav><a class="cta" href="/">Play Minesweeper</a><a href="/minesweeper-strategy/">Strategy</a><a href="/minesweeper-patterns/">Patterns</a></nav></header>
+<article class="content">
+<h2>Do you always have to guess in Minesweeper?</h2>
+<p>No. Many positions that look uncertain still contain a logical move. Before guessing, check every open boundary, subtract known flags from each clue, and compare overlapping groups of covered squares. A move is forced when only one mine arrangement satisfies all visible clues.</p>
+<p class="note"><strong>Important:</strong> A standard randomly generated board can contain a genuinely ambiguous position. Endlessweep protects the first click, but it does not label ordinary games as guaranteed no-guess boards.</p>
+
+<h2>Logic first: the pre-guess checklist</h2>
+<ol><li>Check whether a number already touches its full count of flagged mines. Its other covered neighbors are safe.</li><li>Check whether a number needs exactly as many mines as it has unflagged covered neighbors. Those neighbors are mines.</li><li>Compare nearby clues as sets. One clue may contain all the candidates of another plus one extra square.</li><li>Look elsewhere on the board. A different boundary may provide new information before you return.</li><li>Recheck every flag. A wrong flag can create a false dead end.</li></ol>
+
+<h2>What is a 50/50 in Minesweeper?</h2>
+<p>A true 50/50 has two covered candidates, exactly one remaining mine among them, and no other clue that distinguishes the candidates. Both mine placements satisfy every visible number, so each square has the same risk.</p>
+<div class="example" aria-label="Two equally likely covered squares"><span class="cell">50%</span><span class="cell">50%</span></div>
+<p>Pattern recognition cannot solve a true 50/50. If another unopened region exists, solve it first. Otherwise, either choice is equally supported by the visible information.</p>
+
+<h2>Use global mine count to compare risks</h2>
+<p>The remaining mine counter can separate two regions that look locally uncertain. Suppose one group has one mine among two squares while another has one mine among four squares. Without additional constraints, each square in the first group carries more risk than each square in the second.</p>
+<div class="example" aria-label="A lower risk choice and a higher risk choice"><span class="cell">1 of 2</span><span class="cell safe">1 of 4</span></div>
+<p>This is a comparison, not a guarantee. Shared clues and overlapping candidate groups change the calculation, so count complete valid arrangements rather than treating every covered square as independent.</p>
+
+<h2>Edges, corners and opening information</h2>
+<p>Edges and corners have fewer neighbors, which often makes their constraints easier to read. That does not automatically make every corner click safer. Prefer a move supported by visible clues; when no clues distinguish choices, choose the region with the lower estimated mine density.</p>
+
+<h2>What is No-Guess Minesweeper?</h2>
+<p>No-guess mode uses boards that can be completed through deduction from the protected opening. A correct implementation must generate or verify a full logical solution path. Simply moving a mine after a risky click is not the same thing, and an ordinary random board should not be advertised as no-guess without that verification.</p>
+
+<h2>Learn from a bad guess</h2>
+<p>After a loss on Endlessweep, use <strong>Review mistake</strong> to return to the position immediately before the mine was opened. Check whether another boundary or number pattern offered a certain move. If none did, compare the available risks instead of judging the result alone.</p>
+</article>
+<footer><p>Apply the checklist on a real board, then review uncertain losses.</p><a class="cta" href="/">Play Free Minesweeper</a><nav><a href="/minesweeper-controls/">Controls</a><a href="/minesweeper-strategy/">Strategy and Tips</a><a href="/minesweeper-patterns/">Number Patterns</a></nav></footer>
+</main>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Minesweeper Guessing: Probability, 50/50s and No-Guess Play","description":"Learn when Minesweeper requires a guess and how to compare uncertain moves.","inLanguage":"en","mainEntityOfPage":{"@type":"WebPage","@id":"https://endlessweep.com/minesweeper-guessing/"}}</script>
+</body></html>
