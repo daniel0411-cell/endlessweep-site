@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
-const slugs=['how-to-win-minesweeper','minesweeper-50-50','minesweeper-chord','minesweeper-difficulty','minesweeper-glossary','minesweeper-speed'];
+const slugs=fs.readdirSync('content').filter(file=>file.endsWith('.md')).map(file=>fs.readFileSync(`content/${file}`,'utf8').match(/^slug: (.+)$/m)[1]);
 const sitemap=fs.readFileSync('sitemap.xml','utf8');
 for(const slug of slugs){
   const html=fs.readFileSync(`${slug}/index.html`,'utf8');

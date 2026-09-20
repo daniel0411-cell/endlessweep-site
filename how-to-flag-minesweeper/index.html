@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Learn how to place and remove Minesweeper flags on desktop, mobile, and keyboard, and when a square is logically proven to be a mine."><link rel="canonical" href="https://endlessweep.com/how-to-flag-minesweeper/"><title>How to Flag in Minesweeper: Rules and Best Practices</title><style>:root{--ink:#182230;--muted:#64748b;--line:#d8e0ea;--blue:#2563eb;--panel:#fff}*{box-sizing:border-box}body{margin:0;background:#eef3f8;color:var(--ink);font:16px/1.68 system-ui,-apple-system,"Segoe UI",sans-serif}main{width:min(100% - 28px,820px);margin:auto;padding:30px 0 52px}header,footer{text-align:center}h1{margin:0 0 8px;font-size:clamp(28px,6vw,44px);line-height:1.15}header p,footer{color:var(--muted)}nav{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin:18px 0}a{color:var(--blue);font-weight:700;text-decoration:none}.cta{display:inline-block;padding:10px 15px;border-radius:7px;background:var(--blue);color:#fff}.content{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:24px}h2{margin:28px 0 7px;font-size:23px}h2:first-child{margin-top:0}h3{margin:20px 0 5px}ul,ol{padding-left:22px}.note{padding:12px 14px;background:#f1f5f9;border-left:3px solid var(--blue)}code{padding:2px 5px;background:#f1f5f9;border-radius:4px}@media(max-width:520px){.content{padding:18px}}</style></head><body><main><header><h1>How to Flag in Minesweeper</h1><p>Mark proven mines without letting speculative flags corrupt your logic.</p><nav><a class="cta" href="/">Play Minesweeper</a><a href="/minesweeper-guides/">All Guides</a><a href="/minesweeper-strategy/">Strategy</a><a href="/minesweeper-patterns/">Patterns</a></nav></header><article class="content"><h2>What does a flag do?</h2>
+<p>A flag marks a covered square that you believe contains a mine. It prevents an ordinary reveal on that square and helps you keep track of deductions. The flag does not move or remove the mine, and the game does not confirm that the flag is correct.</p>
+<h2>How to place a flag</h2>
+<ul>
+<li>Desktop: right-click a covered square.</li>
+<li>Mobile: switch to Flag mode and tap the square, or press and hold it.</li>
+<li>Keyboard: move focus with the arrow keys and press <code>F</code>.</li>
+</ul>
+<p>Repeat the same action to remove the flag. The <a href="/minesweeper-controls/">controls guide</a> lists every input.</p>
+<h2>When is a mine proven?</h2>
+<p>If a clue still needs exactly as many mines as it has unflagged covered neighbors, all those neighbors are mines. For example, if a <strong>2</strong> touches one confirmed flag and only one other covered square, that square must contain the second mine.</p>
+<h2>Flags and safe squares</h2>
+<p>Once a clue touches its full number of flags, every other covered neighbor is safe. This is why accurate flags create progress: they convert nearby uncertainty into certain reveals.</p>
+<h2>Do you have to flag every mine?</h2>
+<p>No. Most Minesweeper games are won by revealing all safe squares. You may leave isolated mines unflagged if their surrounding safe squares are already open. Flagging is a reasoning tool, not always a completion requirement.</p>
+<h2>Flags and the mine counter</h2>
+<p>Endlessweep subtracts placed flags from the displayed mine count. A zero counter means the number of flags equals the number of mines, not that every flag is correct.</p>
+<h2>Why wrong flags are dangerous</h2>
+<p>A wrong flag creates false information around every clue it touches. It is especially dangerous before a chord because the chord checks only whether the number of adjacent flags matches.</p>
+<h2>A reliable flagging routine</h2>
+<ol>
+<li>Identify the clue and all its covered neighbors.</li>
+<li>Subtract adjacent confirmed flags from the clue value.</li>
+<li>Confirm that the remaining mine requirement equals the remaining candidates.</li>
+<li>Flag those candidates.</li>
+<li>Recheck nearby clues for new safe reveals.</li>
+</ol></article><footer><p>Practice what you learned on a real board.</p><a class="cta" href="/">Play Free Minesweeper</a><nav><a class="cta" href="/">Play Minesweeper</a><a href="/minesweeper-guides/">All Guides</a><a href="/minesweeper-strategy/">Strategy</a><a href="/minesweeper-patterns/">Patterns</a></nav></footer></main><script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to Flag in Minesweeper","description":"Learn how to place and remove Minesweeper flags on desktop, mobile, and keyboard, and when a square is logically proven to be a mine.","inLanguage":"en","mainEntityOfPage":{"@type":"WebPage","@id":"https://endlessweep.com/how-to-flag-minesweeper/"}}</script></body></html>
