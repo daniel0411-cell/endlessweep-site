@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Learn how Minesweeper chord clicking works, when it is safe, how to use it on desktop and mobile, and why wrong flags cause losses."><link rel="canonical" href="https://endlessweep.com/minesweeper-chord/"><title>Minesweeper Chord Click: Reveal Squares Faster</title><style>:root{--ink:#182230;--muted:#64748b;--line:#d8e0ea;--blue:#2563eb;--panel:#fff}*{box-sizing:border-box}body{margin:0;background:#eef3f8;color:var(--ink);font:16px/1.68 system-ui,-apple-system,"Segoe UI",sans-serif}main{width:min(100% - 28px,820px);margin:auto;padding:30px 0 52px}header,footer{text-align:center}h1{margin:0 0 8px;font-size:clamp(28px,6vw,44px);line-height:1.15}header p,footer{color:var(--muted)}nav{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin:18px 0}a{color:var(--blue);font-weight:700;text-decoration:none}.cta{display:inline-block;padding:10px 15px;border-radius:7px;background:var(--blue);color:#fff}.content{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:24px}h2{margin:28px 0 7px;font-size:23px}h2:first-child{margin-top:0}h3{margin:20px 0 5px}ul,ol{padding-left:22px}.note{padding:12px 14px;background:#f1f5f9;border-left:3px solid var(--blue)}code{padding:2px 5px;background:#f1f5f9;border-radius:4px}@media(max-width:520px){.content{padding:18px}}</style></head><body><main><header><h1>Minesweeper Chord Click</h1><p>Open several safe squares with one verified action.</p><nav><a class="cta" href="/">Play Minesweeper</a><a href="/minesweeper-guides/">All Guides</a><a href="/minesweeper-strategy/">Strategy</a><a href="/minesweeper-patterns/">Patterns</a></nav></header><article class="content"><h2>What does chord mean in Minesweeper?</h2>
+<p>Chord is an action on an already open number. When the number touches exactly the same number of flags as its value, chording reveals all its other covered neighbors at once.</p>
+<h2>A simple example</h2>
+<p>If an open <strong>2</strong> touches two flagged squares and three other covered squares, a chord opens those three covered squares. The game trusts the flag count; it does not verify that the flags are correct.</p>
+<h2>How to chord on Endlessweep</h2>
+<ul>
+<li>Desktop: click an already open number.</li>
+<li>Mobile: stay in Reveal mode and tap the open number.</li>
+<li>Keyboard: focus the open number and press <code>Enter</code> or <code>Space</code>.</li>
+</ul>
+<p>See all inputs in the <a href="/minesweeper-controls/">Minesweeper controls guide</a>.</p>
+<h2>Why a chord can hit a mine</h2>
+<p>The adjacent flag count may match while one flag is on the wrong square. The chord then reveals the actual mine among the remaining neighbors. Verify each flag through logic before using the shortcut.</p>
+<h2>When chord does nothing</h2>
+<p>If the number and adjacent flag count do not match, Endlessweep leaves the covered squares closed. Add or remove flags only after checking the surrounding clues.</p>
+<h2>Chord and efficiency</h2>
+<p>A chord can replace several individual reveals, improving speed and reducing total actions. Endlessweep records chord actions separately and counts a chord as progress only when it opens at least one new square.</p>
+<h2>Build a safe chording habit</h2>
+<ol>
+<li>Confirm the number's required mines.</li>
+<li>Verify the location of every adjacent flag.</li>
+<li>Check that unflagged covered neighbors should all be safe.</li>
+<li>Chord the number once.</li>
+<li>Scan the newly opened boundary before continuing.</li>
+</ol></article><footer><p>Practice what you learned on a real board.</p><a class="cta" href="/">Play Free Minesweeper</a><nav><a class="cta" href="/">Play Minesweeper</a><a href="/minesweeper-guides/">All Guides</a><a href="/minesweeper-strategy/">Strategy</a><a href="/minesweeper-patterns/">Patterns</a></nav></footer></main><script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Minesweeper Chord Click","description":"Learn how Minesweeper chord clicking works, when it is safe, how to use it on desktop and mobile, and why wrong flags cause losses.","inLanguage":"en","mainEntityOfPage":{"@type":"WebPage","@id":"https://endlessweep.com/minesweeper-chord/"}}</script></body></html>

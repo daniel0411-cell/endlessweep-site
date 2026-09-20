@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Understand common Minesweeper terms including chord, frontier, flag, opening, 50/50, no-guess, mine density, 3BV, and efficiency."><link rel="canonical" href="https://endlessweep.com/minesweeper-glossary/"><title>Minesweeper Glossary: Common Terms Explained</title><style>:root{--ink:#182230;--muted:#64748b;--line:#d8e0ea;--blue:#2563eb;--panel:#fff}*{box-sizing:border-box}body{margin:0;background:#eef3f8;color:var(--ink);font:16px/1.68 system-ui,-apple-system,"Segoe UI",sans-serif}main{width:min(100% - 28px,820px);margin:auto;padding:30px 0 52px}header,footer{text-align:center}h1{margin:0 0 8px;font-size:clamp(28px,6vw,44px);line-height:1.15}header p,footer{color:var(--muted)}nav{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin:18px 0}a{color:var(--blue);font-weight:700;text-decoration:none}.cta{display:inline-block;padding:10px 15px;border-radius:7px;background:var(--blue);color:#fff}.content{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:24px}h2{margin:28px 0 7px;font-size:23px}h2:first-child{margin-top:0}h3{margin:20px 0 5px}ul,ol{padding-left:22px}.note{padding:12px 14px;background:#f1f5f9;border-left:3px solid var(--blue)}code{padding:2px 5px;background:#f1f5f9;border-radius:4px}@media(max-width:520px){.content{padding:18px}}</style></head><body><main><header><h1>Minesweeper Glossary</h1><p>A plain-language reference for common Minesweeper terms.</p><nav><a class="cta" href="/">Play Minesweeper</a><a href="/minesweeper-guides/">All Guides</a><a href="/minesweeper-strategy/">Strategy</a><a href="/minesweeper-patterns/">Patterns</a></nav></header><article class="content"><h2>Board</h2>
+<p>The complete grid of covered and revealed squares. Standard boards include Beginner, Intermediate, and Expert.</p>
+<h2>Cell or square</h2>
+<p>One position on the board. A square may be covered, revealed, flagged, safe, or mined.</p>
+<h2>Clue</h2>
+<p>A revealed number showing how many mines touch that square, including diagonal neighbors.</p>
+<h2>Flag</h2>
+<p>A player marker placed on a covered square believed to contain a mine. A flag does not change the underlying board and can be removed.</p>
+<h2>Chord</h2>
+<p>Clicking or tapping an open number to reveal its other covered neighbors after the adjacent flag count matches the clue. See the <a href="/minesweeper-chord/">chord guide</a>.</p>
+<h2>Opening</h2>
+<p>The group of squares revealed from an empty square and its connected empty neighbors. A larger opening exposes more clues at the start.</p>
+<h2>Frontier</h2>
+<p>The boundary where revealed clues touch covered squares. Most active deductions happen along the frontier.</p>
+<h2>Pattern</h2>
+<p>A recurring relationship between clues and covered candidates, such as 1-2-1. Patterns are valid only when the complete neighbor sets match their conditions.</p>
+<h2>Guess</h2>
+<p>A move chosen without proof that the square is safe. Some guesses have unequal risks; a true 50/50 gives two equally supported choices.</p>
+<h2>50/50</h2>
+<p>An ambiguous position with two equally valid mine arrangements and no available clue that separates them. Read the <a href="/minesweeper-50-50/">50/50 guide</a> for the full test.</p>
+<h2>No-guess board</h2>
+<p>A board verified to have a deduction-only solution from its opening. First-click protection alone does not make a board no-guess.</p>
+<h2>Mine density</h2>
+<p>The number of mines divided by total board squares. Density influences difficulty but does not describe the full logical complexity of a specific board.</p>
+<h2>3BV</h2>
+<p>Bechtel's Board Benchmark Value, a standard measure related to the minimum number of actions needed to reveal a solved board under defined rules. Endlessweep Efficiency is not 3BV.</p>
+<h2>Efficiency</h2>
+<p>A comparison between useful progress and actions. Endlessweep's local metric counts reveals and chords that open new squares, divided by all recorded player actions.</p>
+<h2>Seed</h2>
+<p>A string used by a deterministic random generator. The same seed, board settings, and first click reproduce the same Endlessweep mine layout.</p>
+<h2>Replay</h2>
+<p>A stored sequence of reveal, flag, unflag, and chord actions. Endlessweep keeps recent replays only in the current browser.</p></article><footer><p>Practice what you learned on a real board.</p><a class="cta" href="/">Play Free Minesweeper</a><nav><a class="cta" href="/">Play Minesweeper</a><a href="/minesweeper-guides/">All Guides</a><a href="/minesweeper-strategy/">Strategy</a><a href="/minesweeper-patterns/">Patterns</a></nav></footer></main><script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Minesweeper Glossary","description":"Understand common Minesweeper terms including chord, frontier, flag, opening, 50/50, no-guess, mine density, 3BV, and efficiency.","inLanguage":"en","mainEntityOfPage":{"@type":"WebPage","@id":"https://endlessweep.com/minesweeper-glossary/"}}</script></body></html>
