@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Learn Minesweeper controls for mouse, touch screen, and keyboard, including reveal, flag, chord click, pause, and restart commands.">
+<link rel="canonical" href="https://endlessweep.com/minesweeper-controls/">
+<title>Minesweeper Controls: Mouse, Mobile and Keyboard</title>
+<style>
+:root{--ink:#182230;--muted:#64748b;--line:#d8e0ea;--blue:#2563eb;--panel:#fff}*{box-sizing:border-box}body{margin:0;background:#eef3f8;color:var(--ink);font:16px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif}main{width:min(100% - 28px,820px);margin:auto;padding:30px 0 50px}header,footer{text-align:center}h1{margin:0 0 8px;font-size:clamp(28px,6vw,44px);line-height:1.15}header p,footer{color:var(--muted)}nav{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin:18px 0}a{color:var(--blue);font-weight:700;text-decoration:none}.cta{display:inline-block;padding:10px 15px;border-radius:7px;background:var(--blue);color:#fff}.content{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:24px}h2{margin:26px 0 7px;font-size:23px}h2:first-child{margin-top:0}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;margin:10px 0 18px}th,td{padding:11px 10px;border-bottom:1px solid var(--line);text-align:left}th{color:var(--muted)}kbd{display:inline-block;min-width:28px;padding:2px 7px;border:1px solid #94a3b8;border-bottom-width:2px;border-radius:4px;background:#f8fafc;text-align:center;font:700 14px ui-monospace,SFMono-Regular,monospace}.note{padding:12px 14px;background:#f1f5f9;border-left:3px solid var(--blue)}@media(max-width:520px){.content{padding:18px}}
+</style>
+</head>
+<body><main>
+<header><h1>Minesweeper Controls</h1><p>Reveal squares, place flags, and use chord clicks on desktop or mobile.</p><nav><a class="cta" href="/">Play Minesweeper</a><a href="/how-to-play-minesweeper/">Rules</a><a href="/minesweeper-strategy/">Strategy</a></nav></header>
+<article class="content">
+<h2>Mouse controls</h2>
+<div class="table-wrap"><table><thead><tr><th>Input</th><th>Action</th><th>When to use it</th></tr></thead><tbody><tr><td>Left click</td><td>Reveal</td><td>Open a square you believe is safe.</td></tr><tr><td>Right click</td><td>Flag or unflag</td><td>Mark a square that logic proves contains a mine.</td></tr><tr><td>Click an open number</td><td>Chord</td><td>Reveal its remaining covered neighbors when the correct number of adjacent flags is present.</td></tr></tbody></table></div>
+
+<h2>How chord click works</h2>
+<p>If an open <strong>2</strong> touches exactly two flags, clicking that 2 opens every other covered neighbor at once. Chording saves time, but a wrong flag can make it open a mine. Verify the flags before using it.</p>
+<p class="note">Chord does nothing when the adjacent flag count does not match the number. This prevents an accidental bulk reveal before the count is ready.</p>
+
+<h2>Mobile and touch controls</h2>
+<p>Use the visible <strong>Mode: Reveal</strong> button to switch between Reveal and Flag. In Reveal mode, a tap opens a square. In Flag mode, a tap places or removes a flag. You can also press and hold a covered square to flag it.</p>
+<p>Tap an already open number in Reveal mode to chord. The board stays inside a horizontal scrolling area on larger difficulties, so you can move across an Expert board without resizing its cells.</p>
+
+<h2>Keyboard controls</h2>
+<div class="table-wrap"><table><thead><tr><th>Key</th><th>Action</th></tr></thead><tbody><tr><td><kbd>←</kbd> <kbd>↑</kbd> <kbd>→</kbd> <kbd>↓</kbd></td><td>Move focus between board squares.</td></tr><tr><td><kbd>Enter</kbd> or <kbd>Space</kbd></td><td>Reveal the focused square, or chord an open number.</td></tr><tr><td><kbd>F</kbd></td><td>Flag or unflag the focused square.</td></tr><tr><td><kbd>N</kbd></td><td>Start a new game at the selected difficulty.</td></tr><tr><td><kbd>P</kbd></td><td>Pause or resume the current game.</td></tr></tbody></table></div>
+
+<h2>Playing without a mouse</h2>
+<p>Use the arrow keys to reach a covered square, press <kbd>F</kbd> to flag it, and press <kbd>Enter</kbd> or <kbd>Space</kbd> to reveal. Focus remains on the board after each move, so you can continue navigating without switching back to the mouse.</p>
+
+<h2>Pause, restart and display controls</h2>
+<p><strong>Pause</strong> covers the board and stops the timer. <strong>New game</strong> abandons the active game and creates a fresh seeded board. Dark mode changes the color scheme, while Fullscreen gives large boards more room. These display controls do not change the mine layout.</p>
+
+<h2>Common control mistakes</h2>
+<ul><li>Do not flag a square only because it looks suspicious; flags should follow from the numbers.</li><li>Check every flag before chording an open number.</li><li>On touch screens, confirm the current Reveal or Flag mode before tapping.</li><li>Use Pause instead of leaving a timed game running in the background.</li></ul>
+</article>
+<footer><p>Use the controls while learning the rules and number patterns.</p><a class="cta" href="/">Play Free Minesweeper</a><nav><a href="/how-to-play-minesweeper/">How to Play</a><a href="/minesweeper-guessing/">Guessing Guide</a><a href="/minesweeper-patterns/">Patterns</a></nav></footer>
+</main>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Minesweeper Controls: Mouse, Mobile and Keyboard","description":"Minesweeper controls for mouse, touch screen, and keyboard play.","inLanguage":"en","mainEntityOfPage":{"@type":"WebPage","@id":"https://endlessweep.com/minesweeper-controls/"}}</script>
+</body></html>
