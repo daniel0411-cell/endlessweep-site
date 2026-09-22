@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root=process.cwd(),source=path.join(root,'content'),domain='https://endlessweep.com';
-const existing=['','how-to-play-minesweeper','minesweeper-strategy','minesweeper-patterns','minesweeper-guessing','minesweeper-controls','minesweeper-statistics'];
+const existing=['','game-modes','daily-minesweeper','zen-minesweeper','custom-minesweeper','how-to-play-minesweeper','minesweeper-strategy','minesweeper-patterns','minesweeper-guessing','minesweeper-controls','minesweeper-statistics'];
 const escape=s=>s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 function inline(s){return escape(s).replace(/\[([^\]]+)\]\((\/[^)]+)\)/g,'<a href="$2">$1</a>').replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/`([^`]+)`/g,'<code>$1</code>')}
 function markdown(text){const out=[];let list=null;const close=()=>{if(list){out.push(`</${list}>`);list=null}};for(const raw of text.trim().split('\n')){const line=raw.trim();if(!line){close();continue}if(line.startsWith('## ')){close();out.push(`<h2>${inline(line.slice(3))}</h2>`)}else if(line.startsWith('### ')){close();out.push(`<h3>${inline(line.slice(4))}</h3>`)}else if(/^[-*] /.test(line)){if(list!=='ul'){close();list='ul';out.push('<ul>')}out.push(`<li>${inline(line.slice(2))}</li>`)}else if(/^\d+\. /.test(line)){if(list!=='ol'){close();list='ol';out.push('<ol>')}out.push(`<li>${inline(line.replace(/^\d+\. /,''))}</li>`)}else if(line.startsWith('> ')){close();out.push(`<p class="note">${inline(line.slice(2))}</p>`)}else{close();out.push(`<p>${inline(line)}</p>`)}}close();return out.join('\n')}

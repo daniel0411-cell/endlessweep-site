@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://endlessweep.com/</loc></url>
+  <url><loc>https://endlessweep.com/game-modes/</loc></url>
+  <url><loc>https://endlessweep.com/daily-minesweeper/</loc></url>
+  <url><loc>https://endlessweep.com/zen-minesweeper/</loc></url>
+  <url><loc>https://endlessweep.com/custom-minesweeper/</loc></url>
   <url><loc>https://endlessweep.com/how-to-play-minesweeper/</loc></url>
   <url><loc>https://endlessweep.com/minesweeper-strategy/</loc></url>
   <url><loc>https://endlessweep.com/minesweeper-patterns/</loc></url>

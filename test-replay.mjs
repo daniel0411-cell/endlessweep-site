@@ -23,4 +23,6 @@ const old={date:'2026-01-01',level:'beginner',won:true,seconds:12,width:9,height
 assert.equal(old.efficiency,undefined);
 function dayBefore(date){const d=new Date(`${date}T00:00:00Z`);d.setUTCDate(d.getUTCDate()-1);return d.toISOString().slice(0,10)}
 assert.equal(dayBefore('2026-01-01'),'2025-12-31');
+const home=await import('node:fs').then(fs=>fs.readFileSync('index.html','utf8'));
+for(const marker of ["modeParam==='daily'","modeParam==='zen'","modeParam==='custom'",'zenMistakes++','!zenMode&&cells.some'])assert(home.includes(marker));
 console.log('Replay and seed checks passed');
