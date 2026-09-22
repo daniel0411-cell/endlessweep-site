@@ -24,5 +24,5 @@ assert.equal(old.efficiency,undefined);
 function dayBefore(date){const d=new Date(`${date}T00:00:00Z`);d.setUTCDate(d.getUTCDate()-1);return d.toISOString().slice(0,10)}
 assert.equal(dayBefore('2026-01-01'),'2025-12-31');
 const home=await import('node:fs').then(fs=>fs.readFileSync('index.html','utf8'));
-for(const marker of ["path==='/daily-minesweeper/'","path==='/zen-minesweeper/'","path==='/custom-minesweeper/'",'zenMistakes++','!zenMode&&cells.some','Completed today in','Play today’s board:',"track('game_started')","track('game_completed'","track('challenge_shared'","track('practice_started')"])assert(home.includes(marker));
+for(const marker of ["path==='/daily-minesweeper/'","path==='/zen-minesweeper/'","path==='/custom-minesweeper/'",'zenMistakes++','!zenMode&&cells.some','Completed today in','Play today’s board:',"track('game_started')","track('game_completed'","track('challenge_shared'","track('practice_started')",'beginReplay(lastReplay,false)',"if(!practiceCompleted){track('practice_completed'"])assert(home.includes(marker));
 console.log('Replay and seed checks passed');
