@@ -12,4 +12,12 @@ for(const slug of slugs){
   JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
 }
 assert(sitemap.includes('https://endlessweep.com/minesweeper-guides/'));
+const home=fs.readFileSync('index.html','utf8');
+for(const slug of ['daily-minesweeper','zen-minesweeper','custom-minesweeper']){
+  const html=fs.readFileSync(`${slug}/index.html`,'utf8');
+  assert(!html.includes('http-equiv="refresh"'));
+  assert(html.includes(`rel="canonical" href="https://endlessweep.com/${slug}/"`));
+  assert.equal(html.match(/const levels=/g)?.length,1);
+  assert.equal(html.slice(html.indexOf('<style>'),html.indexOf('</style>')),home.slice(home.indexOf('<style>'),home.indexOf('</style>')));
+}
 console.log('Content build checks passed');
