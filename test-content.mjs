@@ -12,6 +12,11 @@ for(const slug of slugs){
   JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
 }
 assert(sitemap.includes('https://endlessweep.com/minesweeper-guides/'));
+assert(sitemap.includes('https://endlessweep.com/minesweeper-cheat-sheet/'));
+const cheat=fs.readFileSync('minesweeper-cheat-sheet/index.html','utf8');
+assert(cheat.includes('onclick="window.print()"'));
+assert(cheat.includes('@media print'));
+JSON.parse(cheat.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
 const home=fs.readFileSync('index.html','utf8');
 for(const slug of ['daily-minesweeper','zen-minesweeper','custom-minesweeper']){
   const html=fs.readFileSync(`${slug}/index.html`,'utf8');
