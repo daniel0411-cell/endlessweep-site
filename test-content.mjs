@@ -19,5 +19,10 @@ for(const slug of ['daily-minesweeper','zen-minesweeper','custom-minesweeper']){
   assert(html.includes(`rel="canonical" href="https://endlessweep.com/${slug}/"`));
   assert.equal(html.match(/const levels=/g)?.length,1);
   assert.equal(html.slice(html.indexOf('<style>'),html.indexOf('</style>')),home.slice(home.indexOf('<style>'),home.indexOf('</style>')));
+  assert(!html.includes('id="mode-guide" hidden'));
+  assert((html.match(/<section class="mode-guide"/g)||[]).length===1);
 }
+assert(fs.readFileSync('daily-minesweeper/index.html','utf8').includes('current UTC date'));
+assert(fs.readFileSync('zen-minesweeper/index.html','utf8').includes('total mistakes'));
+assert(fs.readFileSync('custom-minesweeper/index.html','utf8').includes('mine density'));
 console.log('Content build checks passed');

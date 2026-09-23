@@ -61,6 +61,11 @@
   .learn { max-width:680px; margin:28px auto 0; padding-top:22px; border-top:1px solid var(--line); text-align:center; }
   .learn h2 { margin:0 0 8px; font-size:20px; }
   .learn p { margin:0 0 12px; color:var(--muted); }
+  .mode-guide { max-width:680px; margin:28px auto 0; padding-top:22px; border-top:1px solid var(--line); }
+  .mode-guide h2 { margin:0 0 8px; font-size:22px; }
+  .mode-guide h3 { margin:20px 0 6px; font-size:18px; }
+  .mode-guide p { margin:0 0 12px; color:var(--muted); }
+  .mode-guide a { color:var(--blue); font-weight:700; }
   .links { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; }
   .links a { color:var(--blue); font-weight:700; text-decoration:none; padding:7px 10px; }
   .links a:hover { text-decoration:underline; }
@@ -110,6 +115,7 @@
       <a href="/minesweeper-statistics/">Statistics</a>
     </nav>
   </section>
+  <section class="mode-guide" id="mode-guide"><h2>What is Zen Minesweeper?</h2><p>Zen mode keeps the classic number clues but removes the sudden game over. Revealing a mine marks it as a mistake, then lets you continue solving until every safe square is open. It is a lower-pressure way to learn how clue boundaries and common patterns work.</p><h3>How completion and mistakes work</h3><p>The board is complete when every safe square has been revealed. Your result records the elapsed time and total mistakes, so the goal can shift from simply finishing to clearing the same difficulty with fewer errors. Beginner, Intermediate, and Expert Zen results are stored separately in this browser.</p><h3>Who should play Zen mode?</h3><p>Use Zen mode when you are learning, playing on a small touch screen, or practicing faster decisions without restarting after one bad tap. For focused exercises, try <a href="/minesweeper-patterns/">common number patterns</a> or read about <a href="/minesweeper-beginner-mistakes/">beginner mistakes</a>.</p></section>
 </main>
 <script>
 const levels={beginner:[9,9,10],intermediate:[16,16,40],expert:[30,16,99]};

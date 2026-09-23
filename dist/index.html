@@ -61,6 +61,11 @@
   .learn { max-width:680px; margin:28px auto 0; padding-top:22px; border-top:1px solid var(--line); text-align:center; }
   .learn h2 { margin:0 0 8px; font-size:20px; }
   .learn p { margin:0 0 12px; color:var(--muted); }
+  .mode-guide { max-width:680px; margin:28px auto 0; padding-top:22px; border-top:1px solid var(--line); }
+  .mode-guide h2 { margin:0 0 8px; font-size:22px; }
+  .mode-guide h3 { margin:20px 0 6px; font-size:18px; }
+  .mode-guide p { margin:0 0 12px; color:var(--muted); }
+  .mode-guide a { color:var(--blue); font-weight:700; }
   .links { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; }
   .links a { color:var(--blue); font-weight:700; text-decoration:none; padding:7px 10px; }
   .links a:hover { text-decoration:underline; }
@@ -110,6 +115,7 @@
       <a href="/minesweeper-statistics/">Statistics</a>
     </nav>
   </section>
+  <section class="mode-guide" id="mode-guide" hidden></section>
 </main>
 <script>
 const levels={beginner:[9,9,10],intermediate:[16,16,40],expert:[30,16,99]};

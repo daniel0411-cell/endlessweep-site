@@ -61,6 +61,11 @@
   .learn { max-width:680px; margin:28px auto 0; padding-top:22px; border-top:1px solid var(--line); text-align:center; }
   .learn h2 { margin:0 0 8px; font-size:20px; }
   .learn p { margin:0 0 12px; color:var(--muted); }
+  .mode-guide { max-width:680px; margin:28px auto 0; padding-top:22px; border-top:1px solid var(--line); }
+  .mode-guide h2 { margin:0 0 8px; font-size:22px; }
+  .mode-guide h3 { margin:20px 0 6px; font-size:18px; }
+  .mode-guide p { margin:0 0 12px; color:var(--muted); }
+  .mode-guide a { color:var(--blue); font-weight:700; }
   .links { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; }
   .links a { color:var(--blue); font-weight:700; text-decoration:none; padding:7px 10px; }
   .links a:hover { text-decoration:underline; }
@@ -110,6 +115,7 @@
       <a href="/minesweeper-statistics/">Statistics</a>
     </nav>
   </section>
+  <section class="mode-guide" id="mode-guide"><h2>Create a custom Minesweeper board</h2><p>Custom mode lets you choose a width from 5 to 40 squares, a height from 5 to 30, and a valid mine count for that board. Your first click and its neighboring squares are protected, so the maximum number of mines changes with the board size.</p><h3>Choose a useful mine density</h3><p>Start near the classic Beginner ratio if you want a relaxed board, then add mines gradually. A very dense board creates tighter clue boundaries and more difficult decisions, while a large low-density board produces wider openings. The <a href="/minesweeper-mine-density/">mine density guide</a> explains how to compare configurations.</p><h3>Share a reproducible challenge</h3><p>Completed games include a challenge link containing the seed, dimensions, and mine count. The link never exposes the mine layout. Another player must use the same first click to reproduce the exact board. For standard sizes, compare <a href="/minesweeper-difficulty/">Beginner, Intermediate, and Expert</a>.</p></section>
 </main>
 <script>
 const levels={beginner:[9,9,10],intermediate:[16,16,40],expert:[30,16,99]};

@@ -61,6 +61,11 @@
   .learn { max-width:680px; margin:28px auto 0; padding-top:22px; border-top:1px solid var(--line); text-align:center; }
   .learn h2 { margin:0 0 8px; font-size:20px; }
   .learn p { margin:0 0 12px; color:var(--muted); }
+  .mode-guide { max-width:680px; margin:28px auto 0; padding-top:22px; border-top:1px solid var(--line); }
+  .mode-guide h2 { margin:0 0 8px; font-size:22px; }
+  .mode-guide h3 { margin:20px 0 6px; font-size:18px; }
+  .mode-guide p { margin:0 0 12px; color:var(--muted); }
+  .mode-guide a { color:var(--blue); font-weight:700; }
   .links { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; }
   .links a { color:var(--blue); font-weight:700; text-decoration:none; padding:7px 10px; }
   .links a:hover { text-decoration:underline; }
@@ -110,6 +115,7 @@
       <a href="/minesweeper-statistics/">Statistics</a>
     </nav>
   </section>
+  <section class="mode-guide" id="mode-guide"><h2>How the Daily Minesweeper Challenge works</h2><p>Every player receives the same Beginner board for the current UTC date. The board uses a fixed daily seed, while mine placement also depends on your first click. To reproduce an identical minefield, another player must use the same first square.</p><h3>Build a local completion streak</h3><p>Clear the board to record today's time and extend your streak. Progress is stored only in this browser, so it does not follow you to another device or private browsing session. A new challenge becomes available when the UTC date changes.</p><h3>Share today's board</h3><p>After completing the challenge, use the Share button to send your time, current streak, and a link to this page. No mine locations or personal data are included. Review the <a href="/minesweeper-strategy/">Minesweeper strategy guide</a> before your next attempt.</p></section>
 </main>
 <script>
 const levels={beginner:[9,9,10],intermediate:[16,16,40],expert:[30,16,99]};
