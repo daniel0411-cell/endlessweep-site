@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Learn Minesweeper logic using remaining mine counts, overlapping clue sets, subset subtraction, boundaries, and a repeatable solving process."><link rel="canonical" href="https://endlessweep.com/minesweeper-logic/"><title>Minesweeper Logic Explained: How Every Deduction Works</title><style>:root{--ink:#182230;--muted:#64748b;--line:#d8e0ea;--blue:#2563eb;--panel:#fff}*{box-sizing:border-box}body{margin:0;background:#eef3f8;color:var(--ink);font:16px/1.68 system-ui,-apple-system,"Segoe UI",sans-serif}main{width:min(100% - 28px,820px);margin:auto;padding:30px 0 52px}header,footer{text-align:center}h1{margin:0 0 8px;font-size:clamp(28px,6vw,44px);line-height:1.15}header p,footer{color:var(--muted)}nav{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin:18px 0}a{color:var(--blue);font-weight:700;text-decoration:none}.cta{display:inline-block;padding:10px 15px;border-radius:7px;background:var(--blue);color:#fff}.content{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:24px}h2{margin:28px 0 7px;font-size:23px}h2:first-child{margin-top:0}h3{margin:20px 0 5px}ul,ol{padding-left:22px}.note{padding:12px 14px;background:#f1f5f9;border-left:3px solid var(--blue)}code{padding:2px 5px;background:#f1f5f9;border-radius:4px}@media(max-width:520px){.content{padding:18px}}</style></head><body><main><header><h1>Minesweeper Logic Explained</h1><p>Turn every visible clue into a constraint and find moves you can prove.</p><nav><a class="cta" href="/">Play Minesweeper</a><a href="/minesweeper-guides/">All Guides</a><a href="/minesweeper-strategy/">Strategy</a><a href="/minesweeper-patterns/">Patterns</a></nav></header><article class="content"><h2>Minesweeper is a constraint puzzle</h2>
+<p>Every revealed number creates a local constraint. It tells you exactly how many of its adjacent covered squares contain mines. A clue does not identify those mines by itself; the solution comes from combining that constraint with flags, board boundaries, and nearby clues.</p>
+<p>Good solving is therefore less about memorizing pictures and more about tracking what each clue still needs.</p>
+<h2>Start with the remaining mine count</h2>
+<p>For any open number, calculate:</p>
+<p><code>remaining mines = clue number - adjacent proven mines</code></p>
+<p>Then count its adjacent covered, unflagged squares. Two immediate deductions follow.</p>
+<ul>
+<li>If the remaining mine count is zero, every covered neighbor is safe.</li>
+<li>If the remaining mine count equals the number of covered neighbors, every one of those neighbors is a mine.</li>
+</ul>
+<p>These two rules solve a large share of Beginner positions and remain the foundation of advanced play.</p>
+<h2>Treat covered neighbors as sets</h2>
+<p>When one clue does not produce a move, compare it with a nearby clue. Imagine that each clue owns a set containing its covered neighbors.</p>
+<p>Suppose clue A needs one mine among squares <code>{x, y}</code>. Clue B needs two mines among <code>{x, y, z}</code>. Because B contains all of A's candidates plus <code>z</code>, the extra square <code>z</code> must be a mine. This is subset subtraction: subtract both the shared candidates and the shared mine requirement.</p>
+<p>The same method can prove safety. If both clues need one mine, but B sees <code>{x, y, z}</code> while A sees <code>{x, y}</code>, then <code>z</code> is safe.</p>
+<h2>Why number patterns work</h2>
+<p>Patterns such as 1-2-1 and 1-2-2-1 are recurring subset relationships. They save time because the same geometry appears on many boards. The digits alone are never sufficient: extra covered neighbors or existing flags change the remaining constraints.</p>
+<p>Use the <a href="/minesweeper-patterns/">common and advanced pattern guide</a> for worked pattern families, then verify each candidate set before applying the shortcut.</p>
+<h2>Edges and corners reduce possibilities</h2>
+<p>A clue in the center can touch eight squares. An edge clue can touch at most five, and a corner clue at most three. Missing off-board neighbors make the constraint smaller and often easier to solve.</p>
+<p>When a position stalls, inspect walls and corners first. A 2 near an edge may have only two possible covered neighbors, immediately proving both mines.</p>
+<h2>Flags are deductions, not evidence</h2>
+<p>A flag does not tell the game that a mine has been verified. It only stores your decision. If a flag is speculative, every remaining count based on it may be wrong.</p>
+<p>Flag squares only after the visible constraints prove them. Before using chord, recount the flags around that clue because chord trusts the flag count and can reveal a real mine when a flag is misplaced.</p>
+<h2>A repeatable logic scan</h2>
+<ol>
+<li>Scan all open boundaries for a zero remaining count.</li>
+<li>Scan again for clues whose remaining count equals their covered neighbors.</li>
+<li>Compare neighboring clues whose covered sets overlap.</li>
+<li>Check edges, corners, and the global remaining mine counter.</li>
+<li>Move to another open region before deciding that a guess is required.</li>
+</ol>
+<p>A consistent scan prevents tunnel vision. One blocked section may become solvable after progress elsewhere reveals another clue.</p>
+<h2>Logic versus probability</h2>
+<p>Logic produces a move that is guaranteed by the current information. Probability ranks uncertain moves when more than one mine arrangement remains valid. Do not mix the two: exhaust deterministic deductions first, then use the <a href="/minesweeper-guessing/">guessing and probability guide</a> only if the board is genuinely ambiguous.</p>
+<p>A <a href="/minesweeper-no-guessing-mode/">no-guess board</a> guarantees that some logical path exists, but the path may still require difficult subset comparisons.</p>
+<h2>Practice the reasoning, not only the answer</h2>
+<p>After a loss, use Replay or Mistake Review and return to the position before the mine. Write down the remaining count for each nearby clue and compare their covered sets. The useful question is not “Which pattern did I miss?” but “Which constraint proved a safer move?”</p>
+<p>Keep the <a href="/minesweeper-cheat-sheet/">printable Minesweeper cheat sheet</a> nearby while practicing, then reduce your reliance on it as the two core deductions become automatic.</p></article><footer><p>Practice what you learned on a real board.</p><a class="cta" href="/">Play Free Minesweeper</a><nav><a class="cta" href="/">Play Minesweeper</a><a href="/minesweeper-guides/">All Guides</a><a href="/minesweeper-strategy/">Strategy</a><a href="/minesweeper-patterns/">Patterns</a></nav></footer></main><script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Minesweeper Logic Explained","description":"Learn Minesweeper logic using remaining mine counts, overlapping clue sets, subset subtraction, boundaries, and a repeatable solving process.","inLanguage":"en","mainEntityOfPage":{"@type":"WebPage","@id":"https://endlessweep.com/minesweeper-logic/"}}</script></body></html>

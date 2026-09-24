@@ -17,6 +17,8 @@ const cheat=fs.readFileSync('minesweeper-cheat-sheet/index.html','utf8');
 assert(cheat.includes('onclick="window.print()"'));
 assert(cheat.includes('@media print'));
 JSON.parse(cheat.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
+const patterns=fs.readFileSync('minesweeper-patterns/index.html','utf8');
+for(const anchor of ['advanced-patterns','pattern-12','pattern-211','pattern-2112','pattern-corner-121'])assert(patterns.includes(`id="${anchor}"`));
 const home=fs.readFileSync('index.html','utf8');
 for(const slug of ['daily-minesweeper','zen-minesweeper','custom-minesweeper']){
   const html=fs.readFileSync(`${slug}/index.html`,'utf8');
