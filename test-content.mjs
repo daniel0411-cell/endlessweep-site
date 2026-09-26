@@ -13,12 +13,17 @@ for(const slug of slugs){
 }
 assert(sitemap.includes('https://endlessweep.com/minesweeper-guides/'));
 assert(sitemap.includes('https://endlessweep.com/minesweeper-cheat-sheet/'));
+assert(sitemap.includes('https://endlessweep.com/minesweeper-practice/'));
 const cheat=fs.readFileSync('minesweeper-cheat-sheet/index.html','utf8');
 assert(cheat.includes('onclick="window.print()"'));
 assert(cheat.includes('@media print'));
 JSON.parse(cheat.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
 const patterns=fs.readFileSync('minesweeper-patterns/index.html','utf8');
 for(const anchor of ['advanced-patterns','pattern-12','pattern-211','pattern-2112','pattern-corner-121'])assert(patterns.includes(`id="${anchor}"`));
+const practice=fs.readFileSync('minesweeper-practice/index.html','utf8');
+assert.equal((practice.match(/level:'/g)||[]).length,15);
+for(const level of ['Basic','Intermediate','Advanced'])assert.equal((practice.match(new RegExp(`level:'${level}'`,'g'))||[]).length,5);
+for(const marker of ['endlessweep-practice','Retry mistakes','practice_started','practice_completed'])assert(practice.includes(marker));
 const home=fs.readFileSync('index.html','utf8');
 for(const slug of ['daily-minesweeper','zen-minesweeper','custom-minesweeper']){
   const html=fs.readFileSync(`${slug}/index.html`,'utf8');
