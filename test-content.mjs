@@ -37,4 +37,8 @@ for(const slug of ['daily-minesweeper','zen-minesweeper','custom-minesweeper']){
 assert(fs.readFileSync('daily-minesweeper/index.html','utf8').includes('current UTC date'));
 assert(fs.readFileSync('zen-minesweeper/index.html','utf8').includes('total mistakes'));
 assert(fs.readFileSync('custom-minesweeper/index.html','utf8').includes('mine density'));
+const difficulty=fs.readFileSync('minesweeper-difficulty/index.html','utf8');
+for(const marker of ['30 x 24 with 130 mines','What changes on a large Minesweeper grid?','/custom-minesweeper/?seed=large-board'])assert(difficulty.includes(marker));
+const statistics=fs.readFileSync('minesweeper-statistics/index.html','utf8');
+for(const marker of ['How to read your Minesweeper statistics','Endlessweep Efficiency is not 3BV/s','Local data and privacy'])assert(statistics.includes(marker));
 console.log('Content build checks passed');
