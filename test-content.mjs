@@ -27,7 +27,7 @@ assert.equal((practice.match(/level:'/g)||[]).length,15);
 for(const level of ['Basic','Intermediate','Advanced'])assert.equal((practice.match(new RegExp(`level:'${level}'`,'g'))||[]).length,5);
 for(const marker of ['endlessweep-practice','Retry mistakes','practice_started','practice_completed'])assert(practice.includes(marker));
 const home=fs.readFileSync('index.html','utf8');
-for(const slug of ['daily-minesweeper','zen-minesweeper','custom-minesweeper']){
+for(const slug of ['daily-minesweeper','zen-minesweeper','custom-minesweeper','time-attack-minesweeper']){
   const html=fs.readFileSync(`${slug}/index.html`,'utf8');
   assert(!html.includes('http-equiv="refresh"'));
   assert(html.includes(`rel="canonical" href="https://endlessweep.com/${slug}/"`));
@@ -43,7 +43,9 @@ assert(fs.readFileSync('custom-minesweeper/index.html','utf8').includes('mine de
 const difficulty=fs.readFileSync('minesweeper-difficulty/index.html','utf8');
 for(const marker of ['30 x 24 with 130 mines','What changes on a large Minesweeper grid?','/custom-minesweeper/?seed=large-board'])assert(difficulty.includes(marker));
 const statistics=fs.readFileSync('minesweeper-statistics/index.html','utf8');
-for(const marker of ['How to read your Minesweeper statistics','Endlessweep Efficiency is not 3BV/s','Local data and privacy'])assert(statistics.includes(marker));
+for(const marker of ['How to read your Minesweeper statistics','Endlessweep Efficiency is not 3BV/s','Local data and privacy','daily-beginner','daily-intermediate','daily-expert','time-attack-beginner','time-attack-intermediate'])assert(statistics.includes(marker));
 const gameModes=fs.readFileSync('game-modes/index.html','utf8');
-for(const marker of ['/minesweeper-practice/','/minesweeper-statistics/','/minesweeper-logic/','seven days of local results'])assert(gameModes.includes(marker));
+for(const marker of ['/time-attack-minesweeper/','/minesweeper-practice/','/minesweeper-statistics/','/minesweeper-logic/','seven days of local results'])assert(gameModes.includes(marker));
+const timeAttack=fs.readFileSync('time-attack-minesweeper/index.html','utf8');
+for(const marker of ['Score as many safe squares as you can in 60 seconds','timeAttackGame','Safe squares score 1 point'])assert(timeAttack.includes(marker));
 console.log('Content build checks passed');

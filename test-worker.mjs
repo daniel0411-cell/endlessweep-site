@@ -8,5 +8,6 @@ assert.equal(points.length,1);
 assert.deepEqual(points[0].blobs,['game_started','daily','','touch']);
 assert.equal((await send({event:'unknown',mode:'daily'})).status,400);
 assert.equal((await send({event:'game_started',mode:'unknown'})).status,400);
+assert.equal((await send({event:'game_completed',mode:'time-attack-beginner',result:'finished',seconds:60})).status,204);
 assert.equal((await worker.fetch(new Request('https://endlessweep.com/'),env)).status,200);
 console.log('Worker event checks passed');

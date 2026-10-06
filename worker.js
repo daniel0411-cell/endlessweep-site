@@ -1,5 +1,5 @@
 const events=new Set(['game_started','game_completed','game_abandoned','challenge_shared','practice_started','practice_completed','replay_opened','mistake_review_opened']);
-const modes=new Set(['beginner','intermediate','expert','custom','daily','zen-beginner','zen-intermediate','zen-expert','practice','replay']);
+const modes=new Set(['beginner','intermediate','expert','custom','daily','daily-beginner','daily-intermediate','daily-expert','time-attack-beginner','time-attack-intermediate','zen-beginner','zen-intermediate','zen-expert','practice','replay']);
 
 export default {
   async fetch(request,env){

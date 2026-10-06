@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Create a custom Minesweeper board with your own width, height, and mine count, then play and share the challenge.">
-<link rel="canonical" href="https://endlessweep.com/custom-minesweeper/">
-<title>Custom Minesweeper Board - Endlessweep</title>
+<meta name="description" content="Play a 60-second Minesweeper Time Attack. Reveal safe squares, clear boards for bonuses, and beat your local high score.">
+<link rel="canonical" href="https://endlessweep.com/time-attack-minesweeper/">
+<title>Time Attack Minesweeper - 60 Second Challenge</title>
 <style>
   :root { color-scheme: light; --ink:#182230; --muted:#64748b; --panel:#fff; --line:#d8e0ea; --blue:#2563eb; --cell:#dbe5ef; --open:#f8fafc; --page:#eef3f8; }
   :root.dark { color-scheme: dark; --ink:#e5edf7; --muted:#9aabc0; --panel:#1e293b; --line:#40516a; --blue:#60a5fa; --cell:#475569; --open:#263449; --page:#111827; }
@@ -130,7 +130,7 @@
       <a href="/minesweeper-statistics/">Statistics</a>
     </nav>
   </section>
-  <section class="mode-guide" id="mode-guide"><h2>Create a custom Minesweeper board</h2><p>Custom mode lets you choose a width from 5 to 40 squares, a height from 5 to 30, and a valid mine count for that board. Your first click and its neighboring squares are protected, so the maximum number of mines changes with the board size.</p><h3>Choose a useful mine density</h3><p>Start near the classic Beginner ratio if you want a relaxed board, then add mines gradually. A very dense board creates tighter clue boundaries and more difficult decisions, while a large low-density board produces wider openings. The <a href="/minesweeper-mine-density/">mine density guide</a> explains how to compare configurations.</p><h3>Share a reproducible challenge</h3><p>Completed games include a challenge link containing the seed, dimensions, and mine count. The link never exposes the mine layout. Another player must use the same first click to reproduce the exact board. For standard sizes, compare <a href="/minesweeper-difficulty/">Beginner, Intermediate, and Expert</a>.</p></section>
+  <section class="mode-guide" id="mode-guide"><h2>How Time Attack works</h2><p>You have 60 seconds to reveal as many safe squares as possible. Each safe square is worth one point, clearing a board adds a 25-point bonus, and revealing a mine subtracts five points without ending the run.</p><h3>Choose a board</h3><p>Use the level parameter to play Beginner or Intermediate. Beginner creates more frequent board-clear bonuses, while Intermediate rewards scanning a larger field. Scores are stored separately in this browser.</p><h3>Improve your score</h3><p>Prioritize certain moves, use chord clicks when flags are verified, and avoid spending too long on one boundary. Review the <a href="/minesweeper-speed/">speed guide</a> and your saved results on the <a href="/minesweeper-statistics/">Statistics page</a>.</p></section>
 </main>
 <script>
 const levels={beginner:[9,9,10],intermediate:[16,16,40],expert:[30,16,99]};
