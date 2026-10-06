@@ -14,6 +14,8 @@ for(const slug of slugs){
 assert(sitemap.includes('https://endlessweep.com/minesweeper-guides/'));
 assert(sitemap.includes('https://endlessweep.com/minesweeper-cheat-sheet/'));
 assert(sitemap.includes('https://endlessweep.com/minesweeper-practice/'));
+const guides=fs.readFileSync('minesweeper-guides/index.html','utf8');
+for(const slug of ['how-to-play-minesweeper','minesweeper-controls','minesweeper-patterns','minesweeper-strategy','minesweeper-cheat-sheet'])assert(guides.includes(`href="/${slug}/"`));
 const cheat=fs.readFileSync('minesweeper-cheat-sheet/index.html','utf8');
 assert(cheat.includes('onclick="window.print()"'));
 assert(cheat.includes('@media print'));
@@ -34,11 +36,14 @@ for(const slug of ['daily-minesweeper','zen-minesweeper','custom-minesweeper']){
   assert(!html.includes('id="mode-guide" hidden'));
   assert((html.match(/<section class="mode-guide"/g)||[]).length===1);
 }
-assert(fs.readFileSync('daily-minesweeper/index.html','utf8').includes('current UTC date'));
+const daily=fs.readFileSync('daily-minesweeper/index.html','utf8');
+for(const marker of ['data-daily-level="beginner"','data-daily-level="intermediate"','data-daily-level="expert"','seven-day strip'])assert(daily.includes(marker));
 assert(fs.readFileSync('zen-minesweeper/index.html','utf8').includes('total mistakes'));
 assert(fs.readFileSync('custom-minesweeper/index.html','utf8').includes('mine density'));
 const difficulty=fs.readFileSync('minesweeper-difficulty/index.html','utf8');
 for(const marker of ['30 x 24 with 130 mines','What changes on a large Minesweeper grid?','/custom-minesweeper/?seed=large-board'])assert(difficulty.includes(marker));
 const statistics=fs.readFileSync('minesweeper-statistics/index.html','utf8');
 for(const marker of ['How to read your Minesweeper statistics','Endlessweep Efficiency is not 3BV/s','Local data and privacy'])assert(statistics.includes(marker));
+const gameModes=fs.readFileSync('game-modes/index.html','utf8');
+for(const marker of ['/minesweeper-practice/','/minesweeper-statistics/','/minesweeper-logic/','seven days of local results'])assert(gameModes.includes(marker));
 console.log('Content build checks passed');
