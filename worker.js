@@ -4,6 +4,10 @@ const modes=new Set(['beginner','intermediate','expert','custom','daily','daily-
 export default {
   async fetch(request,env){
     const url=new URL(request.url);
+    if(url.hostname==='endlessweep.com'&&url.protocol==='http:'){
+      url.protocol='https:';
+      return Response.redirect(url,308);
+    }
     if(url.pathname==='/api/events'&&request.method==='POST'){
       let data;
       try{data=await request.json()}catch{return new Response(null,{status:400})}

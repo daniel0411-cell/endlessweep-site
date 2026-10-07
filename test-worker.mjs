@@ -10,4 +10,9 @@ assert.equal((await send({event:'unknown',mode:'daily'})).status,400);
 assert.equal((await send({event:'game_started',mode:'unknown'})).status,400);
 assert.equal((await send({event:'game_completed',mode:'time-attack-beginner',result:'finished',seconds:60})).status,204);
 assert.equal((await worker.fetch(new Request('https://endlessweep.com/'),env)).status,200);
+for(const url of ['http://endlessweep.com/','http://endlessweep.com/daily-minesweeper/?level=expert']){
+  const response=await worker.fetch(new Request(url),env);
+  assert.equal(response.status,308);
+  assert.equal(response.headers.get('location'),url.replace('http:','https:'));
+}
 console.log('Worker event checks passed');
