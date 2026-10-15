@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Explore local mine probabilities and deductions with a free Minesweeper calculator. Results assume a closed grid and equally weighted valid arrangements.">
+<link rel="canonical" href="https://endlessweep.com/minesweeper-solver/">
+<meta property="og:site_name" content="Endlessweep">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Minesweeper Solver &amp; Probability Calculator - Endlessweep">
+<meta property="og:description" content="Explore local mine probabilities and deductions with a free Minesweeper calculator. Results assume a closed grid and equally weighted valid arrangements.">
+<meta property="og:url" content="https://endlessweep.com/minesweeper-solver/">
+<meta property="og:image" content="https://endlessweep.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Minesweeper Solver &amp; Probability Calculator">
+<meta name="twitter:description" content="Explore local mine probabilities and deductions with a free Minesweeper calculator. Results assume a closed grid and equally weighted valid arrangements.">
+<meta name="twitter:image" content="https://endlessweep.com/og-image.png">
+<title>Minesweeper Solver &amp; Probability Calculator - Endlessweep</title>
+<style>
+:root{--ink:#182230;--muted:#64748b;--line:#d8e0ea;--blue:#2563eb;--panel:#fff;--page:#eef3f8;--green:#15803d;--red:#dc2626;--amber:#d97706}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+.top{min-height:56px;padding:0 max(16px,calc((100% - 920px)/2));display:flex;align-items:center;justify-content:space-between;background:var(--panel);border-bottom:1px solid var(--line)}
+.top a{color:var(--ink);font-weight:800;text-decoration:none}
+.top nav{display:flex;gap:16px}
+.top nav a{color:var(--muted);font-size:14px;text-decoration:none;font-weight:600}
+.top nav a:hover{color:var(--blue)}
+main{width:min(100% - 28px,900px);margin:auto;padding:32px 0 54px}
+header{text-align:center;margin-bottom:24px}
+h1{margin:0 0 8px;font-size:clamp(28px,5vw,42px)}
+header p{margin:0;color:var(--muted)}
+.solver-card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:24px;margin-bottom:24px}
+.presets{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:20px}
+.presets button{padding:8px 13px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink);font:inherit;font-size:14px;font-weight:600;cursor:pointer}
+.presets button:hover{border-color:var(--blue)}
+.presets button[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:#fff}
+.instructions{text-align:center;font-size:14px;color:var(--muted);margin-bottom:16px}
+.grid-wrap{display:flex;justify-content:center;margin:16px 0;overflow-x:auto;padding:6px}
+.grid{display:grid;gap:4px;background:#94a3b8;padding:4px;border-radius:6px}
+.cell-btn{display:grid;place-items:center;width:48px;height:48px;border:1px solid #64748b;border-radius:4px;background:#cbd5e1;font:800 18px/1 system-ui,sans-serif;color:var(--ink);cursor:pointer;position:relative}
+.cell-btn.open{background:#f8fafc}
+.cell-btn.flag{color:var(--red)}
+.cell-btn.n1{color:#2563eb}.cell-btn.n2{color:#15803d}.cell-btn.n3{color:#dc2626}.cell-btn.n4{color:#7c3aed}
+.cell-btn .prob{position:absolute;bottom:2px;font-size:10px;font-weight:700;line-height:1}
+.cell-btn.safe-100{box-shadow:inset 0 0 0 3px var(--green);background:#dcfce7}
+.cell-btn.mine-100{box-shadow:inset 0 0 0 3px var(--red);background:#fee2e2}
+.cell-btn.ambiguous{box-shadow:inset 0 0 0 3px var(--amber);background:#fef3c7}
+.controls{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:20px}
+.controls button{padding:10px 18px;border:1px solid var(--line);border-radius:6px;font:inherit;font-weight:700;cursor:pointer}
+.btn-primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+.results{margin-top:20px;padding:16px;background:#f8fafc;border:1px solid var(--line);border-radius:6px}
+.results h2{margin:0 0 8px;font-size:18px}
+.results p{margin:4px 0;color:var(--muted)}
+.results ul{margin:8px 0 0;padding-left:22px}
+.results li{margin-bottom:4px}
+.guide-content{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:24px}
+.guide-content h2{margin:24px 0 8px;font-size:22px}
+.guide-content h2:first-child{margin-top:0}
+.guide-content h3{margin:18px 0 6px;font-size:18px}
+.guide-content p{margin:0 0 12px;color:var(--muted);line-height:1.6}
+.faq-sec{margin-top:24px;border-top:1px solid var(--line);padding-top:20px}
+footer{text-align:center;margin-top:28px;color:var(--muted);font-size:14px}
+footer a{color:var(--blue);font-weight:700;text-decoration:none;margin:0 8px}
+@media(max-width:560px){.cell-btn{width:40px;height:40px;font-size:15px}}
+</style>
+</head>
+<body>
+<div class="top">
+  <a href="/">Endlessweep</a>
+  <nav aria-label="Navigation">
+    <a href="/">Play</a>
+    <a href="/no-guess-minesweeper/">No-Guess</a>
+    <a href="/daily-minesweeper/">Daily</a>
+    <a href="/minesweeper-guides/">Guides</a>
+  </nav>
+</div>
+<main>
+  <header>
+    <h1>Minesweeper Solver &amp; Probability Calculator</h1>
+    <p>Calculate exact mine probabilities and solve difficult positions with pure logic.</p>
+  </header>
+
+  <section class="solver-card">
+    <div class="presets" aria-label="Common Dilemma Presets">
+      <button data-preset="fifty" aria-pressed="true">Classic 50/50</button>
+      <button data-preset="p121" aria-pressed="false">1-2-1 Pattern</button>
+      <button data-preset="p1221" aria-pressed="false">1-2-2-1 Pattern</button>
+      <button data-preset="corner" aria-pressed="false">2-1 Corner</button>
+      <button data-preset="custom" aria-pressed="false">Custom 4x3</button>
+    </div>
+
+    <p class="instructions">Click any cell to cycle values: Covered (■) &rarr; Clues (1, 2, 3...) &rarr; Flag (🚩). Focus a cell and press 0-8 for a clue, F for a flag, or Delete for covered.</p>
+
+    <div class="grid-wrap">
+      <div class="grid" id="grid"></div>
+    </div>
+
+    <div class="controls">
+      <button class="btn-primary" id="btn-calc">Calculate Probabilities</button>
+      <button id="btn-reset">Reset Grid</button>
+    </div>
+
+    <div class="results" id="results">
+      <h2>Probability Analysis</h2>
+      <p id="summary-text">Click "Calculate Probabilities" to analyze the grid above.</p>
+      <ul id="deductions-list"></ul>
+    </div>
+  </section>
+
+  <article class="guide-content">
+    <h2>How the Minesweeper Probability Calculator Works</h2>
+    <p>This calculator treats the entered rectangle as a complete, closed board: clues have no unknown neighbors outside it and flags are assumed correct. It counts all valid local arrangements equally. It does not use a whole-board mine total or outside clues, so percentages are local-model estimates, not exact odds for your full game. Only transfer deductions if these assumptions match your position.</p>
+
+    <h3>1. Certain Safe Reveals (0% Mine)</h3>
+    <p>If every valid mine arrangement leaves a specific covered square empty, that square is <strong>100% safe (0% mine)</strong>. It is highlighted in green. You can reveal it immediately without risk.</p>
+
+    <h3>2. Proven Mines (100% Mine)</h3>
+    <p>If every valid mine arrangement requires a specific square to be mined, that square is <strong>100% mined</strong>. It is highlighted in red. You can flag it with complete certainty.</p>
+
+    <h3>3. True 50/50 and Ambiguous Positions</h3>
+    <p>A 50% result means half of the equally weighted local arrangements contain a mine there. Outside clues and the remaining mine total may change the odds or resolve the position. This alone does not prove an unavoidable whole-board 50/50.</p>
+
+    <div class="faq-sec">
+      <h2>Frequently Asked Questions</h2>
+      <h3>How does this solver calculate mine probabilities?</h3>
+      <p>The solver enumerates arrangements satisfying the entered clues, treating the rectangle as closed and flags as correct. Percentages weight these local arrangements equally; outside clues and the global mine total are not included.</p>
+      <h3>What is the difference between this solver and No Guess mode?</h3>
+      <p>This calculator analyzes any ambiguous position you input. In contrast, <a href="/no-guess-minesweeper/">No Guess Minesweeper</a> verifies a deduction-only path from your first click before accepting a board. If verification fails within the generation limit, it asks you to start a new game.</p>
+      <h3>When should you guess in a 50/50 position?</h3>
+      <p>Check all other clues and the remaining mine total first. A local 50% estimate does not establish a forced guess or the best whole-board move.</p>
+    </div>
+  </article>
+
+  <footer>
+    <a href="/">Play Classic Minesweeper</a>
+    <a href="/no-guess-minesweeper/">Play No-Guess</a>
+    <a href="/minesweeper-practice/">Practice Logic</a>
+    <a href="/minesweeper-guides/">All Guides</a>
+  </footer>
+</main>
+
+<script>
+const presets={
+  fifty:[[null,null],[1,1]],
+  p121:[[null,null,null],[1,2,1]],
+  p1221:[[null,null,null,null],[1,2,2,1]],
+  corner:[[null,null,null],[null,2,1],[null,1,0]],
+  custom:[[null,null,null,null],[1,2,2,1],[null,null,null,null]]
+};
+let curGrid=JSON.parse(JSON.stringify(presets.fifty));
+const gridEl=document.querySelector('#grid');
+const summaryEl=document.querySelector('#summary-text');
+const listEl=document.querySelector('#deductions-list');
+
+function renderGrid(probs=null){
+  const h=curGrid.length,w=curGrid[0].length;
+  gridEl.style.gridTemplateColumns=`repeat(${w}, 1fr)`;
+  gridEl.innerHTML='';
+  for(let r=0;r<h;r++){
+    for(let c=0;c<w;c++){
+      const val=curGrid[r][c];
+      const btn=document.createElement('button');
+      btn.className='cell-btn';
+      btn.dataset.r=r;btn.dataset.c=c;
+      if(val===null){
+        btn.textContent='■';
+        if(probs){
+          const p=probs.find(x=>x.r===r&&x.c===c);
+          if(p){
+            if(p.safe){btn.classList.add('safe-100');btn.innerHTML=`■<span class="prob" style="color:var(--green)">SAFE</span>`}
+            else if(p.mine){btn.classList.add('mine-100');btn.innerHTML=`🚩<span class="prob" style="color:var(--red)">MINE</span>`}
+            else{btn.classList.add('ambiguous');btn.innerHTML=`■<span class="prob" style="color:var(--amber)">${p.mineProb}%</span>`}
+          }
+        }
+      }else if(val===-1){
+        btn.className+=' flag';
+        btn.textContent='🚩';
+      }else{
+        btn.className+=` open n${val}`;
+        btn.textContent=val===0?'':val;
+      }
+      btn.setAttribute('aria-label',`Row ${r+1}, column ${c+1}: ${val===null?'covered':val===-1?'flag':val}`);
+      btn.addEventListener('click',()=>cycleCell(r,c));
+      btn.addEventListener('keydown',e=>{const value=/^[0-8]$/.test(e.key)?Number(e.key):e.key.toLowerCase()==='f'?-1:['Delete','Backspace'].includes(e.key)?null:undefined;if(value===undefined)return;e.preventDefault();curGrid[r][c]=value;renderGrid();clearResults();gridEl.children[r*w+c].focus()});
+      gridEl.appendChild(btn);
+    }
+  }
+}
+
+function cycleCell(r,c){
+  const order=[null,1,2,3,4,5,6,7,8,-1,0];
+  const idx=order.indexOf(curGrid[r][c]);
+  curGrid[r][c]=order[(idx+1)%order.length];
+  renderGrid();
+  clearResults();
+  gridEl.children[r*curGrid[0].length+c].focus();
+}
+
+function clearResults(){
+  summaryEl.textContent='Click "Calculate Probabilities" to analyze the grid above.';
+  listEl.innerHTML='';
+}
+
+function calculate(){
+  const h=curGrid.length,w=curGrid[0].length;
+  const covered=[],clues=[];
+  for(let r=0;r<h;r++){
+    for(let c=0;c<w;c++){
+      if(curGrid[r][c]===null)covered.push({r,c,idx:covered.length});
+      else if(typeof curGrid[r][c]==='number'&&curGrid[r][c]>=0){
+        clues.push({r,c,val:curGrid[r][c]});
+      }
+    }
+  }
+  const constraints=clues.map(clue=>{
+    const adj=[];let flags=0;
+    for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){
+      if(!dr&&!dc)continue;
+      const nr=clue.r+dr,nc=clue.c+dc;
+      if(nr>=0&&nr<h&&nc>=0&&nc<w){
+        if(curGrid[nr][nc]===-1)flags++;
+        else if(curGrid[nr][nc]===null){
+          const cov=covered.find(x=>x.r===nr&&x.c===nc);
+          if(cov)adj.push(cov.idx);
+        }
+      }
+    }
+    return{req:clue.val-flags,cov:adj,val:clue.val,r:clue.r,c:clue.c};
+  });
+
+  const n=covered.length;
+  if(!n){summaryEl.textContent='No covered squares to analyze.';listEl.innerHTML='';return}
+  if(n>20){summaryEl.textContent='Too many covered squares for local solver (limit 20). Reduce grid size.';listEl.innerHTML='';return}
+
+  let validConfigs=0;
+  const mineCounts=Array(n).fill(0);
+  const total=1<<n;
+  for(let mask=0;mask<total;mask++){
+    let ok=true;
+    for(const cons of constraints){
+      let count=0;
+      for(const idx of cons.cov)if((mask>>idx)&1)count++;
+      if(count!==cons.req){ok=false;break}
+    }
+    if(ok){
+      validConfigs++;
+      for(let i=0;i<n;i++)if((mask>>i)&1)mineCounts[i]++;
+    }
+  }
+
+  if(validConfigs===0){
+    summaryEl.textContent='Contradiction detected! No valid mine configuration satisfies these clues. Check for misplaced flags or numbers.';
+    listEl.innerHTML='';
+    renderGrid();
+    return;
+  }
+
+  const probs=covered.map((c,i)=>({
+    r:c.r,
+    c:c.c,
+    safe:mineCounts[i]===0,
+    mine:mineCounts[i]===validConfigs,
+    mineProb:Math.round((mineCounts[i]/validConfigs)*100),
+    safeProb:Math.round(((validConfigs-mineCounts[i])/validConfigs)*100)
+  }));
+
+  renderGrid(probs);
+  const safeCount=probs.filter(p=>p.safe).length;
+  const mineCount=probs.filter(p=>p.mine).length;
+  const ambigCount=probs.filter(p=>!p.safe&&!p.mine).length;
+
+  summaryEl.textContent=`Local equal-weight model: ${validConfigs} valid configuration${validConfigs===1?'':'s'}. Safe squares: ${safeCount}, Proven mines: ${mineCount}, Ambiguous: ${ambigCount}.`;
+  listEl.innerHTML='';
+  probs.forEach(p=>{
+    const li=document.createElement('li');
+    if(p.safe)li.innerHTML=`<strong style="color:var(--green)">Square (${p.r+1}, ${p.c+1}):</strong> 100% Safe — Can be clicked with complete certainty.`;
+    else if(p.mine)li.innerHTML=`<strong style="color:var(--red)">Square (${p.r+1}, ${p.c+1}):</strong> 100% Mine — Flag this square.`;
+    else li.innerHTML=`<strong style="color:var(--amber)">Square (${p.r+1}, ${p.c+1}):</strong> ${p.mineProb}% Mine / ${p.safeProb}% Safe — Ambiguous gamble.`;
+    listEl.appendChild(li);
+  });
+}
+
+document.querySelectorAll('[data-preset]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('[data-preset]').forEach(b=>b.setAttribute('aria-pressed','false'));
+    btn.setAttribute('aria-pressed','true');
+    curGrid=JSON.parse(JSON.stringify(presets[btn.dataset.preset]));
+    renderGrid();
+    calculate();
+  });
+});
+
+document.querySelector('#btn-calc').addEventListener('click',calculate);
+document.querySelector('#btn-reset').addEventListener('click',()=>{
+  curGrid=curGrid.map(row=>row.map(()=>null));
+  renderGrid();
+  clearResults();
+});
+
+renderGrid();
+calculate();
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "Minesweeper Solver & Probability Calculator",
+      "url": "https://endlessweep.com/minesweeper-solver/",
+      "applicationCategory": "GameApplication",
+      "operatingSystem": "Any",
+      "description": "Explore local mine probabilities and deductions with a free Minesweeper calculator. Results assume a closed grid and equally weighted valid arrangements.",
+      "inLanguage": "en"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://endlessweep.com/"},
+        {"@type": "ListItem", "position": 2, "name": "Minesweeper Solver", "item": "https://endlessweep.com/minesweeper-solver/"}
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How does this solver calculate mine probabilities?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The solver enumerates arrangements satisfying the entered clues, treating the rectangle as closed and flags as correct. Percentages weight these local arrangements equally; outside clues and the global mine total are not included."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between this solver and No Guess mode?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "This calculator analyzes any ambiguous position you input. In contrast, No Guess Minesweeper verifies a deduction-only path from your first click before accepting a board. If verification fails within the generation limit, it asks you to start a new game."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "When should you guess in a 50/50 position?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Check all other clues and the remaining mine total first. A local 50% estimate does not establish a forced guess or the best whole-board move."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+</body>
+</html>

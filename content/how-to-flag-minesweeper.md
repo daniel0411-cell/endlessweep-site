@@ -44,3 +44,14 @@ A wrong flag creates false information around every clue it touches. It is espec
 3. Confirm that the remaining mine requirement equals the remaining candidates.
 4. Flag those candidates.
 5. Recheck nearby clues for new safe reveals.
+
+## Frequently Asked Questions
+
+### Do you have to flag every single mine to win Minesweeper?
+No. Minesweeper is won when every safe square is revealed. You do not need to flag every mine, and speedrunners often skip flagging distant or obvious mines to save moves.
+
+### How do you flag on mobile phones and touchscreens?
+On touch devices, tap the Mode toggle button to switch from Reveal to Flag mode, then tap the target square. You can also press and hold a covered square to place a flag directly.
+
+### What happens if you accidentally flag a safe square?
+The game does not warn you about wrong flags. An erroneous flag reduces your displayed mine count falsely and can cause chord clicks on nearby clues to detonate hidden mines.

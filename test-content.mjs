@@ -8,12 +8,20 @@ for(const slug of slugs){
   assert.equal((html.match(/<title>/g)||[]).length,1);
   assert.equal((html.match(/<h1>/g)||[]).length,1);
   assert(html.includes(`rel="canonical" href="https://endlessweep.com/${slug}/"`));
+  assert(html.includes('property="og:image"'));
+  assert(html.includes('name="twitter:card"'));
   assert(sitemap.includes(`https://endlessweep.com/${slug}/`));
-  JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
+  const schema=JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
+  assert(schema['@graph']&&schema['@graph'].some(x=>x['@type']==='BreadcrumbList'));
 }
+const flagHtml=fs.readFileSync('how-to-flag-minesweeper/index.html','utf8');
+const flagSchema=JSON.parse(flagHtml.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
+assert(flagSchema['@graph'].some(x=>x['@type']==='FAQPage'));
 assert(sitemap.includes('https://endlessweep.com/minesweeper-guides/'));
 assert(sitemap.includes('https://endlessweep.com/minesweeper-cheat-sheet/'));
 assert(sitemap.includes('https://endlessweep.com/minesweeper-practice/'));
+assert(sitemap.includes('https://endlessweep.com/minesweeper-solver/'));
+assert(fs.readFileSync('minesweeper-solver/index.html','utf8').includes('Calculate Probabilities'));
 const guides=fs.readFileSync('minesweeper-guides/index.html','utf8');
 for(const slug of ['how-to-play-minesweeper','minesweeper-controls','minesweeper-patterns','minesweeper-strategy','minesweeper-cheat-sheet'])assert(guides.includes(`href="/${slug}/"`));
 const cheat=fs.readFileSync('minesweeper-cheat-sheet/index.html','utf8');
@@ -27,7 +35,7 @@ assert.equal((practice.match(/level:'/g)||[]).length,15);
 for(const level of ['Basic','Intermediate','Advanced'])assert.equal((practice.match(new RegExp(`level:'${level}'`,'g'))||[]).length,5);
 for(const marker of ['endlessweep-practice','Retry mistakes','practice_started','practice_completed'])assert(practice.includes(marker));
 const home=fs.readFileSync('index.html','utf8');
-for(const slug of ['daily-minesweeper','zen-minesweeper','custom-minesweeper','time-attack-minesweeper']){
+for(const slug of ['daily-minesweeper','zen-minesweeper','custom-minesweeper','time-attack-minesweeper','no-guess-minesweeper','minesweeper-unblocked']){
   const html=fs.readFileSync(`${slug}/index.html`,'utf8');
   assert(!html.includes('http-equiv="refresh"'));
   assert(html.includes(`rel="canonical" href="https://endlessweep.com/${slug}/"`));
@@ -36,6 +44,8 @@ for(const slug of ['daily-minesweeper','zen-minesweeper','custom-minesweeper','t
   assert(!html.includes('id="mode-guide" hidden'));
   assert((html.match(/<section class="mode-guide"/g)||[]).length===1);
 }
+assert(fs.readFileSync('no-guess-minesweeper/index.html','utf8').includes('100% Solvable by Pure Logic'));
+assert(fs.readFileSync('minesweeper-unblocked/index.html','utf8').includes('Play Free at School or Work'));
 const daily=fs.readFileSync('daily-minesweeper/index.html','utf8');
 for(const marker of ['data-daily-level="beginner"','data-daily-level="intermediate"','data-daily-level="expert"','seven-day strip'])assert(daily.includes(marker));
 assert(fs.readFileSync('zen-minesweeper/index.html','utf8').includes('total mistakes'));

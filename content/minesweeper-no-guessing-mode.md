@@ -31,10 +31,21 @@ If two possible mine layouts satisfy all visible clues and no unopened area can 
 
 ## Does Endlessweep have a no-guess mode?
 
-Not yet. Endlessweep currently offers Classic, Daily, Zen, and Custom boards. They use first-click protection, but they are not certified by a complete no-guess solver and may contain positions that require probability. We will not describe these boards as no-guess until the generator can verify that claim reproducibly.
+Yes! Endlessweep now features a dedicated [No-Guess Minesweeper Mode](/no-guess-minesweeper/). When playing in No-Guess mode, every generated board is verified by our deterministic constraint solver right after your first click. If a layout requires an unavoidable 50/50 coin flip or unprovable guess, the generator automatically rejects it and generates another until a 100% logic-solvable field is confirmed.
 
-For logic-focused play today, use [Zen Minesweeper](/zen-minesweeper/) to continue after mistakes, or open Pattern Practice from the main [Minesweeper game](/).
+You can also practice common deductive patterns in [Minesweeper Practice](/minesweeper-practice/) or play [Zen Minesweeper](/zen-minesweeper/) without sudden game-overs.
 
 ## No-guess or ordinary random boards?
 
 Choose no-guess play when you want every loss to be traceable to a missed deduction or input mistake. Choose ordinary random boards when you also enjoy probability management and adapting to uncertain endings. Both formats use the same core rules; they test slightly different skills.
+
+## Frequently Asked Questions
+
+### Is No Guess Minesweeper completely free of 50-50s?
+Yes. By definition, a verified no-guess board contains a logical deduction path that opens the entire board from start to finish without any forced coin flips.
+
+### How does Endlessweep verify that a board is solvable?
+Immediately after your first click, our internal solver applies logical constraints (satisfied clues, candidate mine matching, and subset group reduction). It accepts the minefield only if the simulation clears 100% of the safe squares.
+
+### Does No Guess mode mean the board is easy?
+No. Guaranteed solvable means a deduction exists, not that it is simple. Advanced boards may require multi-clue subset reductions, counting remaining unflagged mines across large boundaries, or resolving complex edge constraints.

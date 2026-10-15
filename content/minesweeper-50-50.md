@@ -38,3 +38,14 @@ Sometimes an earlier opening order preserves more information, especially near w
 ## Review the position
 
 Use Endlessweep Mistake Review to return to the last move. If another safe move existed elsewhere, the guess was premature. For broader probability decisions, read the [Minesweeper guessing guide](/minesweeper-guessing/).
+
+## Frequently Asked Questions
+
+### Can every 50-50 position in Minesweeper be solved with logic?
+No. In classic random boards, some endgame positions leave two symmetrical squares that equally satisfy all adjacent clues. When remaining mine counts cannot differentiate them, logic cannot eliminate the guess.
+
+### When should you make a 50-50 guess?
+If you have confirmed that no other area of the board provides safe deductions or new clues, make the 50-50 choice immediately. Guessing early saves time rather than clearing the rest of the board only to lose on the final coin flip.
+
+### How do I avoid 50-50 guessing situations completely?
+Play a dedicated no-guess or pure logic mode where boards are pre-screened to ensure every square can be deduced without probabilistic gambles.
