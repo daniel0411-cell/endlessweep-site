@@ -19,79 +19,169 @@
 <meta name="twitter:image" content="https://endlessweep.com/og-image.png">
 <title>Free Minesweeper Online - Beginner, Intermediate &amp; Expert</title>
 <style>
-  :root { color-scheme: light; --ink:#182230; --muted:#64748b; --panel:#fff; --line:#d8e0ea; --blue:#2563eb; --cell:#dbe5ef; --open:#f8fafc; --page:#eef3f8; }
-  :root.dark { color-scheme: dark; --ink:#e5edf7; --muted:#9aabc0; --panel:#1e293b; --line:#40516a; --blue:#60a5fa; --cell:#475569; --open:#263449; --page:#111827; }
-  * { box-sizing:border-box; }
-  body { margin:0; min-height:100vh; background:var(--page); color:var(--ink); font:16px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif; }
-  .site-nav { min-height:56px; padding:0 max(16px, calc((100% - 920px)/2)); display:flex; align-items:center; justify-content:space-between; gap:20px; background:var(--panel); border-bottom:1px solid var(--line); }
-  .brand { color:var(--ink); font-size:18px; font-weight:800; text-decoration:none; }
-  .site-links { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:6px; }
-  .site-links a { color:var(--muted); font-weight:700; text-decoration:none; padding:8px 10px; }
-  .site-links a[aria-current="page"], .site-links a:hover { color:var(--blue); }
-  main { width:min(100% - 24px, 920px); margin:0 auto; padding:32px 0 48px; }
-  header { text-align:center; margin-bottom:22px; }
-  h1 { margin:0 0 4px; font-size:clamp(28px,6vw,46px); letter-spacing:0; }
-  header p { margin:0; color:var(--muted); }
-  .toolbar { display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center; margin-bottom:16px; }
-  select, button { min-height:42px; border:1px solid var(--line); border-radius:7px; background:var(--panel); color:var(--ink); font:inherit; padding:0 14px; cursor:pointer; }
-  .customize { display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:center; margin:0 auto 16px; color:var(--muted); font-size:14px; }
-  .customize[hidden] { display:none; }
-  .customize input { width:64px; min-height:38px; border:1px solid var(--line); border-radius:6px; background:var(--panel); color:var(--ink); font:inherit; padding:0 8px; }
-  .customize button { min-height:38px; }
-  button:hover, select:hover { border-color:var(--blue); }
-  .primary { background:var(--blue); border-color:var(--blue); color:#fff; font-weight:700; }
-  #mode { display:none; }
-  .secondary { padding:0 11px; }
-  #share[hidden] { display:none; }
-  .analysis { max-width:620px; margin:16px auto 0; padding:14px; border:1px solid var(--line); border-radius:7px; background:var(--panel); text-align:center; }
-  .analysis[hidden], .replay-controls[hidden], .practice[hidden] { display:none; }
-  .analysis h2 { margin:0 0 8px; font-size:18px; }
-  .analysis p { margin:5px 0; color:var(--muted); }
-  .replay-controls { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin:14px 0 0; }
-  .cell.review { outline:3px solid #dc2626; outline-offset:-3px; }
-  .practice { max-width:620px; margin:0 auto 16px; padding:12px; border:1px solid var(--line); border-radius:7px; background:var(--panel); text-align:center; }
-  .practice p { margin:0 0 8px; color:var(--muted); }
-  .stats { display:flex; justify-content:center; gap:10px; margin-bottom:16px; }
-  .stat { min-width:112px; padding:8px 12px; background:var(--panel); border:1px solid var(--line); border-radius:7px; text-align:center; }
-  .stat strong { display:block; font-size:22px; font-variant-numeric:tabular-nums; }
-  .stat span { color:var(--muted); font-size:12px; }
-  .daily-status { max-width:620px; margin:0 auto 16px; padding:10px 14px; border:1px solid var(--line); border-radius:7px; background:var(--panel); text-align:center; color:var(--muted); }
-  .daily-status[hidden] { display:none; }
-  .daily-levels { display:flex; justify-content:center; gap:7px; flex-wrap:wrap; margin:0 auto 14px; }
-  .daily-levels[hidden] { display:none; }
-  .daily-levels button[aria-pressed="true"] { background:var(--ink); color:var(--panel); }
-  .daily-history { max-width:620px; margin:0 auto 18px; display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:5px; }
-  .daily-history[hidden] { display:none; }
-  .daily-day { padding:7px 3px; border:1px solid var(--line); border-radius:5px; background:var(--panel); text-align:center; color:var(--muted); font-size:12px; }
-  .daily-day strong { display:block; color:var(--ink); font-size:13px; }
-  .time-status { max-width:620px; margin:0 auto 16px; display:flex; justify-content:center; gap:18px; padding:10px 14px; border:1px solid var(--line); border-radius:7px; background:var(--panel); color:var(--muted); }
-  .time-status[hidden] { display:none; }
-  .time-status strong { color:var(--ink); }
-  .game-wrap { overflow:auto; padding:4px; }
-  .game-stage { position:relative; }
-  .pause-cover { position:absolute; inset:4px; display:grid; place-items:center; background:rgba(15,23,42,.82); color:#fff; font-size:22px; font-weight:700; z-index:2; }
-  .pause-cover[hidden] { display:none; }
-  #board { display:grid; gap:2px; width:max-content; margin:auto; padding:5px; background:#94a3b8; border-radius:5px; user-select:none; touch-action:manipulation; }
-  .cell { width:clamp(27px,8vw,38px); height:clamp(27px,8vw,38px); padding:0; border:0; border-radius:2px; background:var(--cell); font-weight:800; font-size:clamp(14px,4vw,19px); line-height:1; }
-  .cell:not(.open):hover { background:#c5d4e3; }
-  .cell.open { background:var(--open); cursor:default; }
-  .cell.flag { color:#dc2626; }
-  .cell.mine { background:#fecaca; }
-  .n1 { color:#2563eb; } .n2 { color:#15803d; } .n3 { color:#dc2626; } .n4 { color:#7c3aed; } .n5,.n6,.n7,.n8 { color:#9f1239; }
-  #message { min-height:28px; margin:14px 0 0; text-align:center; color:var(--muted); font-weight:600; }
-  .tip { margin:20px auto 0; max-width:620px; color:var(--muted); text-align:center; font-size:14px; }
-  .learn { max-width:680px; margin:28px auto 0; padding-top:22px; border-top:1px solid var(--line); text-align:center; }
-  .learn h2 { margin:0 0 8px; font-size:20px; }
-  .learn p { margin:0 0 12px; color:var(--muted); }
-  .mode-guide { max-width:680px; margin:28px auto 0; padding-top:22px; border-top:1px solid var(--line); }
-  .mode-guide h2 { margin:0 0 8px; font-size:22px; }
-  .mode-guide h3 { margin:20px 0 6px; font-size:18px; }
-  .mode-guide p { margin:0 0 12px; color:var(--muted); }
-  .mode-guide a { color:var(--blue); font-weight:700; }
-  .links { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; }
-  .links a { color:var(--blue); font-weight:700; text-decoration:none; padding:7px 10px; }
-  .links a:hover { text-decoration:underline; }
-  @media (max-width:520px) { .site-nav { align-items:flex-start; padding:10px 12px; } .site-links { gap:0; font-size:14px; } .site-links a { padding:7px; } main { padding-top:22px; } .stats { gap:6px; } .stat { min-width:92px; padding:7px 8px; } #mode { display:inline-block; } .daily-history { grid-template-columns:repeat(4,minmax(0,1fr)); } }
+  :root {
+    color-scheme: light;
+    --ink: #0f172a;
+    --muted: #64748b;
+    --panel: #ffffff;
+    --line: #e2e8f0;
+    --line-subtle: #f1f5f9;
+    --blue: #2563eb;
+    --blue-hover: #1d4ed8;
+    --cell-bg: linear-gradient(180deg, #ffffff 0%, #e2e8f0 100%);
+    --cell-shadow: inset 0 1px 0 rgba(255,255,255,0.95), 0 2px 0 #cbd5e1;
+    --cell-border: rgba(203,213,225,0.85);
+    --open: #f8fafc;
+    --open-border: #e2e8f0;
+    --board-bg: #cbd5e1;
+    --page: #f8fafc;
+    --card-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 10px 25px -5px rgba(0,0,0,0.05), 0 0 0 1px rgba(0,0,0,0.04);
+  }
+  :root.dark {
+    color-scheme: dark;
+    --ink: #f8fafc;
+    --muted: #94a3b8;
+    --panel: #1e293b;
+    --line: #334155;
+    --line-subtle: #1e293b;
+    --blue: #3b82f6;
+    --blue-hover: #60a5fa;
+    --cell-bg: linear-gradient(180deg, #475569 0%, #334155 100%);
+    --cell-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 2px 0 #0f172a;
+    --cell-border: #475569;
+    --open: #0f172a;
+    --open-border: #1e293b;
+    --board-bg: #1e293b;
+    --page: #0b1120;
+    --card-shadow: 0 4px 6px -1px rgba(0,0,0,0.3), 0 10px 25px -5px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.06);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; background: var(--page); color: var(--ink); font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+  .site-nav { min-height: 58px; padding: 0 max(16px, calc((100% - 940px)/2)); display: flex; align-items: center; justify-content: space-between; gap: 20px; background: var(--panel); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 10; backdrop-filter: blur(8px); }
+  .brand { color: var(--ink); font-size: 19px; font-weight: 800; text-decoration: none; display: flex; align-items: center; gap: 8px; letter-spacing: -0.02em; }
+  .brand::before { content: "💣"; font-size: 18px; }
+  .site-links { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 4px; }
+  .site-links a { color: var(--muted); font-weight: 600; text-decoration: none; padding: 8px 12px; border-radius: 8px; font-size: 14px; transition: all 0.15s ease; }
+  .site-links a:hover { color: var(--blue); background: var(--page); }
+  .site-links a[aria-current="page"] { color: var(--blue); background: rgba(37,99,235,0.08); font-weight: 700; }
+  main { width: min(100% - 24px, 940px); margin: 0 auto; padding: 32px 0 52px; }
+  header { text-align: center; margin-bottom: 24px; }
+  h1 { margin: 0 0 6px; font-size: clamp(28px, 5.5vw, 44px); letter-spacing: -0.025em; font-weight: 800; color: var(--ink); }
+  header p { margin: 0; color: var(--muted); font-size: 16px; }
+
+  /* Toolbar & Buttons */
+  .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: center; margin-bottom: 20px; }
+  select, button { min-height: 40px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); color: var(--ink); font: inherit; font-size: 14px; font-weight: 600; padding: 0 14px; cursor: pointer; transition: all 0.15s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+  select { padding-right: 28px; }
+  button:hover, select:hover { border-color: var(--blue); transform: translateY(-1px); box-shadow: 0 2px 5px rgba(0,0,0,0.07); }
+  button:active { transform: translateY(0); box-shadow: none; }
+  .primary { background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%); border-color: #1d4ed8; color: #fff; font-weight: 700; box-shadow: 0 2px 4px rgba(37,99,235,0.25); }
+  .primary:hover { background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%); border-color: #1e40af; color: #fff; }
+  #mode { display: none; }
+  .secondary { padding: 0 12px; }
+  #share[hidden] { display: none; }
+
+  /* Game Console Card */
+  .game-card { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--card-shadow); padding: 18px; max-width: max-content; min-width: min(100%, 340px); margin: 0 auto; }
+
+  /* HUD & Stats Bar */
+  .stats { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 14px; padding: 4px 6px; }
+  .stat { display: flex; align-items: center; gap: 8px; min-width: 104px; padding: 6px 14px; background: var(--page); border: 1px solid var(--line); border-radius: 9999px; }
+  .stat-icon { font-size: 16px; line-height: 1; }
+  .stat-data { display: flex; flex-direction: column; text-align: left; }
+  .stat strong { font-size: 18px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.1; color: var(--ink); }
+  .stat span { color: var(--muted); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+
+  /* Expressive Smiley Face Button */
+  .face-btn { width: 44px; height: 44px; min-height: 44px; border-radius: 50%; padding: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 24px; background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%); border: 1px solid var(--line); box-shadow: 0 2px 4px rgba(0,0,0,0.08); cursor: pointer; transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.12s ease; user-select: none; }
+  :root.dark .face-btn { background: linear-gradient(180deg, #334155 0%, #1e293b 100%); border-color: #475569; }
+  .face-btn:hover { transform: scale(1.12); box-shadow: 0 4px 10px rgba(0,0,0,0.12); border-color: var(--blue); }
+  .face-btn:active { transform: scale(0.92); box-shadow: inset 0 2px 3px rgba(0,0,0,0.15); }
+
+  /* Board and Cells */
+  .game-stage { position: relative; display: flex; justify-content: center; }
+  .game-wrap { overflow: auto; padding: 2px; border-radius: 10px; max-width: 100%; }
+  #board { display: grid; gap: 3px; width: max-content; margin: auto; padding: 6px; background: var(--board-bg); border-radius: 12px; user-select: none; touch-action: manipulation; }
+  .cell { width: clamp(28px, 7.5vw, 38px); height: clamp(28px, 7.5vw, 38px); padding: 0; border: 1px solid var(--cell-border); border-radius: 6px; background: var(--cell-bg); box-shadow: var(--cell-shadow); font-weight: 800; font-size: clamp(14px, 4vw, 19px); line-height: 1; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: filter 0.08s ease, transform 0.08s ease; }
+  .cell:not(.open):hover { filter: brightness(1.05); }
+  .cell:not(.open):active { transform: translateY(1px); box-shadow: inset 0 1px 2px rgba(0,0,0,0.15); }
+  .cell.open { background: var(--open); border-color: var(--open-border); box-shadow: inset 0 1px 2px rgba(0,0,0,0.06); cursor: default; }
+  :root.dark .cell.open { box-shadow: inset 0 1px 2px rgba(0,0,0,0.3); }
+  .cell.flag { color: #ef4444; font-size: clamp(16px, 4.5vw, 21px); }
+  .cell.mine { background: #fee2e2; border-color: #fca5a5; color: #dc2626; }
+  :root.dark .cell.mine { background: #7f1d1d; border-color: #991b1b; color: #fecaca; }
+  .n1 { color: #2563eb; } .n2 { color: #15803d; } .n3 { color: #dc2626; } .n4 { color: #7c3aed; } .n5 { color: #92400e; } .n6 { color: #0e7490; } .n7 { color: #334155; } .n8 { color: #475569; }
+  :root.dark .n1 { color: #60a5fa; } :root.dark .n2 { color: #4ade80; } :root.dark .n3 { color: #f87171; } :root.dark .n4 { color: #c4b5fd; } :root.dark .n5 { color: #fbbf24; } :root.dark .n6 { color: #67e8f9; } :root.dark .n7 { color: #e2e8f0; } :root.dark .n8 { color: #94a3b8; }
+  .pause-cover { position: absolute; inset: 2px; display: grid; place-items: center; background: rgba(15,23,42,.85); color: #fff; font-size: 22px; font-weight: 700; z-index: 2; border-radius: 10px; backdrop-filter: blur(3px); }
+  .pause-cover[hidden] { display: none; }
+
+  /* Custom Settings Panel */
+  .customize { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: center; margin: 0 auto 16px; color: var(--muted); font-size: 14px; }
+  .customize[hidden] { display: none; }
+  .customize input { width: 68px; min-height: 38px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--ink); font: inherit; padding: 0 10px; }
+  .customize button { min-height: 38px; }
+
+  /* Status & Messages */
+  #message { min-height: 26px; margin: 14px 0 0; text-align: center; color: var(--muted); font-weight: 600; font-size: 14px; }
+  .tip { margin: 20px auto 0; max-width: 620px; color: var(--muted); text-align: center; font-size: 14px; line-height: 1.5; }
+
+  /* Analysis & Practice */
+  .analysis { max-width: 620px; margin: 18px auto 0; padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); text-align: center; box-shadow: var(--card-shadow); }
+  .analysis[hidden], .replay-controls[hidden], .practice[hidden] { display: none; }
+  .analysis h2 { margin: 0 0 8px; font-size: 19px; font-weight: 700; }
+  .analysis p { margin: 6px 0; color: var(--muted); font-size: 14px; }
+  .replay-controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 14px 0 0; }
+  .cell.review { outline: 3px solid #dc2626; outline-offset: -3px; }
+  .practice { max-width: 620px; margin: 0 auto 16px; padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); text-align: center; box-shadow: var(--card-shadow); }
+  .practice p { margin: 0 0 10px; color: var(--muted); }
+
+  /* Daily & Time-Attack Status */
+  .daily-status { max-width: 620px; margin: 0 auto 14px; padding: 10px 16px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); text-align: center; color: var(--muted); font-size: 14px; font-weight: 600; }
+  .daily-status[hidden] { display: none; }
+  .daily-levels { display: flex; justify-content: center; gap: 7px; flex-wrap: wrap; margin: 0 auto 14px; }
+  .daily-levels[hidden] { display: none; }
+  .daily-levels button[aria-pressed="true"] { background: var(--blue); border-color: var(--blue); color: #fff; }
+  .daily-history { max-width: 620px; margin: 0 auto 18px; display: grid; grid-template-columns: repeat(7, minmax(0,1fr)); gap: 6px; }
+  .daily-history[hidden] { display: none; }
+  .daily-day { padding: 8px 4px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); text-align: center; color: var(--muted); font-size: 12px; }
+  .daily-day strong { display: block; color: var(--ink); font-size: 13px; margin-bottom: 2px; }
+  .time-status { max-width: 620px; margin: 0 auto 16px; display: flex; justify-content: center; gap: 20px; padding: 10px 16px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); color: var(--muted); font-size: 14px; }
+  .time-status[hidden] { display: none; }
+  .time-status strong { color: var(--ink); }
+
+  /* Learn & Mode Guides */
+  .learn { max-width: 680px; margin: 32px auto 0; padding-top: 24px; border-top: 1px solid var(--line); text-align: center; }
+  .learn h2 { margin: 0 0 8px; font-size: 20px; font-weight: 700; }
+  .learn p { margin: 0 0 14px; color: var(--muted); font-size: 15px; }
+  .mode-guide { max-width: 680px; margin: 32px auto 0; padding-top: 24px; border-top: 1px solid var(--line); }
+  .mode-guide h2 { margin: 0 0 8px; font-size: 22px; font-weight: 700; }
+  .mode-guide h3 { margin: 20px 0 6px; font-size: 18px; font-weight: 700; }
+  .mode-guide p { margin: 0 0 12px; color: var(--muted); line-height: 1.6; }
+  .mode-guide a { color: var(--blue); font-weight: 700; }
+  .links { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+  .links a { color: var(--blue); font-weight: 600; text-decoration: none; padding: 6px 12px; border-radius: 8px; background: var(--panel); border: 1px solid var(--line); font-size: 14px; transition: all 0.15s ease; }
+  .links a:hover { background: rgba(37,99,235,0.08); border-color: var(--blue); }
+
+  @media (max-width: 520px) {
+    .site-nav { flex-direction: column; align-items: center; gap: 6px; padding: 10px 14px; position: static; }
+    .site-links { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; gap: 0; text-align: center; }
+    .site-links a { padding: 6px 4px; font-size: 13px; }
+    main { padding-top: 20px; }
+    .game-card { padding: 12px 8px; border-radius: 14px; }
+    .stats { gap: 8px; padding: 0; }
+    .stat { min-width: 84px; padding: 5px 8px; }
+    .stat strong { font-size: 16px; }
+    .face-btn { width: 38px; height: 38px; min-height: 38px; font-size: 20px; }
+    #mode { display: inline-block; }
+    .daily-history { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+  @media (max-width: 360px) {
+    #board { gap: 2px; padding: 4px; }
+    .cell { width: 26px; height: 26px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    button, select, .site-links a, .links a { transition: none; }
+  }
 </style>
 </head>
 <body>
@@ -114,15 +204,17 @@
   <div class="daily-levels" id="daily-levels" aria-label="Daily difficulty" hidden><button data-daily-level="beginner" aria-pressed="true">Beginner</button><button data-daily-level="intermediate" aria-pressed="false">Intermediate</button><button data-daily-level="expert" aria-pressed="false">Expert</button></div>
   <div class="daily-history" id="daily-history" aria-label="Last seven daily results" hidden></div>
   <div class="time-status" id="time-status" hidden><span>Score <strong id="time-score">0</strong></span><span>Boards <strong id="time-boards">0</strong></span><span>Mistakes <strong id="time-mistakes">0</strong></span></div>
-  <div class="stats"><div class="stat"><strong id="mines">10</strong><span>Mines left</span></div><div class="stat"><strong id="time">0</strong><span>Seconds</span></div></div>
-  <div class="customize" id="customize" aria-label="Custom board settings" hidden>
-    <label for="custom-width">Width</label><input id="custom-width" type="number" min="5" max="40" value="9">
-    <label for="custom-height">Height</label><input id="custom-height" type="number" min="5" max="30" value="9">
-    <label for="custom-mines">Mines</label><input id="custom-mines" type="number" min="1" value="10">
-    <button id="custom-game">Custom game</button>
+  <div class="game-card">
+    <div class="stats"><div class="stat"><span class="stat-icon" aria-hidden="true">💣</span><div class="stat-data"><strong id="mines">10</strong><span>Mines left</span></div></div><button class="face-btn" id="face-btn" aria-label="Reset game" title="Reset game">🙂</button><div class="stat"><span class="stat-icon" aria-hidden="true">⏱️</span><div class="stat-data"><strong id="time">0</strong><span>Seconds</span></div></div></div>
+    <div class="customize" id="customize" aria-label="Custom board settings" hidden>
+      <label for="custom-width">Width</label><input id="custom-width" type="number" min="5" max="40" value="9">
+      <label for="custom-height">Height</label><input id="custom-height" type="number" min="5" max="30" value="9">
+      <label for="custom-mines">Mines</label><input id="custom-mines" type="number" min="1" value="10">
+      <button id="custom-game">Custom game</button>
+    </div>
+    <div class="game-stage"><div class="game-wrap"><div id="board" aria-label="Minesweeper board"></div></div><div class="pause-cover" id="pause-cover" role="status" aria-live="polite" hidden>Game paused</div></div>
+    <p id="message" role="status">Click a square to start.</p>
   </div>
-  <div class="game-stage"><div class="game-wrap"><div id="board" aria-label="Minesweeper board"></div></div><div class="pause-cover" id="pause-cover" role="status" aria-live="polite" hidden>Game paused</div></div>
-  <p id="message" role="status">Click a square to start.</p>
   <section class="analysis" id="analysis" aria-labelledby="analysis-title" hidden><h2 id="analysis-title">Game analysis</h2><p id="analysis-summary"></p><p id="analysis-actions"></p><p><strong id="analysis-efficiency"></strong></p><button id="review" hidden>Review mistake</button> <button id="replay">Replay game</button> <button id="share">Share challenge</button></section>
   <div class="replay-controls" id="replay-controls" aria-label="Replay controls" hidden><button id="replay-prev">Previous</button><button id="replay-next">Next</button><button id="replay-play">Play</button><button id="replay-exit">Exit replay</button></div>
   <p class="tip">Desktop: click a number to open safe neighbors, right-click to flag. Mobile: switch between reveal and flag mode.</p>
@@ -146,7 +238,7 @@
 </main>
 <script>
 const levels={beginner:[9,9,10],intermediate:[16,16,40],expert:[30,16,99]};
-const board=document.querySelector('#board'), difficulty=document.querySelector('#difficulty'), minesEl=document.querySelector('#mines'), timeEl=document.querySelector('#time'), message=document.querySelector('#message'), modeBtn=document.querySelector('#mode'), pauseBtn=document.querySelector('#pause'), themeBtn=document.querySelector('#theme'), fullscreenBtn=document.querySelector('#fullscreen'), pauseCover=document.querySelector('#pause-cover'), customize=document.querySelector('#customize'), bestLabel=document.querySelector('#best-label'), shareBtn=document.querySelector('#share'), analysis=document.querySelector('#analysis'), analysisSummary=document.querySelector('#analysis-summary'), analysisActions=document.querySelector('#analysis-actions'), analysisEfficiency=document.querySelector('#analysis-efficiency'), replayControls=document.querySelector('#replay-controls'), replayPlay=document.querySelector('#replay-play'), reviewBtn=document.querySelector('#review'), practicePanel=document.querySelector('#practice-panel'), practiceTitle=document.querySelector('#practice-title'), practiceCopy=document.querySelector('#practice-copy'), dailyStatus=document.querySelector('#daily-status'), dailyLevels=document.querySelector('#daily-levels'), dailyHistory=document.querySelector('#daily-history'), timeStatus=document.querySelector('#time-status'), timeScoreEl=document.querySelector('#time-score'), timeBoardsEl=document.querySelector('#time-boards'), timeMistakesEl=document.querySelector('#time-mistakes');
+const board=document.querySelector('#board'), difficulty=document.querySelector('#difficulty'), minesEl=document.querySelector('#mines'), timeEl=document.querySelector('#time'), message=document.querySelector('#message'), faceBtn=document.querySelector('#face-btn'), modeBtn=document.querySelector('#mode'), pauseBtn=document.querySelector('#pause'), themeBtn=document.querySelector('#theme'), fullscreenBtn=document.querySelector('#fullscreen'), pauseCover=document.querySelector('#pause-cover'), customize=document.querySelector('#customize'), bestLabel=document.querySelector('#best-label'), shareBtn=document.querySelector('#share'), analysis=document.querySelector('#analysis'), analysisSummary=document.querySelector('#analysis-summary'), analysisActions=document.querySelector('#analysis-actions'), analysisEfficiency=document.querySelector('#analysis-efficiency'), replayControls=document.querySelector('#replay-controls'), replayPlay=document.querySelector('#replay-play'), reviewBtn=document.querySelector('#review'), practicePanel=document.querySelector('#practice-panel'), practiceTitle=document.querySelector('#practice-title'), practiceCopy=document.querySelector('#practice-copy'), dailyStatus=document.querySelector('#daily-status'), dailyLevels=document.querySelector('#daily-levels'), dailyHistory=document.querySelector('#daily-history'), timeStatus=document.querySelector('#time-status'), timeScoreEl=document.querySelector('#time-score'), timeBoardsEl=document.querySelector('#time-boards'), timeMistakesEl=document.querySelector('#time-mistakes');
 const customWidth=document.querySelector('#custom-width'), customHeight=document.querySelector('#custom-height'), customMines=document.querySelector('#custom-mines');
 const storageKey='endlessweep-stats',replayKey='endlessweep-replays';
 let width,height,mineCount,cells=[],started=false,ended=false,paused=false,flags=0,seconds=0,timer,mode='reveal',pressTimer,currentLevel='beginner',dailyDate=null,dailyDifficulty='beginner',gameSeed='',randomState=0,focused=0,firstClick=null,actions=[],startedAt=0,lastReplay=null,replayMode=false,replayStep=0,replayTimer,practiceMode=false,practiceIndex=0,practiceCompleted=false,zenMode=false,zenMistakes=0,noGuessMode=false,timeAttack=false,timeAttackLevel='beginner',timeScore=0,timeBoards=0,timeMistakes=0,timeRunActions=[];
@@ -168,13 +260,13 @@ function neighbors(i){const x=i%width,y=Math.floor(i/width),out=[];for(let dy=-1
 function makeSeed(){return Array.from(crypto.getRandomValues(new Uint32Array(2)),n=>n.toString(36)).join('-')}
 function seedRandom(seed){randomState=2166136261;for(const c of seed)randomState=Math.imul(randomState^c.charCodeAt(0),16777619)}
 function newGame(level=difficulty.value,seed=makeSeed(),preserveMode=false){if(level==='custom'){customize.hidden=false;return}abandon();if(!preserveMode){zenMode=false;timeAttack=false;noGuessMode=false}customize.hidden=true;dailyDate=null;currentLevel=level;gameSeed=seed;[width,height,mineCount]=levels[level];resetBoard()}
-function customGame(seed=makeSeed(),settings){abandon();zenMode=false;noGuessMode=false;const w=Math.max(5,Math.min(40,Number(settings?.width??customWidth.value)||9)),h=Math.max(5,Math.min(30,Number(settings?.height??customHeight.value)||9)),safeArea=Math.min(9,w*h-1),max=w*h-safeArea,m=Math.max(1,Math.min(max,Number(settings?.mines??customMines.value)||10));customWidth.value=w;customHeight.value=h;customMines.value=m;currentLevel='custom';difficulty.value='custom';gameSeed=seed;[width,height,mineCount]=[w,h,m];resetBoard()}
-function dailyGame(level=dailyDifficulty){dailyDifficulty=levels[level]?level:'beginner';dailyDate=new Date().toISOString().slice(0,10);newGame(dailyDifficulty,`daily-${dailyDate}-${dailyDifficulty}`);currentLevel='daily';message.textContent=`Daily ${dailyDifficulty} · ${dailyDate}`;updateBest();updateDailyStatus()}
-function zenGame(level='beginner'){zenMode=true;newGame(level,makeSeed(),true);currentLevel=`zen-${level}`;zenMistakes=0;message.textContent='Zen mode · Mines are revealed as mistakes, but the game continues.';updateBest()}
+function customGame(seed=makeSeed(),settings){abandon();zenMode=false;noGuessMode=false;timeAttack=false;dailyDate=null;const w=Math.max(5,Math.min(40,Number(settings?.width??customWidth.value)||9)),h=Math.max(5,Math.min(30,Number(settings?.height??customHeight.value)||9)),safeArea=Math.min(9,w*h-1),max=w*h-safeArea,m=Math.max(1,Math.min(max,Number(settings?.mines??customMines.value)||10));customWidth.value=w;customHeight.value=h;customMines.value=m;currentLevel='custom';difficulty.value='custom';gameSeed=seed;[width,height,mineCount]=[w,h,m];resetBoard()}
+function dailyGame(level=dailyDifficulty){const date=new Date().toISOString().slice(0,10);dailyDifficulty=levels[level]?level:'beginner';newGame(dailyDifficulty,`daily-${date}-${dailyDifficulty}`);dailyDate=date;difficulty.value=dailyDifficulty;currentLevel='daily';message.textContent=`Daily ${dailyDifficulty} · ${dailyDate}`;updateBest();updateDailyStatus()}
+function zenGame(level='beginner'){level=levels[level]?level:'beginner';newGame(level);difficulty.value=level;zenMode=true;currentLevel=`zen-${level}`;zenMistakes=0;message.textContent='Zen mode · Mines are revealed as mistakes, but the game continues.';updateBest()}
 function noGuessGame(level='beginner',seed=makeSeed()){level=levels[level]?level:'beginner';newGame(level,seed);difficulty.value=level;noGuessMode=true;currentLevel=`no-guess-${level}`;message.textContent='No Guess mode · Boards are verified before play. Generation may require a retry.';updateBest()}
-function restartGame(){if(noGuessMode||entryMode()==='no-guess')noGuessGame(difficulty.value);else newGame()}
-function timeAttackGame(level='beginner'){timeAttack=true;timeAttackLevel=['beginner','intermediate'].includes(level)?level:'beginner';timeScore=timeBoards=timeMistakes=0;timeRunActions=[];newGame(timeAttackLevel,makeSeed(),true);timeAttack=true;currentLevel=`time-attack-${timeAttackLevel}`;timeStatus.hidden=false;updateTimeStatus();timeEl.textContent=60;message.textContent='Click a square to start the 60-second run.';updateBest()}
-function resetBoard(){clearInterval(timer);clearInterval(replayTimer);replayMode=false;practiceMode=false;if(!zenMode)zenMistakes=0;cells=Array.from({length:width*height},()=>({mine:false,open:false,flag:false,count:0,mistake:false}));started=ended=paused=false;flags=seconds=focused=0;firstClick=null;actions=[];startedAt=0;lastReplay=null;mode='reveal';modeBtn.textContent='Mode: Reveal';pauseBtn.textContent='Pause';pauseBtn.setAttribute('aria-pressed','false');pauseCover.hidden=true;analysis.hidden=true;practicePanel.hidden=true;replayControls.hidden=true;document.querySelector('#replay').hidden=false;dailyStatus.hidden=dailyLevels.hidden=dailyHistory.hidden=true;timeStatus.hidden=!timeAttack;minesEl.textContent=mineCount;timeEl.textContent=timeAttack?60:0;message.textContent='Click a square to start.';buildBoard();updateBest()}
+function restartGame(){if(replayMode)return;if(difficulty.value==='custom'){customGame();return}if(currentLevel==='daily')dailyGame(difficulty.value);else if(noGuessMode)noGuessGame(difficulty.value);else if(zenMode)zenGame(difficulty.value);else if(timeAttack)timeAttackGame(difficulty.value);else newGame()}
+function timeAttackGame(level='beginner'){level=['beginner','intermediate'].includes(level)?level:'beginner';newGame(level);timeAttackLevel=level;difficulty.value=level;timeAttack=true;timeScore=timeBoards=timeMistakes=0;timeRunActions=[];currentLevel=`time-attack-${level}`;timeStatus.hidden=false;updateTimeStatus();timeEl.textContent=60;message.textContent='Click a square to start the 60-second run.';updateBest()}
+function resetBoard(){clearInterval(timer);clearInterval(replayTimer);replayMode=false;practiceMode=false;if(!zenMode)zenMistakes=0;cells=Array.from({length:width*height},()=>({mine:false,open:false,flag:false,count:0,mistake:false}));started=ended=paused=false;flags=seconds=focused=0;firstClick=null;actions=[];startedAt=0;lastReplay=null;mode='reveal';modeBtn.textContent='Mode: Reveal';pauseBtn.textContent='Pause';pauseBtn.setAttribute('aria-pressed','false');pauseCover.hidden=true;analysis.hidden=true;practicePanel.hidden=true;replayControls.hidden=true;document.querySelector('#replay').hidden=false;dailyStatus.hidden=dailyLevels.hidden=dailyHistory.hidden=true;timeStatus.hidden=!timeAttack;minesEl.textContent=mineCount;timeEl.textContent=timeAttack?60:0;if(faceBtn)faceBtn.textContent='🙂';message.textContent='Click a square to start.';buildBoard();updateBest()}
 function updateTimeStatus(){timeScoreEl.textContent=timeScore;timeBoardsEl.textContent=timeBoards;timeMistakesEl.textContent=timeMistakes}
 function buildBoard(){board.style.gridTemplateColumns=`repeat(${width}, auto)`;board.innerHTML='';cells.forEach((_,i)=>{const b=document.createElement('button');b.className='cell';b.setAttribute('aria-label',`Hidden square ${i+1}`);b.addEventListener('click',e=>{focused=i;if(b.dataset.longPressed){delete b.dataset.longPressed;e.preventDefault();return}if(practiceMode){practiceChoice(i);return}if(paused||replayMode)return;if(mode==='flag')toggleFlag(i);else if(cells[i].open)chord(i);else playerReveal(i)});b.addEventListener('contextmenu',e=>{e.preventDefault();if(practiceMode){const old=mode;mode='flag';practiceChoice(i);mode=old}else if(!paused&&!replayMode)toggleFlag(i)});b.addEventListener('pointerdown',e=>{if(e.pointerType==='touch'&&!paused&&!replayMode)pressTimer=setTimeout(()=>{toggleFlag(i);b.dataset.longPressed='true'},500)});b.addEventListener('pointerup',()=>clearTimeout(pressTimer));b.addEventListener('pointerleave',()=>clearTimeout(pressTimer));board.appendChild(b)})}
 function random(){randomState+=0x6D2B79F5;let n=randomState;n=Math.imul(n^n>>>15,n|1);n^=n+Math.imul(n^n>>>7,n|61);return((n^n>>>14)>>>0)/4294967296}
@@ -189,32 +281,32 @@ function chord(i){if(ended||paused||!cells[i].open||!cells[i].count)return;const
 function checkEnd(){if(timeAttack&&cells.filter(x=>x.open||x.mine).length===cells.length){timeBoards++;timeScore+=25;timeRunActions.push(...actions.splice(0));updateTimeStatus();nextTimeBoard()}else if(!timeAttack&&!zenMode&&cells.some(x=>x.open&&x.mine))finish(false);else if(!timeAttack&&cells.filter(x=>x.open||x.mine).length===cells.length)finish(true)}
 function nextTimeBoard(){const remaining=Math.max(0,60-seconds);gameSeed=makeSeed();cells=Array.from({length:width*height},()=>({mine:false,open:false,flag:false,count:0,mistake:false}));flags=0;firstClick=null;actions=[];board.innerHTML='';buildBoard();minesEl.textContent=mineCount;timeEl.textContent=remaining;message.textContent='Board cleared: +25 bonus. Start the next board.'}
 function finishTimeAttack(){if(ended)return;ended=true;clearInterval(timer);seconds=60;timeEl.textContent=0;track('game_completed',{result:'finished',seconds,score:timeScore});saveResult(timeBoards>0);message.textContent=`Time! Score ${timeScore} · ${timeBoards} board${timeBoards===1?'':'s'} cleared.`}
-function finish(won){if(ended)return;ended=true;clearInterval(timer);if(won){cells.forEach(x=>{if(x.mine&&!x.flag){x.flag=true;flags++}});message.textContent=zenMode?`Board cleared in ${seconds}s with ${zenMistakes} mistake${zenMistakes===1?'':'s'}.`:`You cleared the board in ${seconds} seconds!`}else{cells.forEach(x=>{if(x.mine)x.open=true});message.textContent='Boom. Try again.'}cells.forEach((_,i)=>render(i));track('game_completed',{result:won?'win':'loss',seconds,mistakes:zenMistakes});saveResult(won);updateDailyStatus()}
+function finish(won){if(ended)return;ended=true;clearInterval(timer);if(won){cells.forEach(x=>{if(x.mine&&!x.flag){x.flag=true;flags++}});message.textContent=zenMode?`Board cleared in ${seconds}s with ${zenMistakes} mistake${zenMistakes===1?'':'s'}.`:`You cleared the board in ${seconds} seconds!`}else{cells.forEach(x=>{if(x.mine)x.open=true});message.textContent='Boom. Try again.'}if(faceBtn)faceBtn.textContent=won?'😎':'😵';cells.forEach((_,i)=>render(i));track('game_completed',{result:won?'win':'loss',seconds,mistakes:zenMistakes});saveResult(won);updateDailyStatus()}
 function toggleFlag(i){if(ended||paused||replayMode||cells[i].open)return;if(!started&&!start(i))return;const c=cells[i];c.flag=!c.flag;flags+=c.flag?1:-1;record(c.flag?'flag':'unflag',i);minesEl.textContent=mineCount-flags;render(i)}
 function togglePause(){if(ended)return;paused=!paused;pauseBtn.textContent=paused?'Resume':'Pause';pauseBtn.setAttribute('aria-pressed',String(paused));pauseCover.hidden=!paused;message.textContent=paused?'Game paused.':'Game in progress.'}
 function showAnalysis(won){const c=counts();analysis.hidden=false;reviewBtn.hidden=won||zenMode||timeAttack;document.querySelector('#replay').hidden=timeAttack;analysisSummary.textContent=timeAttack?`Time Attack · ${timeScore} points · ${timeBoards} boards · ${timeMistakes} mistakes`:zenMode?`Zen complete · ${seconds}s · ${zenMistakes} mistake${zenMistakes===1?'':'s'}`:`${won?'Win':'Loss'} · ${seconds}s · ${actions.length} actions`;analysisActions.textContent=timeAttack?'60-second run complete':`Reveal ${c.reveal} · Flag ${c.flag} · Unflag ${c.unflag} · Chord ${c.chord}`;analysisEfficiency.textContent=timeAttack?'Safe squares score 1 point · Cleared boards add 25 · Mines subtract 5':`Endlessweep Efficiency: ${efficiency()}%`}
 function challengeUrl(){const level=currentLevel==='daily'?dailyDifficulty:currentLevel.replace(/^(no-guess|zen)-/,''),q=new URLSearchParams({seed:gameSeed,level:['beginner','intermediate','expert'].includes(level)?level:'custom'});if(noGuessMode)q.set('mode','no-guess');else if(zenMode)q.set('mode','zen');if(level==='custom'){q.set('width',width);q.set('height',height);q.set('mines',mineCount)}return `https://endlessweep.com/?${q}`}
 function shareResult(){const won=lastReplay?.won===true,timed=timeAttack,label=timed?`Time Attack ${timeAttackLevel}`:currentLevel==='daily'?`Daily ${dailyDifficulty[0].toUpperCase()+dailyDifficulty.slice(1)} Challenge ${dailyDate}`:currentLevel[0].toUpperCase()+currentLevel.slice(1),result=timed?`${timeScore} points · ${timeBoards} boards · 60 seconds`:currentLevel==='daily'?`${won?'Cleared':'Lost'} in ${seconds}s · ${loadStats().daily?.streak||0}-day streak`:`${seconds} seconds · ${width}x${height} · ${mineCount} mines`,streak=loadStats().daily?.streak||1,gridEmoji=timed?`\nScore: ${timeScore} points`:`\n${won?'Clear':ended?'Loss':'In progress'}${zenMode?` · ${zenMistakes} mistakes`:''}`,text=`Endlessweep ${label}\n${result}${gridEmoji}\n${timed?'Beat my score:':currentLevel==='daily'?'Play today’s board:':'Use the same first click to reproduce the board.'}\n${timed?`https://endlessweep.com/time-attack-minesweeper/?level=${timeAttackLevel}`:currentLevel==='daily'?`https://endlessweep.com/daily-minesweeper/?level=${dailyDifficulty}`:challengeUrl()}`;track('challenge_shared',{result:navigator.share?'native':'clipboard'});if(navigator.share)navigator.share({title:'Endlessweep challenge',text}).catch(()=>{});else navigator.clipboard.writeText(text).then(()=>message.textContent='Challenge copied.').catch(()=>message.textContent='Could not copy challenge.')}
-function setGameControls(disabled){[difficulty,document.querySelector('#new-game'),document.querySelector('#daily'),document.querySelector('#practice'),pauseBtn].forEach(el=>el.disabled=disabled);modeBtn.disabled=disabled&&!practiceMode}
-function beginReplay(replay=lastReplay,trackOpen=true){if(!replay)return;if(trackOpen)track('replay_opened');clearInterval(timer);clearInterval(replayTimer);lastReplay=replay;replayMode=true;replayStep=0;[width,height,mineCount]=[replay.width,replay.height,replay.mines];cells=Array.from({length:width*height},(_,i)=>({mine:replay.minesAt.includes(i),open:false,flag:false,count:0}));cells.forEach((c,i)=>c.count=neighbors(i).filter(n=>cells[n].mine).length);buildBoard();setGameControls(true);analysis.hidden=true;replayControls.hidden=false;replayPlay.textContent='Play';renderReplay()}
+function setGameControls(disabled){[difficulty,document.querySelector('#new-game'),document.querySelector('#daily'),document.querySelector('#practice'),faceBtn,pauseBtn].forEach(el=>{if(el)el.disabled=disabled});modeBtn.disabled=disabled&&!practiceMode}
+function beginReplay(replay=lastReplay,trackOpen=true){if(!replay)return;if(trackOpen)track('replay_opened');clearInterval(timer);clearInterval(replayTimer);lastReplay=replay;replayMode=true;replayStep=0;[width,height,mineCount]=[replay.width,replay.height,replay.mines];cells=Array.from({length:width*height},(_,i)=>({mine:replay.minesAt.includes(i),open:false,flag:false,count:0}));cells.forEach((c,i)=>c.count=neighbors(i).filter(n=>cells[n].mine).length);buildBoard();setGameControls(true);analysis.hidden=true;replayControls.hidden=false;replayPlay.textContent='Play';if(faceBtn)faceBtn.textContent='🙂';renderReplay()}
 function reviewMistake(){track('mistake_review_opened');beginReplay(lastReplay,false);seekReplay(Math.max(0,lastReplay.actions.length-1));const hit=lastReplay.actions.at(-1)?.i;if(hit!==undefined){board.children[hit].classList.add('review');message.textContent='Mistake review: the outlined square was a mine. Check its neighboring numbers before revealing it.'}}
 function replayAction(action){const c=cells[action.i];if(action.type==='flag')c.flag=true;else if(action.type==='unflag')c.flag=false;else if(action.type==='reveal')openReplay(action.i);else if(action.type==='chord')neighbors(action.i).filter(i=>!cells[i].open&&!cells[i].flag).forEach(openReplay)}
 function openReplay(i){const c=cells[i];if(!c||c.open||c.flag)return;c.open=true;if(!c.mine&&!c.count)neighbors(i).forEach(openReplay)}
 function renderReplay(){cells.forEach((_,i)=>render(i));flags=cells.filter(c=>c.flag).length;minesEl.textContent=mineCount-flags;const t=replayStep?lastReplay.actions[replayStep-1].t:0;timeEl.textContent=Math.floor(t/1000);message.textContent=`Replay ${replayStep} of ${lastReplay.actions.length}`}
 function seekReplay(step){replayStep=Math.max(0,Math.min(lastReplay.actions.length,step));cells.forEach(c=>{c.open=false;c.flag=false});lastReplay.actions.slice(0,replayStep).forEach(replayAction);renderReplay()}
 function playReplay(){if(replayTimer){clearInterval(replayTimer);replayTimer=null;replayPlay.textContent='Play';return}replayPlay.textContent='Pause';replayTimer=setInterval(()=>{seekReplay(replayStep+1);if(replayStep>=lastReplay.actions.length){clearInterval(replayTimer);replayTimer=null;replayPlay.textContent='Play'}},500)}
-function exitReplay(){clearInterval(replayTimer);replayTimer=null;setGameControls(false);replayControls.hidden=true;newGame()}
+function exitReplay(){clearInterval(replayTimer);replayTimer=null;setGameControls(false);replayControls.hidden=true;replayMode=false;restartGame()}
 const practices=[
   {name:'1-2-1 pattern',copy:'Flag the two outer covered squares. The middle covered square is safe.',values:['1','2','1'],mines:[0,2],safe:1},
   {name:'1-2-2-1 pattern',copy:'Flag the two middle covered squares. The outer covered squares are safe.',values:['1','2','2','1'],mines:[1,2],safe:0},
   {name:'2-1 edge pattern',copy:'At the edge, the square covered only by the 2 is a mine. The square shared with the 1 is safe.',values:['2','1'],mines:[0],safe:1}
 ];
-function practiceGame(){if(!practiceMode){abandon();track('practice_started')}practiceMode=true;practiceCompleted=false;replayMode=true;ended=false;mode='reveal';const p=practices[practiceIndex%practices.length];width=p.values.length;height=2;mineCount=p.mines.length;cells=Array.from({length:width*height},(_,i)=>({mine:i<width&&p.mines.includes(i),open:i>=width,flag:false,count:i>=width?Number(p.values[i-width]):0}));buildBoard();setGameControls(true);practicePanel.hidden=false;analysis.hidden=true;replayControls.hidden=true;practiceTitle.textContent=p.name;practiceCopy.textContent=p.copy;document.querySelector('#practice-mode').textContent='Mode: Reveal';minesEl.textContent=mineCount;timeEl.textContent='—';message.textContent='Flag mines or reveal a safe square.'}
+function practiceGame(){if(!practiceMode){abandon();track('practice_started')}practiceMode=true;practiceCompleted=false;replayMode=true;ended=false;mode='reveal';const p=practices[practiceIndex%practices.length];width=p.values.length;height=2;mineCount=p.mines.length;cells=Array.from({length:width*height},(_,i)=>({mine:i<width&&p.mines.includes(i),open:i>=width,flag:false,count:i>=width?Number(p.values[i-width]):0}));buildBoard();setGameControls(true);practicePanel.hidden=false;analysis.hidden=true;replayControls.hidden=true;practiceTitle.textContent=p.name;practiceCopy.textContent=p.copy;document.querySelector('#practice-mode').textContent='Mode: Reveal';minesEl.textContent=mineCount;timeEl.textContent='—';if(faceBtn)faceBtn.textContent='🙂';message.textContent='Flag mines or reveal a safe square.'}
 function practiceChoice(i){const p=practices[practiceIndex%practices.length];if(i>=width)return;const correct=(mode==='flag'&&p.mines.includes(i))||(mode==='reveal'&&i===p.safe);message.textContent=correct?`Correct. ${p.copy}`:`Not quite. ${p.copy}`;if(correct){if(!practiceCompleted){track('practice_completed',{result:p.name});practiceCompleted=true}cells[i][mode==='flag'?'flag':'open']=true;render(i)}}
 function exitPractice(){practiceMode=false;replayMode=false;setGameControls(false);newGame()}
 function loadShared(){const q=new URLSearchParams(location.search),modeParam=entryMode(),replayId=q.get('replay'),saved=replayId&&loadReplays().find(r=>r.id===replayId);setPageMode(modeParam);if(saved){beginReplay(saved);return}if(modeParam==='no-guess'){const level=['beginner','intermediate','expert'].includes(q.get('level'))?q.get('level'):'beginner';const seed=q.get('seed');if(seed!==null&&!/^[A-Za-z0-9_-]{1,80}$/.test(seed)){difficulty.value='beginner';newGame('beginner');return}difficulty.value=level;noGuessGame(level,seed||makeSeed());return}if(modeParam==='unblocked'){const level=['beginner','intermediate','expert'].includes(q.get('level'))?q.get('level'):'beginner';difficulty.value=level;newGame(level);return}if(modeParam==='time-attack'){const level=['beginner','intermediate'].includes(q.get('level'))?q.get('level'):'beginner';difficulty.value=level;timeAttackGame(level);return}if(modeParam==='daily'){dailyGame(levels[q.get('level')]?q.get('level'):'beginner');return}if(modeParam==='zen'){const level=levels[q.get('level')]?q.get('level'):'beginner';difficulty.value=level;zenGame(level);return}if(modeParam==='custom'&&!q.get('seed')){difficulty.value='custom';newGame('custom');return}const seed=q.get('seed'),level=q.get('level');if(!seed&&!level){newGame();return}if(!seed||!/^[A-Za-z0-9_-]{1,80}$/.test(seed)){difficulty.value='beginner';newGame('beginner');return}if(levels[level]){difficulty.value=level;newGame(level,seed);message.textContent='Challenge mode. Use the same first click to reproduce the board.';return}if(level==='custom'){const w=Number(q.get('width')),h=Number(q.get('height')),m=Number(q.get('mines')),max=w*h-Math.min(9,w*h-1);if(Number.isInteger(w)&&w>=5&&w<=40&&Number.isInteger(h)&&h>=5&&h<=30&&Number.isInteger(m)&&m>=1&&m<=max){customGame(seed,{width:w,height:h,mines:m});message.textContent='Challenge mode. Use the same first click to reproduce the board.';return}}difficulty.value='beginner';newGame('beginner')}
 dailyLevels.addEventListener('click',e=>{const level=e.target.dataset.dailyLevel;if(level)dailyGame(level)});
-board.addEventListener('keydown',e=>{if(['INPUT','SELECT'].includes(e.target.tagName)||replayMode)return;const x=focused%width,y=Math.floor(focused/width);if(e.key==='ArrowLeft')focused=y*width+Math.max(0,x-1);else if(e.key==='ArrowRight')focused=y*width+Math.min(width-1,x+1);else if(e.key==='ArrowUp')focused=Math.max(0,y-1)*width+x;else if(e.key==='ArrowDown')focused=Math.min(height-1,y+1)*width+x;else if(e.key.toLowerCase()==='f'){e.preventDefault();toggleFlag(focused)}else if(e.key==='Enter'||e.key===' '){e.preventDefault();cells[focused].open?chord(focused):playerReveal(focused)}else return;e.preventDefault();board.children[focused].focus()});document.addEventListener('keydown',e=>{if(['INPUT','SELECT'].includes(e.target.tagName)||replayMode)return;if(e.key.toLowerCase()==='n')restartGame();if(e.key.toLowerCase()==='p')togglePause()});modeBtn.addEventListener('click',()=>{if(replayMode&&!practiceMode)return;mode=mode==='reveal'?'flag':'reveal';modeBtn.textContent=`Mode: ${mode[0].toUpperCase()+mode.slice(1)}`});difficulty.addEventListener('change',()=>difficulty.value==='custom'?customize.hidden=false:restartGame());document.querySelector('#new-game').addEventListener('click',restartGame);document.querySelector('#daily').addEventListener('click',dailyGame);document.querySelector('#custom-game').addEventListener('click',()=>customGame());pauseBtn.addEventListener('click',togglePause);themeBtn.addEventListener('click',()=>setTheme(!document.documentElement.classList.contains('dark')));fullscreenBtn.addEventListener('click',()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen());shareBtn.addEventListener('click',shareResult);reviewBtn.addEventListener('click',reviewMistake);document.querySelector('#replay').addEventListener('click',()=>beginReplay());document.querySelector('#replay-prev').addEventListener('click',()=>seekReplay(replayStep-1));document.querySelector('#replay-next').addEventListener('click',()=>seekReplay(replayStep+1));replayPlay.addEventListener('click',playReplay);document.querySelector('#replay-exit').addEventListener('click',exitReplay);document.querySelector('#practice-mode').addEventListener('click',e=>{mode=mode==='reveal'?'flag':'reveal';e.currentTarget.textContent=`Mode: ${mode[0].toUpperCase()+mode.slice(1)}`});document.querySelector('#practice-next').addEventListener('click',()=>{practiceIndex++;practiceGame()});document.querySelector('#practice-exit').addEventListener('click',exitPractice);setTheme(localStorage.getItem('endlessweep-theme')==='dark');customize.hidden=true;loadShared();
+board.addEventListener('keydown',e=>{if(['INPUT','SELECT'].includes(e.target.tagName)||replayMode)return;const x=focused%width,y=Math.floor(focused/width);if(e.key==='ArrowLeft')focused=y*width+Math.max(0,x-1);else if(e.key==='ArrowRight')focused=y*width+Math.min(width-1,x+1);else if(e.key==='ArrowUp')focused=Math.max(0,y-1)*width+x;else if(e.key==='ArrowDown')focused=Math.min(height-1,y+1)*width+x;else if(e.key.toLowerCase()==='f'){e.preventDefault();toggleFlag(focused)}else if(e.key==='Enter'||e.key===' '){e.preventDefault();cells[focused].open?chord(focused):playerReveal(focused)}else return;e.preventDefault();board.children[focused].focus()});document.addEventListener('keydown',e=>{if(['INPUT','SELECT'].includes(e.target.tagName)||replayMode)return;if(e.key.toLowerCase()==='n')restartGame();if(e.key.toLowerCase()==='p')togglePause()});modeBtn.addEventListener('click',()=>{if(replayMode&&!practiceMode)return;mode=mode==='reveal'?'flag':'reveal';modeBtn.textContent=`Mode: ${mode[0].toUpperCase()+mode.slice(1)}`});difficulty.addEventListener('change',()=>difficulty.value==='custom'?customize.hidden=false:restartGame());document.querySelector('#new-game').addEventListener('click',restartGame);if(faceBtn)faceBtn.addEventListener('click',restartGame);board.addEventListener('pointerdown',e=>{if(!ended&&!paused&&faceBtn&&e.target.classList.contains('cell')&&!e.target.classList.contains('open'))faceBtn.textContent='😮'});window.addEventListener('pointerup',()=>{if(!ended&&!paused&&faceBtn)faceBtn.textContent='🙂'});document.querySelector('#daily').addEventListener('click',dailyGame);document.querySelector('#custom-game').addEventListener('click',()=>customGame());pauseBtn.addEventListener('click',togglePause);themeBtn.addEventListener('click',()=>setTheme(!document.documentElement.classList.contains('dark')));fullscreenBtn.addEventListener('click',()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen());shareBtn.addEventListener('click',shareResult);reviewBtn.addEventListener('click',reviewMistake);document.querySelector('#replay').addEventListener('click',()=>beginReplay());document.querySelector('#replay-prev').addEventListener('click',()=>seekReplay(replayStep-1));document.querySelector('#replay-next').addEventListener('click',()=>seekReplay(replayStep+1));replayPlay.addEventListener('click',playReplay);document.querySelector('#replay-exit').addEventListener('click',exitReplay);document.querySelector('#practice-mode').addEventListener('click',e=>{mode=mode==='reveal'?'flag':'reveal';e.currentTarget.textContent=`Mode: ${mode[0].toUpperCase()+mode.slice(1)}`});document.querySelector('#practice-next').addEventListener('click',()=>{practiceIndex++;practiceGame()});document.querySelector('#practice-exit').addEventListener('click',exitPractice);setTheme(localStorage.getItem('endlessweep-theme')==='dark');customize.hidden=true;loadShared();
 </script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"VideoGame","name":"Free Minesweeper Online","url":"https://endlessweep.com/","description":"Play free Minesweeper online in Beginner, Intermediate, or Expert mode on desktop or mobile.","genre":"Puzzle","gamePlatform":["Web browser","Mobile browser"],"inLanguage":"en"}
