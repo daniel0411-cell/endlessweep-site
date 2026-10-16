@@ -26,6 +26,9 @@ let shared='';ctx.navigator={clipboard:{writeText:text=>{shared=text;return Prom
 vm.runInContext(`let lastReplay={won:false},seconds=12,zenMistakes=3,timeAttackLevel='beginner',dailyDate='2026-10-15',loadStats=()=>({});track=()=>{};${funcs(['shareResult'])}
 currentLevel='daily';ended=true;shareResult();`,ctx);
 assert(shared.includes('Lost in 12s'));assert(!shared.includes('Clear · 0'));
+assert(shared.includes('⬛'));
+vm.runInContext("currentLevel='daily';ended=true;lastReplay={won:true};shareResult()",ctx);
+assert(shared.includes('🟩🟩🟩🟩🟩'));
 vm.runInContext("currentLevel='zen-beginner';zenMode=true;lastReplay={won:true};shareResult()",ctx);
 assert(shared.includes('Clear · 3 mistakes'));
 class Element{
@@ -50,4 +53,8 @@ els.get('#grid').children[0].handlers.keydown({key:'Delete',preventDefault(){}})
 assert.equal(vm.runInContext('curGrid[0][0]',solver),null);
 vm.runInContext('renderGrid([{r:0,c:0,mineProb:0,safeProb:100,safe:false,mine:false}])',solver);
 assert(!els.get('#grid').children[0].innerHTML.includes('SAFE'));
-console.log('New mode, share, generation and solver behavior checks passed');
+els.get('#btn-col-add').handlers.click();
+assert.equal(vm.runInContext('curGrid[0].length',solver),5);
+els.get('#btn-col-sub').handlers.click();
+assert.equal(vm.runInContext('curGrid[0].length',solver),4);
+console.log('New mode, share, generation, emoji tiles, and solver behavior checks passed');

@@ -1,16 +1,302 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Practice Minesweeper logic with 15 interactive puzzles, streaks, accuracy, retries, and clear explanations."><link rel="canonical" href="https://endlessweep.com/minesweeper-practice/"><title>Minesweeper Practice - Interactive Logic Puzzles</title>
-<style>:root{--ink:#172033;--muted:#5f6f82;--line:#cfd9e5;--blue:#2563eb;--panel:#fff;--page:#eef3f8;--open:#e7edf4;--covered:#9aa8b8;--green:#15803d;--red:#dc2626}*{box-sizing:border-box}body{margin:0;background:var(--page);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}.top{min-height:56px;padding:0 max(14px,calc((100% - 900px)/2));display:flex;align-items:center;justify-content:space-between;background:#fff;border-bottom:1px solid var(--line)}.top a{color:var(--ink);font-weight:800;text-decoration:none}.top nav{display:flex;gap:16px}.top nav a{color:var(--muted);font-size:14px}main{width:min(100% - 28px,900px);margin:auto;padding:30px 0 54px}header{text-align:center}h1{margin:0 0 7px;font-size:clamp(28px,6vw,42px)}header p{margin:0;color:var(--muted)}.levels,.score,.actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:18px 0}.levels button,.actions button{border:1px solid var(--line);border-radius:6px;padding:9px 13px;background:#fff;color:var(--ink);font-weight:700;cursor:pointer}.levels button[aria-pressed="true"],.actions .primary{background:var(--blue);border-color:var(--blue);color:#fff}.score span{min-width:120px;padding:9px 12px;border:1px solid var(--line);border-radius:6px;background:#fff;text-align:center}.trainer{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:24px}.prompt{text-align:center}.prompt h2{margin:0 0 5px}.prompt p{margin:0;color:var(--muted)}.mode{display:flex;justify-content:center;gap:8px;margin:16px 0}.mode button{border:1px solid var(--line);border-radius:6px;padding:8px 13px;background:#fff;font-weight:700}.mode button[aria-pressed="true"]{background:#172033;color:#fff}.board{display:grid;grid-template-columns:repeat(var(--cols),42px);justify-content:center;gap:2px;margin:18px auto}.cell{display:grid;place-items:center;width:42px;height:42px;border:1px solid #8797a8;background:var(--covered);color:#fff;font:800 18px/1 ui-monospace,monospace;cursor:pointer}.cell.open{background:var(--open);cursor:default}.cell.n1{color:#2563eb}.cell.n2{color:#15803d}.cell.n3{color:#dc2626}.cell.correct{box-shadow:inset 0 0 0 3px var(--green)}.cell.wrong{box-shadow:inset 0 0 0 3px var(--red)}.feedback{min-height:74px;padding:13px 15px;background:#f5f8fb;border-left:3px solid var(--blue)}.feedback strong{display:block;margin-bottom:3px}.footer-links{text-align:center;margin-top:24px}.footer-links a{color:var(--blue);font-weight:700;margin:0 8px}@media(max-width:520px){.top{padding:10px 12px;align-items:flex-start}.top nav{gap:8px;flex-wrap:wrap;justify-content:flex-end}.trainer{padding:16px}.board{grid-template-columns:repeat(var(--cols),min(40px,calc((100vw - 62px)/var(--cols))))}.cell{width:min(40px,calc((100vw - 62px)/var(--cols)));height:min(40px,calc((100vw - 62px)/var(--cols)));font-size:16px}.score span{min-width:95px}}</style></head>
-<body><div class="top"><a href="/">Endlessweep</a><nav><a href="/">Play</a><a href="/minesweeper-guides/">Guides</a><a href="/minesweeper-patterns/">Patterns</a></nav></div><main><header><h1>Minesweeper Practice</h1><p>Make one proven move, read the explanation, and build a reliable solving streak.</p></header><div class="levels" aria-label="Practice level"><button data-level="Basic" aria-pressed="true">Basic</button><button data-level="Intermediate" aria-pressed="false">Intermediate</button><button data-level="Advanced" aria-pressed="false">Advanced</button></div><div class="score"><span>Streak: <strong id="streak">0</strong></span><span>Accuracy: <strong id="accuracy">—</strong></span><span>Completed: <strong id="completed">0/15</strong></span></div><section class="trainer"><div class="prompt"><h2 id="title"></h2><p id="instruction"></p></div><div class="mode"><button id="reveal" aria-pressed="true">Reveal safe</button><button id="flag" aria-pressed="false">Flag mine</button></div><div class="board" id="board" aria-label="Practice board"></div><div class="feedback" id="feedback" role="status"><strong>Choose a move</strong>Select Reveal safe or Flag mine, then click one covered square.</div><div class="actions"><button class="primary" id="next">Next puzzle</button><button id="retry">Retry mistakes</button><button id="reset">Reset progress</button></div></section><div class="footer-links"><a href="/minesweeper-logic/">Logic Guide</a><a href="/minesweeper-patterns/">Pattern Guide</a><a href="/minesweeper-cheat-sheet/">Cheat Sheet</a></div></main>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Practice Minesweeper logic with 30 interactive puzzles, streaks, accuracy, retries, and clear explanations.">
+<link rel="canonical" href="https://endlessweep.com/minesweeper-practice/">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#2563eb">
+<meta property="og:site_name" content="Endlessweep">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Minesweeper Practice &amp; Tactics Training - Endlessweep">
+<meta property="og:description" content="Master 30 interactive Minesweeper logic puzzles, train 1-2-1 and subset patterns, and earn your Logic Master certificate.">
+<meta property="og:url" content="https://endlessweep.com/minesweeper-practice/">
+<meta property="og:image" content="https://endlessweep.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Minesweeper Practice &amp; Tactics Training">
+<meta name="twitter:description" content="Master 30 interactive Minesweeper logic puzzles, train 1-2-1 and subset patterns, and earn your Logic Master certificate.">
+<meta name="twitter:image" content="https://endlessweep.com/og-image.png">
+<title>Minesweeper Practice &amp; Tactics Training - Endlessweep</title>
+<style>
+:root{--ink:#172033;--muted:#5f6f82;--line:#cfd9e5;--blue:#2563eb;--panel:#fff;--page:#eef3f8;--open:#e7edf4;--covered:#9aa8b8;--green:#15803d;--red:#dc2626}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+.top{min-height:56px;padding:0 max(14px,calc((100% - 900px)/2));display:flex;align-items:center;justify-content:space-between;background:#fff;border-bottom:1px solid var(--line)}
+.top a{color:var(--ink);font-weight:800;text-decoration:none}
+.top nav{display:flex;gap:16px}
+.top nav a{color:var(--muted);font-size:14px;text-decoration:none;font-weight:600}
+.top nav a:hover{color:var(--blue)}
+main{width:min(100% - 28px,900px);margin:auto;padding:30px 0 54px}
+header{text-align:center}
+h1{margin:0 0 7px;font-size:clamp(28px,6vw,42px)}
+header p{margin:0;color:var(--muted)}
+.levels,.score,.actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:18px 0}
+.levels button,.actions button{border:1px solid var(--line);border-radius:6px;padding:9px 13px;background:#fff;color:var(--ink);font-weight:700;cursor:pointer}
+.levels button[aria-pressed="true"],.actions .primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.score span{min-width:120px;padding:9px 12px;border:1px solid var(--line);border-radius:6px;background:#fff;text-align:center}
+.trainer{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:24px}
+.prompt{text-align:center}
+.prompt h2{margin:0 0 5px}
+.prompt p{margin:0;color:var(--muted)}
+.mode{display:flex;justify-content:center;gap:8px;margin:16px 0}
+.mode button{border:1px solid var(--line);border-radius:6px;padding:8px 13px;background:#fff;font-weight:700;cursor:pointer}
+.mode button[aria-pressed="true"]{background:#172033;color:#fff}
+.board{display:grid;grid-template-columns:repeat(var(--cols),42px);justify-content:center;gap:2px;margin:18px auto}
+.cell{display:grid;place-items:center;width:42px;height:42px;border:1px solid #8797a8;background:var(--covered);color:#fff;font:800 18px/1 ui-monospace,monospace;cursor:pointer}
+.cell.open{background:var(--open);cursor:default}
+.cell.n1{color:#2563eb}.cell.n2{color:#15803d}.cell.n3{color:#dc2626}.cell.n4{color:#7c3aed}
+.cell.correct{box-shadow:inset 0 0 0 3px var(--green);background:#dcfce7}
+.cell.wrong{box-shadow:inset 0 0 0 3px var(--red);background:#fee2e2}
+.feedback{min-height:74px;padding:13px 15px;background:#f5f8fb;border-left:3px solid var(--blue);border-radius:0 6px 6px 0}
+.feedback strong{display:block;margin-bottom:3px}
+.cert-card{margin-top:24px;background:#f0fdf4;border:2px solid #86efac;border-radius:12px;padding:24px;text-align:center}
+.cert-badge{font-size:42px;margin-bottom:6px}
+.cert-card h2{margin:0 0 6px;color:#166534;font-size:24px}
+.cert-card p{margin:4px 0 16px;color:#15803d}
+.cert-card button{padding:10px 20px;border-radius:6px;border:none;background:#16a34a;color:#fff;font-weight:700;cursor:pointer}
+.footer-links{text-align:center;margin-top:24px}
+.footer-links a{color:var(--blue);font-weight:700;margin:0 8px;text-decoration:none}
+@media(max-width:520px){
+  .top{padding:10px 12px;align-items:flex-start}
+  .top nav{gap:8px;flex-wrap:wrap;justify-content:flex-end}
+  .trainer{padding:16px}
+  .board{grid-template-columns:repeat(var(--cols),min(40px,calc((100vw - 62px)/var(--cols))))}
+  .cell{width:min(40px,calc((100vw - 62px)/var(--cols)));height:min(40px,calc((100vw - 62px)/var(--cols)));font-size:16px}
+  .score span{min-width:95px}
+}
+</style>
+</head>
+<body>
+<div class="top">
+  <a href="/">Endlessweep</a>
+  <nav aria-label="Navigation">
+    <a href="/">Play</a>
+    <a href="/no-guess-minesweeper/">No-Guess</a>
+    <a href="/minesweeper-solver/">Solver</a>
+    <a href="/minesweeper-guides/">Guides</a>
+  </nav>
+</div>
+<main>
+  <header>
+    <h1>Minesweeper Practice &amp; Tactics</h1>
+    <p>Train pattern recognition, make verified moves, and build a reliable solving streak across 30 logic puzzles.</p>
+  </header>
+
+  <div class="levels" aria-label="Practice level">
+    <button data-level="Basic" aria-pressed="true">Basic (1-10)</button>
+    <button data-level="Intermediate" aria-pressed="false">Intermediate (11-20)</button>
+    <button data-level="Advanced" aria-pressed="false">Advanced (21-30)</button>
+  </div>
+
+  <div class="score">
+    <span>Streak: <strong id="streak">0</strong></span>
+    <span>Accuracy: <strong id="accuracy">—</strong></span>
+    <span>Completed: <strong id="completed">0/30</strong></span>
+  </div>
+
+  <section class="trainer">
+    <div class="prompt">
+      <h2 id="title"></h2>
+      <p id="instruction"></p>
+    </div>
+    <div class="mode">
+      <button id="reveal" aria-pressed="true">Reveal safe</button>
+      <button id="flag" aria-pressed="false">Flag mine</button>
+    </div>
+    <div class="board" id="board" aria-label="Practice board"></div>
+    <div class="feedback" id="feedback" role="status">
+      <strong>Choose a move</strong>Select Reveal safe or Flag mine, then click one covered square.
+    </div>
+    <div class="actions">
+      <button class="primary" id="next">Next puzzle</button>
+      <button id="hint">💡 Hint</button>
+      <button id="retry">Retry mistakes</button>
+      <button id="reset">Reset progress</button>
+    </div>
+  </section>
+
+  <section class="cert-card" id="cert-card" hidden>
+    <div class="cert-badge" aria-hidden="true">🏆</div>
+    <h2>Certificate of Logic Mastery</h2>
+    <p>Congratulations! You have completed all 30 logic puzzles with verified constraint deductions.</p>
+    <button type="button" id="btn-share-cert">Share Certificate</button>
+  </section>
+
+  <div class="footer-links">
+    <a href="/minesweeper-logic/">Logic Guide</a>
+    <a href="/minesweeper-patterns/">Pattern Guide</a>
+    <a href="/minesweeper-cheat-sheet/">Cheat Sheet</a>
+    <a href="/minesweeper-solver/">Screenshot Solver</a>
+  </div>
+</main>
+
 <script>
 const puzzles=[
-{level:'Basic',title:'Satisfied 1',clues:['1','1','0'],action:'reveal',answer:1,explain:'The first clue already has its one mine accounted for, so its other covered neighbor is safe.'},{level:'Basic',title:'Only candidate for 1',clues:['1','0','0'],action:'flag',answer:1,explain:'The 1 has one remaining candidate, so that square is a mine.'},{level:'Basic',title:'Satisfied 2',clues:['2','2','1'],action:'reveal',answer:2,explain:'Both mines required by the 2 are accounted for. The remaining square is safe.'},{level:'Basic',title:'Edge 1',clues:['1','0'],action:'flag',answer:0,explain:'At the edge, the 1 has only one covered candidate. It must be a mine.'},{level:'Basic',title:'Zero clue',clues:['0','0','1'],action:'reveal',answer:0,explain:'A zero touches no mines, so its covered neighbor is safe.'},
-{level:'Intermediate',title:'1-2-1 center',clues:['1','2','1'],action:'reveal',answer:1,explain:'The outer 1s force the outer mines. The center is safe.'},{level:'Intermediate',title:'1-2-1 outer mine',clues:['1','2','1'],action:'flag',answer:0,explain:'In the complete three-candidate 1-2-1 strip, both outer candidates are mines.'},{level:'Intermediate',title:'1-2-2-1 outer safe',clues:['1','2','2','1'],action:'reveal',answer:0,explain:'The middle candidates satisfy both 2s, leaving the outer candidate safe.'},{level:'Intermediate',title:'1-2-2-1 middle mine',clues:['1','2','2','1'],action:'flag',answer:2,explain:'The standard 1-2-2-1 strip forces both middle candidates to be mines.'},{level:'Intermediate',title:'2-1 edge subtraction',clues:['2','1','0'],action:'flag',answer:0,explain:'The 2 sees one extra candidate. Set subtraction proves it is a mine.'},
-{level:'Advanced',title:'Equal requirement extra safe',clues:['1','1','0','0'],action:'reveal',answer:2,explain:'Both overlapping clues need one mine, so the larger set’s extra candidate is safe.'},{level:'Advanced',title:'Higher requirement extra mine',clues:['1','2','0','0'],action:'flag',answer:2,explain:'The larger clue needs one more mine. Its unique extra candidate is mined.'},{level:'Advanced',title:'2-1-1 outer deduction',clues:['2','1','1','0'],action:'flag',answer:0,explain:'Subtract the 1 group from the 2. The unique outer candidate supplies the extra mine.'},{level:'Advanced',title:'2-1-1-2 middle safety',clues:['2','1','1','2'],action:'reveal',answer:1,explain:'The outer candidates satisfy the 2s, leaving the middle candidates safe.'},{level:'Advanced',title:'Corner 1-2-1',clues:['1','2','1'],action:'reveal',answer:1,explain:'The corner limits the strip to three candidates, forcing outer mines and a safe center.'}
+{level:'Basic',title:'Satisfied 1',clues:['1','1','0'],action:'reveal',answer:1,explain:'The first clue already has its one mine accounted for, so its other covered neighbor is safe.'},
+{level:'Basic',title:'Only candidate for 1',clues:['1','0','0'],action:'flag',answer:1,explain:'The 1 has one remaining candidate, so that square is a mine.'},
+{level:'Basic',title:'Satisfied 2',clues:['2','2','1'],action:'reveal',answer:2,explain:'Both mines required by the 2 are accounted for. The remaining square is safe.'},
+{level:'Basic',title:'Edge 1',clues:['1','0'],action:'flag',answer:0,explain:'At the edge, the 1 has only one covered candidate. It must be a mine.'},
+{level:'Basic',title:'Zero clue',clues:['0','0','1'],action:'reveal',answer:0,explain:'A zero touches no mines, so its covered neighbor is safe.'},
+{level:'Basic',title:'Edge 2 candidate',clues:['2','1'],action:'flag',answer:0,explain:'The 2 at the edge needs two mines from its available candidates.'},
+{level:'Basic',title:'Satisfied 3',clues:['3','3','0'],action:'reveal',answer:2,explain:'All three required mines are identified, so the adjacent covered cell is safe.'},
+{level:'Basic',title:'Isolated candidate',clues:['1','0','1'],action:'flag',answer:0,explain:'The 1 on the left touches only one covered candidate, which must be a mine.'},
+{level:'Basic',title:'Corner single',clues:['1'],action:'flag',answer:0,explain:'In a single corner square, the clue directly forces the mine.'},
+{level:'Basic',title:'Safe boundary',clues:['0','1','1'],action:'reveal',answer:0,explain:'The 0 proves all neighboring covered squares are safe to reveal.'},
+
+{level:'Intermediate',title:'1-2-1 center',clues:['1','2','1'],action:'reveal',answer:1,explain:'The outer 1s force the outer mines. The center is safe.'},
+{level:'Intermediate',title:'1-2-1 outer mine',clues:['1','2','1'],action:'flag',answer:0,explain:'In the complete three-candidate 1-2-1 strip, both outer candidates are mines.'},
+{level:'Intermediate',title:'1-2-2-1 outer safe',clues:['1','2','2','1'],action:'reveal',answer:0,explain:'The middle candidates satisfy both 2s, leaving the outer candidate safe.'},
+{level:'Intermediate',title:'1-2-2-1 middle mine',clues:['1','2','2','1'],action:'flag',answer:2,explain:'The standard 1-2-2-1 strip forces both middle candidates to be mines.'},
+{level:'Intermediate',title:'2-1 edge subtraction',clues:['2','1','0'],action:'flag',answer:0,explain:'The 2 sees one extra candidate. Set subtraction proves it is a mine.'},
+{level:'Intermediate',title:'1-1 wall reduction',clues:['1','1','0'],action:'reveal',answer:2,explain:'The first 1 contains the candidate of the second 1, proving the third square safe.'},
+{level:'Intermediate',title:'1-3-1 center mine',clues:['1','3','1'],action:'flag',answer:1,explain:'The 3 between two 1s forces all three covered candidates to be mines.'},
+{level:'Intermediate',title:'2-2 wall subtraction',clues:['2','2','0'],action:'flag',answer:1,explain:'Subtractive logic between overlapping 2s proves the middle candidate is a mine.'},
+{level:'Intermediate',title:'1-2-1 right mine',clues:['1','2','1'],action:'flag',answer:2,explain:'In the 1-2-1 pattern, the rightmost candidate is guaranteed to be a mine.'},
+{level:'Intermediate',title:'1-2-2-1 right outer safe',clues:['1','2','2','1'],action:'reveal',answer:3,explain:'The symmetric 1-2-2-1 rule leaves the right outer square completely safe.'},
+
+{level:'Advanced',title:'Equal requirement extra safe',clues:['1','1','0','0'],action:'reveal',answer:2,explain:'Both overlapping clues need one mine, so the larger set’s extra candidate is safe.'},
+{level:'Advanced',title:'Higher requirement extra mine',clues:['1','2','0','0'],action:'flag',answer:2,explain:'The larger clue needs one more mine. Its unique extra candidate is mined.'},
+{level:'Advanced',title:'2-1-1 outer deduction',clues:['2','1','1','0'],action:'flag',answer:0,explain:'Subtract the 1 group from the 2. The unique outer candidate supplies the extra mine.'},
+{level:'Advanced',title:'2-1-1-2 middle safety',clues:['2','1','1','2'],action:'reveal',answer:1,explain:'The outer candidates satisfy the 2s, leaving the middle candidates safe.'},
+{level:'Advanced',title:'Corner 1-2-1',clues:['1','2','1'],action:'reveal',answer:1,explain:'The corner limits the strip to three candidates, forcing outer mines and a safe center.'},
+{level:'Advanced',title:'3-1 reduction',clues:['3','1','0','0'],action:'flag',answer:0,explain:'The 3 has candidates outside the 1. Those unique candidates are guaranteed mines.'},
+{level:'Advanced',title:'2-2-1 cascade',clues:['2','2','1','0'],action:'reveal',answer:3,explain:'Chained deduction across 2-2-1 resolves the outer boundary safely.'},
+{level:'Advanced',title:'1-2-3 triple edge',clues:['1','2','3','0'],action:'flag',answer:2,explain:'Ascending edge constraints force the highest neighbor to be a mine.'},
+{level:'Advanced',title:'2-1-2 symmetric center',clues:['2','1','2','0'],action:'reveal',answer:1,explain:'Symmetric outer 2s absorb the mine requirements, leaving the center safe.'},
+{level:'Advanced',title:'Mine count elimination',clues:['1','1','1','0'],action:'reveal',answer:3,explain:'Global remaining mine constraint eliminates candidate ambiguity.'}
 ];
-const key='endlessweep-practice',board=document.querySelector('#board'),feedback=document.querySelector('#feedback'),title=document.querySelector('#title'),instruction=document.querySelector('#instruction'),streakEl=document.querySelector('#streak'),accuracy=document.querySelector('#accuracy'),completed=document.querySelector('#completed');let level='Basic',index=0,mode='reveal',answered=false,state=load();
-function load(){try{return JSON.parse(localStorage.getItem(key))||{attempts:0,correct:0,streak:0,done:[],mistakes:[]}}catch{return{attempts:0,correct:0,streak:0,done:[],mistakes:[]}}}function save(){localStorage.setItem(key,JSON.stringify(state))}function track(event,result=''){navigator.sendBeacon?.('/api/events',new Blob([JSON.stringify({event,mode:'practice',device:matchMedia('(pointer:coarse)').matches?'touch':'pointer',result})],{type:'application/json'}))}function list(){return puzzles.map((p,i)=>[p,i]).filter(([p])=>p.level===level)}function current(){return list()[index%list().length]}
-function render(){const[p,i]=current();answered=false;title.textContent=`${p.level} · ${p.title}`;instruction.textContent=p.action==='flag'?'Flag a proven mine.':'Reveal a proven safe square.';board.style.setProperty('--cols',p.clues.length);board.innerHTML='';p.clues.forEach((_,n)=>{const cell=document.createElement('button');cell.className='cell';cell.textContent='■';cell.setAttribute('aria-label',`Covered square ${n+1}`);cell.addEventListener('click',()=>choose(n,cell,i));board.appendChild(cell)});p.clues.forEach(clue=>{const cell=document.createElement('span');cell.className=`cell open n${clue}`;cell.textContent=clue;board.appendChild(cell)});feedback.innerHTML='<strong>Choose a move</strong>Select Reveal safe or Flag mine, then click one covered square.';update()}
-function choose(n,cell,puzzleIndex){if(answered)return;const p=puzzles[puzzleIndex];state.attempts++;answered=true;const ok=mode===p.action&&n===p.answer;if(ok){state.correct++;state.streak++;state.done=[...new Set([...state.done,puzzleIndex])];state.mistakes=state.mistakes.filter(i=>i!==puzzleIndex);cell.classList.add('correct');feedback.innerHTML=`<strong>Correct.</strong>${p.explain}`;track('practice_completed',p.title)}else{state.streak=0;state.mistakes=[...new Set([...state.mistakes,puzzleIndex])];cell.classList.add('wrong');feedback.innerHTML=`<strong>Not quite.</strong>${p.explain}`}save();update()}function update(){streakEl.textContent=state.streak;accuracy.textContent=state.attempts?`${Math.round(state.correct/state.attempts*100)}%`:'—';completed.textContent=`${state.done.length}/${puzzles.length}`}function setMode(next){mode=next;for(const id of ['reveal','flag'])document.querySelector(`#${id}`).setAttribute('aria-pressed',String(id===mode))}
-document.querySelectorAll('[data-level]').forEach(button=>button.addEventListener('click',()=>{level=button.dataset.level;index=0;document.querySelectorAll('[data-level]').forEach(x=>x.setAttribute('aria-pressed',String(x===button)));render()}));document.querySelector('#reveal').addEventListener('click',()=>setMode('reveal'));document.querySelector('#flag').addEventListener('click',()=>setMode('flag'));document.querySelector('#next').addEventListener('click',()=>{index++;render()});document.querySelector('#retry').addEventListener('click',()=>{if(!state.mistakes.length){feedback.innerHTML='<strong>No mistakes to retry.</strong>Complete more puzzles or reset your progress.';return}const target=state.mistakes[0],p=puzzles[target];level=p.level;index=puzzles.filter(x=>x.level===level).findIndex(x=>x===p);document.querySelectorAll('[data-level]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.level===level)));render()});document.querySelector('#reset').addEventListener('click',()=>{if(confirm('Reset all practice progress?')){localStorage.removeItem(key);state=load();render()}});track('practice_started','training-center');render();
-</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"LearningResource","name":"Minesweeper Practice","url":"https://endlessweep.com/minesweeper-practice/","description":"Interactive Minesweeper logic exercises with explanations and local progress.","learningResourceType":"Practice","inLanguage":"en"}</script></body></html>
+
+const key='endlessweep-practice',board=document.querySelector('#board'),feedback=document.querySelector('#feedback'),title=document.querySelector('#title'),instruction=document.querySelector('#instruction'),streakEl=document.querySelector('#streak'),accuracy=document.querySelector('#accuracy'),completed=document.querySelector('#completed'),certCard=document.querySelector('#cert-card');
+let level='Basic',index=0,mode='reveal',answered=false,state=load();
+
+function load(){try{return JSON.parse(localStorage.getItem(key))||{attempts:0,correct:0,streak:0,done:[],mistakes:[]}}catch{return{attempts:0,correct:0,streak:0,done:[],mistakes:[]}}}
+function save(){localStorage.setItem(key,JSON.stringify(state))}
+function track(event,result=''){navigator.sendBeacon?.('/api/events',new Blob([JSON.stringify({event,mode:'practice',device:matchMedia('(pointer:coarse)').matches?'touch':'pointer',result})],{type:'application/json'}))}
+function list(){return puzzles.map((p,i)=>[p,i]).filter(([p])=>p.level===level)}
+function current(){return list()[index%list().length]}
+
+function render(){
+  const[p,i]=current();
+  answered=false;
+  title.textContent=`${p.level} · ${p.title}`;
+  instruction.textContent=p.action==='flag'?'Flag a proven mine.':'Reveal a proven safe square.';
+  board.style.setProperty('--cols',p.clues.length);
+  board.innerHTML='';
+  p.clues.forEach((_,n)=>{
+    const cell=document.createElement('button');
+    cell.className='cell';
+    cell.textContent='■';
+    cell.setAttribute('aria-label',`Covered square ${n+1}`);
+    cell.addEventListener('click',()=>choose(n,cell,i));
+    board.appendChild(cell);
+  });
+  p.clues.forEach(clue=>{
+    const cell=document.createElement('span');
+    cell.className=`cell open n${clue}`;
+    cell.textContent=clue;
+    board.appendChild(cell);
+  });
+  feedback.innerHTML='<strong>Choose a move</strong>Select Reveal safe or Flag mine, then click one covered square.';
+  update();
+}
+
+function choose(n,cell,puzzleIndex){
+  if(answered)return;
+  const p=puzzles[puzzleIndex];
+  state.attempts++;
+  answered=true;
+  const ok=mode===p.action&&n===p.answer;
+  if(ok){
+    state.correct++;
+    state.streak++;
+    state.done=[...new Set([...state.done,puzzleIndex])];
+    state.mistakes=state.mistakes.filter(i=>i!==puzzleIndex);
+    cell.classList.add('correct');
+    cell.textContent=mode==='flag'?'🚩':'';
+    feedback.innerHTML=`<strong>Correct.</strong>${p.explain}`;
+    track('practice_completed',p.title);
+  }else{
+    state.streak=0;
+    state.mistakes=[...new Set([...state.mistakes,puzzleIndex])];
+    cell.classList.add('wrong');
+    feedback.innerHTML=`<strong>Not quite.</strong>${p.explain}`;
+  }
+  save();
+  update();
+}
+
+function update(){
+  streakEl.textContent=state.streak;
+  accuracy.textContent=state.attempts?`${Math.round(state.correct/state.attempts*100)}%`:'—';
+  completed.textContent=`${state.done.length}/${puzzles.length}`;
+  if(certCard)certCard.hidden=state.done.length<puzzles.length;
+}
+
+function setMode(next){
+  mode=next;
+  for(const id of ['reveal','flag'])document.querySelector(`#${id}`).setAttribute('aria-pressed',String(id===mode));
+}
+
+document.querySelectorAll('[data-level]').forEach(button=>button.addEventListener('click',()=>{
+  level=button.dataset.level;
+  index=0;
+  document.querySelectorAll('[data-level]').forEach(x=>x.setAttribute('aria-pressed',String(x===button)));
+  render();
+}));
+
+document.querySelector('#reveal').addEventListener('click',()=>setMode('reveal'));
+document.querySelector('#flag').addEventListener('click',()=>setMode('flag'));
+document.querySelector('#next').addEventListener('click',()=>{index++;render()});
+const hintBtn=document.querySelector('#hint');
+if(hintBtn){
+  hintBtn.addEventListener('click',()=>{
+    const[p]=current();
+    feedback.innerHTML=`<strong>💡 Deduction Hint:</strong> ${p.explain.split('.')[0]}.`;
+  });
+}
+document.querySelector('#retry').addEventListener('click',()=>{
+  if(!state.mistakes.length){
+    feedback.innerHTML='<strong>No mistakes to retry.</strong>Complete more puzzles or reset your progress.';
+    return;
+  }
+  const target=state.mistakes[0],p=puzzles[target];
+  level=p.level;
+  index=puzzles.filter(x=>x.level===level).findIndex(x=>x===p);
+  document.querySelectorAll('[data-level]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.level===level)));
+  render();
+});
+document.querySelector('#reset').addEventListener('click',()=>{
+  if(confirm('Reset all practice progress?')){
+    localStorage.removeItem(key);
+    state=load();
+    render();
+  }
+});
+const shareCertBtn=document.querySelector('#btn-share-cert');
+if(shareCertBtn){
+  shareCertBtn.addEventListener('click',()=>{
+    const text=`🎓 Endlessweep Minesweeper Logic Master\nCompleted all 30/30 tactics puzzles with ${Math.round(state.correct/state.attempts*100)}% accuracy!\nBest streak: ${state.streak} 🔥\nTrain your logic: https://endlessweep.com/minesweeper-practice/`;
+    if(navigator.share)navigator.share({title:'Endlessweep Logic Master',text}).catch(()=>{});
+    else navigator.clipboard?.writeText(text).then(()=>{feedback.innerHTML='<strong>Certificate copied!</strong> Share with friends.'}).catch(()=>{});
+  });
+}
+
+track('practice_started','training-center');
+render();
+</script>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"LearningResource",
+  "name":"Minesweeper Practice & Tactics",
+  "url":"https://endlessweep.com/minesweeper-practice/",
+  "description":"Interactive Minesweeper logic exercises with 30 puzzles, explanations, and local progress.",
+  "learningResourceType":"Practice",
+  "inLanguage":"en"
+}
+</script>
+</body>
+</html>

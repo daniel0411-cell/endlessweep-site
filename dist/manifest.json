@@ -1,0 +1,17 @@
+{
+  "name": "Endlessweep - Pure Logic Minesweeper",
+  "short_name": "Endlessweep",
+  "start_url": "/?source=pwa",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#2563eb",
+  "description": "Play free, fast, 100% no-guess Minesweeper, daily challenge puzzles, and smart solver.",
+  "icons": [
+    {
+      "src": "/og-image.png",
+      "sizes": "1200x630",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -3,21 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Explore local mine probabilities and deductions with a free Minesweeper calculator. Results assume a closed grid and equally weighted valid arrangements.">
+<meta name="description" content="Paste a Minesweeper screenshot or explore local mine probabilities with our free calculator. Detects numbers, safe squares, and 50/50 guesses automatically.">
 <link rel="canonical" href="https://endlessweep.com/minesweeper-solver/">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#2563eb">
 <meta property="og:site_name" content="Endlessweep">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Minesweeper Solver &amp; Probability Calculator - Endlessweep">
-<meta property="og:description" content="Explore local mine probabilities and deductions with a free Minesweeper calculator. Results assume a closed grid and equally weighted valid arrangements.">
+<meta property="og:title" content="Minesweeper Solver &amp; Screenshot Calculator - Endlessweep">
+<meta property="og:description" content="Paste a Minesweeper screenshot (Ctrl+V) or input your grid to calculate exact mine probabilities and find guaranteed safe moves.">
 <meta property="og:url" content="https://endlessweep.com/minesweeper-solver/">
 <meta property="og:image" content="https://endlessweep.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Minesweeper Solver &amp; Probability Calculator">
-<meta name="twitter:description" content="Explore local mine probabilities and deductions with a free Minesweeper calculator. Results assume a closed grid and equally weighted valid arrangements.">
+<meta name="twitter:title" content="Minesweeper Solver &amp; Screenshot Calculator">
+<meta name="twitter:description" content="Paste a Minesweeper screenshot (Ctrl+V) or input your grid to calculate exact mine probabilities and find guaranteed safe moves.">
 <meta name="twitter:image" content="https://endlessweep.com/og-image.png">
-<title>Minesweeper Solver &amp; Probability Calculator - Endlessweep</title>
+<title>Minesweeper Solver &amp; Screenshot Calculator - Endlessweep</title>
 <style>
 :root{--ink:#182230;--muted:#64748b;--line:#d8e0ea;--blue:#2563eb;--panel:#fff;--page:#eef3f8;--green:#15803d;--red:#dc2626;--amber:#d97706}
 *{box-sizing:border-box}
@@ -32,6 +34,21 @@ header{text-align:center;margin-bottom:24px}
 h1{margin:0 0 8px;font-size:clamp(28px,5vw,42px)}
 header p{margin:0;color:var(--muted)}
 .solver-card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:24px;margin-bottom:24px}
+
+/* Paste & Drop Zone */
+.paste-zone{border:2px dashed var(--line);border-radius:10px;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;background:#f8fafc;cursor:pointer;margin-bottom:20px;transition:all .18s ease}
+.paste-zone:hover,.paste-zone.dragover,.paste-zone:focus{border-color:var(--blue);background:rgba(37,99,235,0.05);outline:none}
+.paste-content{display:flex;align-items:center;gap:14px;text-align:left}
+.paste-icon{font-size:32px;line-height:1}
+.paste-text strong{display:block;font-size:15px;color:var(--ink);margin-bottom:2px}
+.paste-text span{font-size:13px;color:var(--muted)}
+.btn-upload{padding:8px 16px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink);font:inherit;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
+.btn-upload:hover{border-color:var(--blue);color:var(--blue)}
+.scan-status{padding:10px 16px;border-radius:6px;font-size:14px;font-weight:600;margin-bottom:18px;text-align:center;background:#dcfce7;color:#166534;border:1px solid #bbf7d0}
+.grid-size-controls{display:flex;align-items:center;justify-content:center;gap:10px;margin:12px 0 16px;font-size:14px;font-weight:600;color:var(--muted)}
+.grid-size-controls button{padding:4px 10px;border:1px solid var(--line);border-radius:4px;background:var(--panel);font:inherit;font-weight:700;cursor:pointer}
+.grid-size-controls button:hover{border-color:var(--blue);color:var(--blue)}
+
 .presets{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:20px}
 .presets button{padding:8px 13px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink);font:inherit;font-size:14px;font-weight:600;cursor:pointer}
 .presets button:hover{border-color:var(--blue)}
@@ -63,7 +80,7 @@ header p{margin:0;color:var(--muted)}
 .faq-sec{margin-top:24px;border-top:1px solid var(--line);padding-top:20px}
 footer{text-align:center;margin-top:28px;color:var(--muted);font-size:14px}
 footer a{color:var(--blue);font-weight:700;text-decoration:none;margin:0 8px}
-@media(max-width:560px){.cell-btn{width:40px;height:40px;font-size:15px}}
+@media(max-width:560px){.cell-btn{width:40px;height:40px;font-size:15px}.paste-zone{flex-direction:column;align-items:flex-start}}
 </style>
 </head>
 <body>
@@ -78,17 +95,42 @@ footer a{color:var(--blue);font-weight:700;text-decoration:none;margin:0 8px}
 </div>
 <main>
   <header>
-    <h1>Minesweeper Solver &amp; Probability Calculator</h1>
-    <p>Explore local equal-weight mine probabilities and logical deductions. Results assume a closed grid and correct flags.</p>
+    <h1>Minesweeper Solver &amp; Screenshot Calculator</h1>
+    <p>Paste a screenshot or input a board to calculate mine probabilities and safe moves. Supports Google, Windows, and Minesweeper.online.</p>
   </header>
 
   <section class="solver-card">
+    <div class="paste-zone" id="paste-zone" tabindex="0" role="button" aria-label="Paste screenshot or drag and drop image">
+      <div class="paste-content">
+        <span class="paste-icon" aria-hidden="true">📸</span>
+        <div class="paste-text">
+          <strong>Paste Screenshot (Ctrl+V / Cmd+V) or Drop Image</strong>
+          <span>Auto-extracts numbers and covered squares from your game</span>
+        </div>
+      </div>
+      <button type="button" class="btn-upload" id="btn-upload">Browse Image</button>
+      <input type="file" id="file-input" accept="image/*" style="display:none">
+    </div>
+
+    <div class="scan-status" id="scan-status" hidden></div>
+
     <div class="presets" aria-label="Common Dilemma Presets">
       <button data-preset="fifty" aria-pressed="true">Classic 50/50</button>
       <button data-preset="p121" aria-pressed="false">1-2-1 Pattern</button>
       <button data-preset="p1221" aria-pressed="false">1-2-2-1 Pattern</button>
       <button data-preset="corner" aria-pressed="false">2-1 Corner</button>
       <button data-preset="custom" aria-pressed="false">Custom 4x3</button>
+    </div>
+
+    <div class="grid-size-controls" id="size-controls" aria-label="Adjust grid dimensions">
+      <span>Size:</span>
+      <button type="button" id="btn-col-sub" title="Remove column">&minus; Col</button>
+      <span id="col-count">2</span>
+      <button type="button" id="btn-col-add" title="Add column">+ Col</button>
+      <span style="margin:0 4px">×</span>
+      <button type="button" id="btn-row-sub" title="Remove row">&minus; Row</button>
+      <span id="row-count">2</span>
+      <button type="button" id="btn-row-add" title="Add row">+ Row</button>
     </div>
 
     <p class="instructions">Click any cell to cycle values: Covered (■) &rarr; Clues (1, 2, 3...) &rarr; Flag (🚩). Focus a cell and press 0-8 for a clue, F for a flag, or Delete for covered.</p>
@@ -124,6 +166,8 @@ footer a{color:var(--blue);font-weight:700;text-decoration:none;margin:0 8px}
 
     <div class="faq-sec">
       <h2>Frequently Asked Questions</h2>
+      <h3>How do I solve from a screenshot?</h3>
+      <p>Simply take a screenshot of your Minesweeper board (e.g. Win+Shift+S on Windows or Cmd+Shift+4 on Mac), return to this page, and press <strong>Ctrl+V</strong> (or Cmd+V). The computer vision algorithm automatically aligns the grid and identifies numbers.</p>
       <h3>How does this solver calculate mine probabilities?</h3>
       <p>The solver enumerates arrangements satisfying the entered clues, treating the rectangle as closed and flags as correct. Percentages weight these local arrangements equally; outside clues and the global mine total are not included.</p>
       <h3>What is the difference between this solver and No Guess mode?</h3>
@@ -153,9 +197,13 @@ let curGrid=JSON.parse(JSON.stringify(presets.fifty));
 const gridEl=document.querySelector('#grid');
 const summaryEl=document.querySelector('#summary-text');
 const listEl=document.querySelector('#deductions-list');
+const colCountEl=document.querySelector('#col-count');
+const rowCountEl=document.querySelector('#row-count');
 
 function renderGrid(probs=null){
   const h=curGrid.length,w=curGrid[0].length;
+  if(colCountEl)colCountEl.textContent=w;
+  if(rowCountEl)rowCountEl.textContent=h;
   gridEl.style.gridTemplateColumns=`repeat(${w}, 1fr)`;
   gridEl.innerHTML='';
   for(let r=0;r<h;r++){
@@ -282,6 +330,121 @@ function calculate(){
   });
 }
 
+function parseImage(img){
+  try{
+    const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d'),maxDim=800;
+    let w=img.width,h=img.height;
+    if(w>maxDim||h>maxDim){
+      if(w>h){h=Math.round(h*maxDim/w);w=maxDim}
+      else{w=Math.round(w*maxDim/h);h=maxDim}
+    }
+    canvas.width=w;canvas.height=h;
+    ctx.drawImage(img,0,0,w,h);
+    const data=ctx.getImageData(0,0,w,h).data;
+    const dx=new Float32Array(w),dy=new Float32Array(h);
+    for(let y=1;y<h-1;y++){
+      for(let x=1;x<w-1;x++){
+        const idx=(y*w+x)*4;
+        const lum=data[idx]*0.299+data[idx+1]*0.587+data[idx+2]*0.114;
+        const rLum=data[idx+4]*0.299+data[idx+5]*0.587+data[idx+6]*0.114;
+        const dLum=data[((y+1)*w+x)*4]*0.299+data[((y+1)*w+x)*4+1]*0.587+data[((y+1)*w+x)*4+2]*0.114;
+        dx[x]+=Math.abs(rLum-lum);
+        dy[y]+=Math.abs(dLum-lum);
+      }
+    }
+    let bestPitch=32,maxScore=-1;
+    for(let s=16;s<=75;s++){
+      let score=0,count=0;
+      for(let x=0;x+s<w;x++){score+=dx[x]*dx[x+s];count++}
+      for(let y=0;y+s<h;y++){score+=dy[y]*dy[y+s];count++}
+      const norm=count?score/count:0;
+      if(norm>maxScore){maxScore=norm;bestPitch=s}
+    }
+    let bestX0=0,maxXVal=-1;
+    for(let x0=0;x0<bestPitch;x0++){
+      let sum=0;
+      for(let x=x0;x<w;x+=bestPitch)sum+=dx[x];
+      if(sum>maxXVal){maxXVal=sum;bestX0=x0}
+    }
+    let bestY0=0,maxYVal=-1;
+    for(let y0=0;y0<bestPitch;y0++){
+      let sum=0;
+      for(let y=y0;y<h;y+=bestPitch)sum+=dy[y];
+      if(sum>maxYVal){maxYVal=sum;bestY0=y0}
+    }
+    const cols=Math.max(2,Math.min(8,Math.floor((w-bestX0)/bestPitch)));
+    const rows=Math.max(2,Math.min(8,Math.floor((h-bestY0)/bestPitch)));
+    const newGrid=[];
+    for(let r=0;r<rows;r++){
+      const rowArr=[];
+      for(let c=0;c<cols;c++){
+        const cx1=Math.round(bestX0+c*bestPitch+bestPitch*0.2);
+        const cx2=Math.round(bestX0+(c+1)*bestPitch-bestPitch*0.2);
+        const cy1=Math.round(bestY0+r*bestPitch+bestPitch*0.2);
+        const cy2=Math.round(bestY0+(r+1)*bestPitch-bestPitch*0.2);
+        let redFlag=0,flagpole=0,blue1=0,green2=0,red3=0,purple4=0,maroon5=0,teal6=0,dark7=0;
+        for(let y=cy1;y<cy2;y++){
+          for(let x=cx1;x<cx2;x++){
+            if(x<0||x>=w||y<0||y>=h)continue;
+            const idx=(y*w+x)*4;
+            const cr=data[idx],cg=data[idx+1],cb=data[idx+2];
+            if(cr>140&&cg<75&&cb<75)redFlag++;
+            if(cr<65&&cg<65&&cb<65&&y>(cy1+cy2)/2)flagpole++;
+            if(cb>110&&cb>cr+25&&cb>cg+15)blue1++;
+            if(cg>85&&cg>cr+20&&cg>cb+10)green2++;
+            if(cr>140&&cr>cg+40&&cr>cb+40)red3++;
+            if(cb>75&&(cr>40||cb>cg+25)&&cg<80)purple4++;
+            if(cr>85&&cg<50&&cb<50&&cr<160)maroon5++;
+            if(cg>85&&cb>85&&cr<70)teal6++;
+            if(cr<55&&cg<55&&cb<55)dark7++;
+          }
+        }
+        let cellVal=null;
+        if(redFlag>6&&flagpole>3)cellVal=-1;
+        else if(blue1>6)cellVal=1;
+        else if(green2>6)cellVal=2;
+        else if(red3>6)cellVal=3;
+        else if(purple4>6)cellVal=4;
+        else if(maroon5>6)cellVal=5;
+        else if(teal6>6)cellVal=6;
+        else if(dark7>10)cellVal=7;
+        else{
+          let tlLum=0,brLum=0,bCount=0;
+          for(let k=0;k<Math.floor(bestPitch*0.8);k++){
+            const tx=bestX0+c*bestPitch+k,ty=bestY0+r*bestPitch+2;
+            const bx=bestX0+(c+1)*bestPitch-2,by=bestY0+(r+1)*bestPitch-k;
+            if(tx<w&&ty<h&&bx<w&&by<h&&bx>=0&&by>=0){
+              const tidx=(ty*w+tx)*4,bidx=(by*w+bx)*4;
+              tlLum+=(data[tidx]+data[tidx+1]+data[tidx+2])/3;
+              brLum+=(data[bidx]+data[bidx+1]+data[bidx+2])/3;
+              bCount++;
+            }
+          }
+          const diff=bCount?(tlLum-brLum)/bCount:0;
+          cellVal=diff>20?null:0;
+        }
+        rowArr.push(cellVal);
+      }
+      newGrid.push(rowArr);
+    }
+    curGrid=newGrid;
+    renderGrid();
+    calculate();
+    const scanStatus=document.querySelector('#scan-status');
+    if(scanStatus){
+      scanStatus.hidden=false;
+      scanStatus.textContent=`✅ Auto-extracted ${cols}×${rows} grid from image (${bestPitch}px cell size). Review below or click squares to adjust.`;
+    }
+  }catch(err){
+    const scanStatus=document.querySelector('#scan-status');
+    if(scanStatus){
+      scanStatus.hidden=false;
+      scanStatus.textContent='Could not detect grid pattern. Please crop closer to the puzzle or enter squares manually.';
+      scanStatus.style.background='#fee2e2';scanStatus.style.color='#991b1b';scanStatus.style.borderColor='#fca5a5';
+    }
+  }
+}
+
 document.querySelectorAll('[data-preset]').forEach(btn=>{
   btn.addEventListener('click',()=>{
     document.querySelectorAll('[data-preset]').forEach(b=>b.setAttribute('aria-pressed','false'));
@@ -299,6 +462,70 @@ document.querySelector('#btn-reset').addEventListener('click',()=>{
   clearResults();
 });
 
+const btnColAdd=document.querySelector('#btn-col-add'),btnColSub=document.querySelector('#btn-col-sub');
+const btnRowAdd=document.querySelector('#btn-row-add'),btnRowSub=document.querySelector('#btn-row-sub');
+if(btnColAdd)btnColAdd.addEventListener('click',()=>{if(curGrid[0].length<12){curGrid.forEach(r=>r.push(null));renderGrid();clearResults();calculate()}});
+if(btnColSub)btnColSub.addEventListener('click',()=>{if(curGrid[0].length>2){curGrid.forEach(r=>r.pop());renderGrid();clearResults();calculate()}});
+if(btnRowAdd)btnRowAdd.addEventListener('click',()=>{if(curGrid.length<12){curGrid.push(Array(curGrid[0].length).fill(null));renderGrid();clearResults();calculate()}});
+if(btnRowSub)btnRowSub.addEventListener('click',()=>{if(curGrid.length>2){curGrid.pop();renderGrid();clearResults();calculate()}});
+
+if(typeof window!=='undefined'){
+  window.addEventListener('paste',e=>{
+    const items=(e.clipboardData||e.originalEvent?.clipboardData)?.items;
+    if(!items)return;
+    for(const item of items){
+      if(item.type.indexOf('image')!==-1){
+        const blob=item.getAsFile();
+        const reader=new FileReader();
+        reader.onload=ev=>{
+          const img=new Image();
+          img.onload=()=>parseImage(img);
+          img.src=ev.target.result;
+        };
+        reader.readAsDataURL(blob);
+        break;
+      }
+    }
+  });
+  const dropZone=document.querySelector('#paste-zone');
+  const fileInput=document.querySelector('#file-input');
+  const btnUpload=document.querySelector('#btn-upload');
+  if(btnUpload&&fileInput){
+    btnUpload.addEventListener('click',e=>{e.stopPropagation();fileInput.click()});
+    fileInput.addEventListener('change',e=>{
+      const file=e.target.files?.[0];
+      if(file){
+        const reader=new FileReader();
+        reader.onload=ev=>{
+          const img=new Image();
+          img.onload=()=>parseImage(img);
+          img.src=ev.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+  if(dropZone){
+    dropZone.addEventListener('click',()=>fileInput?.click());
+    dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('dragover')});
+    dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('dragover'));
+    dropZone.addEventListener('drop',e=>{
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      const file=e.dataTransfer?.files?.[0];
+      if(file&&file.type.startsWith('image/')){
+        const reader=new FileReader();
+        reader.onload=ev=>{
+          const img=new Image();
+          img.onload=()=>parseImage(img);
+          img.src=ev.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+}
+
 renderGrid();
 calculate();
 </script>
@@ -309,11 +536,11 @@ calculate();
   "@graph": [
     {
       "@type": "WebApplication",
-      "name": "Minesweeper Solver & Probability Calculator",
+      "name": "Minesweeper Solver & Screenshot Calculator",
       "url": "https://endlessweep.com/minesweeper-solver/",
       "applicationCategory": "GameApplication",
       "operatingSystem": "Any",
-      "description": "Explore local mine probabilities and deductions with a free Minesweeper calculator. Results assume a closed grid and equally weighted valid arrangements.",
+      "description": "Paste a Minesweeper screenshot or explore local mine probabilities with our free calculator. Detects numbers, safe squares, and 50/50 guesses automatically.",
       "inLanguage": "en"
     },
     {
@@ -326,6 +553,14 @@ calculate();
     {
       "@type": "FAQPage",
       "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I solve from a screenshot?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Simply take a screenshot of your Minesweeper board, return to this page, and press Ctrl+V. The computer vision algorithm automatically aligns the grid and identifies numbers."
+          }
+        },
         {
           "@type": "Question",
           "name": "How does this solver calculate mine probabilities?",
