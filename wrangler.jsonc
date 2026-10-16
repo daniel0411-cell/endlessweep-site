@@ -3,7 +3,7 @@
   "name": "endlessweep",
   "main": "worker.js",
   "compatibility_date": "2026-09-22",
-  "assets": { "directory": "./dist", "binding": "ASSETS" },
+  "assets": { "directory": "./dist", "binding": "ASSETS", "run_worker_first": true },
   "analytics_engine_datasets": [
     { "binding": "GAME_EVENTS", "dataset": "endlessweep_game_events" }
   ]

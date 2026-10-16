@@ -3,11 +3,13 @@ title: How to Play Minesweeper on Mobile
 description: Learn mobile Minesweeper controls, flagging, chording, scrolling large boards, and practical touch-screen strategies.
 slug: minesweeper-mobile
 heading: How to Play Minesweeper on Mobile
-summary: Use touch controls accurately on Beginner, Intermediate, and Expert boards.
+summary: Start with a small board, then use touch controls accurately on larger Minesweeper fields.
 ---
 ## Mobile Minesweeper basics
 
 The rules do not change on a phone: reveal every safe square, read the number clues, and flag proven mines. The main difference is that a touch screen does not have separate left and right mouse buttons.
+
+[Play Easy Minesweeper on your phone](/easy-minesweeper/) on a 7 x 7 board with 6 mines, or [start a Mini game](/easy-minesweeper/?level=mini) on a 5 x 5 board with 3 mines. Both use the same rules as larger boards. For a worked example before you play, follow the [illustrated first game](/how-to-play-minesweeper/#first-game).
 
 ## Reveal and Flag modes
 
@@ -35,7 +37,9 @@ Intermediate and Expert boards can be wider than the screen. The board sits in a
 
 ## Best difficulty for a phone
 
-Beginner fits most screens and is best for learning touch controls. Intermediate provides deeper logic while remaining manageable through scrolling. Expert is fully playable but benefits from landscape orientation and deliberate section-by-section scanning.
+Mini and Easy keep the whole board compact while you learn touch controls. Beginner is the next step, with a 9 x 9 board and 10 mines. Intermediate provides deeper logic while remaining manageable through scrolling. Expert is fully playable but benefits from landscape orientation and deliberate section-by-section scanning.
+
+Small boards are not automatically no-guess boards. For a verified deduction-only path, [play No-Guess Minesweeper](/no-guess-minesweeper/) instead. Its Beginner board uses the standard 9 x 9 size.
 
 ## Continue on another device
 

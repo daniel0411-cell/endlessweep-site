@@ -5,6 +5,8 @@ slug: minesweeper-no-guessing-mode
 heading: Minesweeper No Guessing Mode
 summary: Understand what a true no-guess board guarantees before choosing your next move.
 ---
+Want to play rather than read? [Start a free No-Guess Minesweeper game](/no-guess-minesweeper/). The board is verified after your first click; this guide explains what that verification guarantees.
+
 ## What is no-guess Minesweeper?
 
 No-guess Minesweeper is a version in which the generated board can be solved from the opening using logic alone. At every stage there should be at least one move that can be proven safe or one covered square that can be proven to contain a mine. A player may still miss that deduction, but the board itself does not require a blind choice.
@@ -31,7 +33,11 @@ If two possible mine layouts satisfy all visible clues and no unopened area can 
 
 ## Does Endlessweep have a no-guess mode?
 
-Yes! Endlessweep now features a dedicated [No-Guess Minesweeper Mode](/no-guess-minesweeper/). When playing in No-Guess mode, every generated board is verified by our deterministic constraint solver right after your first click. If a layout requires an unavoidable 50/50 coin flip or unprovable guess, the generator automatically rejects it and generates another until a 100% logic-solvable field is confirmed.
+Yes. [Play No-Guess Minesweeper](/no-guess-minesweeper/) in Beginner, Intermediate, or Expert. After your first click, a deterministic solver checks candidate boards using satisfied clues, remaining mine counts, and subset reduction. Only a board for which the solver clears every safe square is started. The check uses revealed clues, not hidden mine locations, to make its deductions.
+
+Generation stops after 150 unsuccessful attempts. If no verified board is found, no game starts: choose New game to retry. The game never silently falls back to an unverified random board.
+
+For a smaller board, [Easy or Mini Minesweeper](/easy-minesweeper/) is a separate choice. Those modes use fewer squares and mines but do not promise a deduction-only solution.
 
 You can also practice common deductive patterns in [Minesweeper Practice](/minesweeper-practice/) or play [Zen Minesweeper](/zen-minesweeper/) without sudden game-overs.
 

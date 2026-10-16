@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import worker from './worker.js';
 
+const config=JSON.parse(fs.readFileSync('wrangler.jsonc','utf8'));
+assert.equal(config.assets.run_worker_first,true,'Static assets must pass through the HTTPS redirect');
 const points=[],env={GAME_EVENTS:{writeDataPoint:point=>points.push(point)},ASSETS:{fetch:()=>new Response('asset')}};
 const send=data=>worker.fetch(new Request('https://endlessweep.com/api/events',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(data)}),env);
 assert.equal((await send({event:'game_started',mode:'daily',device:'touch'})).status,204);
@@ -11,7 +14,7 @@ assert.equal((await send({event:'game_started',mode:'unknown'})).status,400);
 for(const mode of ['mini','easy'])assert.equal((await send({event:'game_started',mode})).status,204);
 assert.equal((await send({event:'game_completed',mode:'time-attack-beginner',result:'finished',seconds:60})).status,204);
 assert.equal((await worker.fetch(new Request('https://endlessweep.com/'),env)).status,200);
-for(const url of ['http://endlessweep.com/','http://endlessweep.com/daily-minesweeper/?level=expert']){
+for(const url of ['http://endlessweep.com/','http://endlessweep.com/daily-minesweeper/?level=expert','http://endlessweep.com/easy-minesweeper/?level=mini&seed=shared','http://endlessweep.com/robots.txt','http://endlessweep.com/sitemap.xml']){
   const response=await worker.fetch(new Request(url),env);
   assert.equal(response.status,308);
   assert.equal(response.headers.get('location'),url.replace('http:','https:'));

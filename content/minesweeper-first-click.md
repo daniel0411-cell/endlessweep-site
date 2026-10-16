@@ -9,6 +9,8 @@ summary: Choose an opening square that reveals useful information without relyin
 
 That depends on the game. Endlessweep protects the first clicked square and its immediate neighbors when placing mines, so the opening cannot immediately hit a mine and usually reveals an area. Other Minesweeper versions may protect only the clicked square or use a pre-generated board.
 
+[Try a first click on a Mini board](/easy-minesweeper/?level=mini), then follow the [5 x 5 illustrated first game](/how-to-play-minesweeper/#first-game) to practice reading the opening clues. A new random game will have a different layout from the illustration.
+
 ## Center, edge or corner?
 
 A center click has more neighboring squares and may create a larger opening, but more neighbors do not guarantee a better board. An edge or corner produces fewer adjacent clues, which can make early constraints easier to read.
@@ -33,6 +35,8 @@ Yes. Endlessweep derives the mine layout from the seed, difficulty, dimensions, 
 ## What to do after the opening
 
 Scan the complete boundary of the newly opened area. First identify clues whose mines are already accounted for, then identify clues whose remaining covered neighbors must all be mines. Continue with the [complete winning routine](/how-to-win-minesweeper/).
+
+If you want the opening to lead to a verified logic-only solution, [play No-Guess Minesweeper](/no-guess-minesweeper/). First-click safety protects the opening; no-guess verification checks whether the entire board has a deduction-only path.
 
 ## When the opening is small
 

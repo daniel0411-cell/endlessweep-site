@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import path from 'node:path';
 
 const slugs=fs.readdirSync('content').filter(file=>file.endsWith('.md')).map(file=>fs.readFileSync(`content/${file}`,'utf8').match(/^slug: (.+)$/m)[1]);
 const sitemap=fs.readFileSync('sitemap.xml','utf8');
@@ -62,6 +63,29 @@ for(const slug of ['easy-minesweeper','daily-minesweeper','zen-minesweeper','cus
   assert((html.match(/<section class="mode-guide"/g)||[]).length===1);
 }
 assert(fs.readFileSync('no-guess-minesweeper/index.html','utf8').includes('100% Solvable by Pure Logic'));
+for(const slug of ['easy-minesweeper','no-guess-minesweeper']){
+  const html=fs.readFileSync(`${slug}/index.html`,'utf8');
+  assert(html.includes(`href="/${slug}/" aria-current="page"`));
+  assert(!html.includes('<p id="page-subtitle">Play Beginner, Intermediate, or Expert Minesweeper'));
+}
+const sitePages=['index.html',...fs.readdirSync('.',{withFileTypes:true}).filter(entry=>entry.isDirectory()&&entry.name!=='dist'&&fs.existsSync(`${entry.name}/index.html`)).map(entry=>`${entry.name}/index.html`)];
+const urls=[...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match=>match[1]);
+assert.equal(new Set(urls).size,urls.length,'Duplicate sitemap URL');
+for(const file of sitePages){
+  const html=fs.readFileSync(file,'utf8'),canonical=`https://endlessweep.com/${file==='index.html'?'':path.dirname(file)+'/'}`;
+  assert(html.includes(`rel="canonical" href="${canonical}"`),`${file}: canonical`);
+  assert(urls.includes(canonical),`${file}: missing from sitemap`);
+  assert(!/<meta[^>]+(?:noindex|nofollow)/i.test(html),`${file}: indexing blocked`);
+  for(const [,href] of html.matchAll(/href="([^"]+)"/g)){
+    const url=new URL(href,canonical);
+    if(url.hostname!=='endlessweep.com')continue;
+    assert.equal(url.protocol,'https:',`${file}: insecure link ${href}`);
+    const target=path.join('.',url.pathname,url.pathname.endsWith('/')?'index.html':'');
+    assert(fs.existsSync(target),`${file}: broken link ${href}`);
+    if(url.hash&&target.endsWith('.html'))assert(fs.readFileSync(target,'utf8').includes(`id="${decodeURIComponent(url.hash.slice(1))}"`),`${file}: missing anchor ${href}`);
+  }
+}
+for(const url of urls)assert(sitePages.includes(new URL(url).pathname.slice(1)+'index.html'),`Sitemap target missing: ${url}`);
 assert(fs.readFileSync('minesweeper-unblocked/index.html','utf8').includes('Play Free at School or Work'));
 const daily=fs.readFileSync('daily-minesweeper/index.html','utf8');
 for(const marker of ['data-daily-level="beginner"','data-daily-level="intermediate"','data-daily-level="expert"','seven-day strip'])assert(daily.includes(marker));
