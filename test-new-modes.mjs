@@ -5,6 +5,7 @@ const home=fs.readFileSync('index.html','utf8');
 const funcs=names=>names.map(name=>home.split('\n').find(line=>line.startsWith(`function ${name}(`))).join('\n');
 const ctx=vm.createContext({URLSearchParams,console,crypto:globalThis.crypto});
 ctx.customize={};ctx.dailyDate=null;
+ctx.document={querySelectorAll:()=>[]};
 ctx.replayMode=false;
 vm.runInContext(`let width=9,height=9,mineCount=10,cells=[],noGuessMode=true,randomState=0,calls=0;${funcs(['neighbors','seedRandom','random','plant','isSolvable'])}
 function reset(){cells=Array.from({length:81},()=>({mine:false}));seedRandom('test')}

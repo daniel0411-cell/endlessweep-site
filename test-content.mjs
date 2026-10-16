@@ -18,6 +18,23 @@ const flagHtml=fs.readFileSync('how-to-flag-minesweeper/index.html','utf8');
 const flagSchema=JSON.parse(flagHtml.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
 assert(flagSchema['@graph'].some(x=>x['@type']==='FAQPage'));
 assert(sitemap.includes('https://endlessweep.com/minesweeper-guides/'));
+assert(sitemap.includes('https://endlessweep.com/easy-minesweeper/'));
+assert(fs.readFileSync('how-to-play-minesweeper/index.html','utf8').includes('id="first-game"'));
+const tutorial=fs.readFileSync('how-to-play-minesweeper/index.html','utf8');
+const snapshots=[...tutorial.matchAll(/<div class="walk-board"[^>]*>([\s\S]*?)<\/div>/g)];
+assert.equal(snapshots.length,3);
+const tutorialMines=[4,14,24];
+for(const [stage,snapshot] of snapshots.entries()){
+  const cells=[...snapshot[1].matchAll(/<span class="walk-cell ([^"]*)"[^>]*>([^<]*)<\/span>/g)];
+  assert.equal(cells.length,25);
+  for(const [i,cell] of cells.entries()){
+    const flagged=(stage===1&&i===14)||(stage===2&&tutorialMines.includes(i));
+    const open=i%5<4||(stage===2&&!tutorialMines.includes(i));
+    const clue=tutorialMines.filter(j=>Math.abs(j%5-i%5)<=1&&Math.abs(Math.floor(j/5)-Math.floor(i/5))<=1).length;
+    assert.equal(cell[2],flagged?'🚩':open?String(clue||''):'');
+    if(open)assert(!tutorialMines.includes(i),'Illustration opens a mine');
+  }
+}
 assert(sitemap.includes('https://endlessweep.com/minesweeper-cheat-sheet/'));
 assert(sitemap.includes('https://endlessweep.com/minesweeper-practice/'));
 assert(sitemap.includes('https://endlessweep.com/minesweeper-solver/'));
@@ -35,7 +52,7 @@ assert.equal((practice.match(/level:'/g)||[]).length,15);
 for(const level of ['Basic','Intermediate','Advanced'])assert.equal((practice.match(new RegExp(`level:'${level}'`,'g'))||[]).length,5);
 for(const marker of ['endlessweep-practice','Retry mistakes','practice_started','practice_completed'])assert(practice.includes(marker));
 const home=fs.readFileSync('index.html','utf8');
-for(const slug of ['daily-minesweeper','zen-minesweeper','custom-minesweeper','time-attack-minesweeper','no-guess-minesweeper','minesweeper-unblocked']){
+for(const slug of ['easy-minesweeper','daily-minesweeper','zen-minesweeper','custom-minesweeper','time-attack-minesweeper','no-guess-minesweeper','minesweeper-unblocked']){
   const html=fs.readFileSync(`${slug}/index.html`,'utf8');
   assert(!html.includes('http-equiv="refresh"'));
   assert(html.includes(`rel="canonical" href="https://endlessweep.com/${slug}/"`));

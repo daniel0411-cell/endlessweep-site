@@ -38,6 +38,30 @@ for(const id of ['#face-btn','#difficulty','#new-game','#daily','#pause'])assert
 run("customGame('custom-seed',{width:11,height:12,mines:20});started=true;restartGame()");
 assert.equal(run('currentLevel'),'custom');assert.equal(run('width'),11);assert.equal(run('height'),12);assert.equal(run('mineCount'),20);assert.equal(run('started'),false);
 
+// Exercise the real engine, including completed results and share-link loading.
+for(const [level,w,h,mines] of [['mini',5,5,3],['easy',7,7,6],['beginner',9,9,10]]){
+  run(`difficulty.value='${level}';newGame('${level}','small-board');playerReveal(0)`);
+  assert.equal(run('width'),w);assert.equal(run('height'),h);assert.equal(run('mineCount'),mines);
+  assert.equal(run('cells[0].mine'),false);
+  const layout=run('cells.map(c=>c.mine).join()'),url=run('challengeUrl()');
+  assert.equal(new URL(url).searchParams.get('level'),level);
+  ctx.location.pathname='/';ctx.location.search=new URL(url).search;
+  run('loadShared();playerReveal(0)');assert.equal(run('cells.map(c=>c.mine).join()'),layout);
+  run('{const flagged=cells.findIndex(c=>c.mine);toggleFlag(flagged);toggleFlag(flagged)}');
+  run('cells.forEach((c,i)=>{if(!c.mine&&!c.open)playerReveal(i)})');
+  assert.equal(run('ended'),true);assert.equal(run('lastReplay.won'),true);
+  assert.equal(run('lastReplay.level'),level);
+  assert.equal(JSON.parse(saved.get('endlessweep-stats'))[level].wins,1);
+  run('beginReplay();seekReplay(lastReplay.actions.length)');
+  assert.equal(run('cells.filter(c=>c.open&&!c.mine).length'),w*h-mines);
+  run('exitReplay();restartGame()');assert.equal(run('currentLevel'),level);
+}
+ctx.location.pathname='/easy-minesweeper/';ctx.location.search='';run('loadShared()');assert.equal(run('currentLevel'),'easy');
+ctx.location.search='?level=mini';run('loadShared()');assert.equal(run('currentLevel'),'mini');
+ctx.location.search='?level=mini&seed=bad%20seed';run('loadShared()');assert.equal(run('currentLevel'),'beginner');
+ctx.location.pathname='/';ctx.location.search='?level=constructor&seed=valid';run('loadShared()');assert.equal(run('currentLevel'),'beginner');
+for(const game of ['dailyGame','zenGame','noGuessGame']){run(`${game}('mini')`);assert.equal(run('width'),9)}
+
 const luminance=hex=>{const [r,g,b]=hex.match(/../g).map(n=>parseInt(n,16)/255).map(n=>n<=0.04045?n/12.92:((n+0.055)/1.055)**2.4);return r*0.2126+g*0.7152+b*0.0722};
 const contrast=(a,b)=>(Math.max(luminance(a),luminance(b))+0.05)/(Math.min(luminance(a),luminance(b))+0.05);
 for(const dark of [false,true])for(let n=1;n<=8;n++){
