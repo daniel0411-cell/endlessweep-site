@@ -20,6 +20,7 @@ const flagSchema=JSON.parse(flagHtml.match(/<script type="application\/ld\+json"
 assert(flagSchema['@graph'].some(x=>x['@type']==='FAQPage'));
 assert(sitemap.includes('https://endlessweep.com/minesweeper-guides/'));
 assert(sitemap.includes('https://endlessweep.com/easy-minesweeper/'));
+assert(sitemap.includes('https://endlessweep.com/endless-minesweeper/'));
 assert(fs.readFileSync('how-to-play-minesweeper/index.html','utf8').includes('id="first-game"'));
 const tutorial=fs.readFileSync('how-to-play-minesweeper/index.html','utf8');
 const snapshots=[...tutorial.matchAll(/<div class="walk-board"[^>]*>([\s\S]*?)<\/div>/g)];
@@ -53,7 +54,7 @@ assert.equal((practice.match(/level:'/g)||[]).length,30);
 for(const level of ['Basic','Intermediate','Advanced'])assert.equal((practice.match(new RegExp(`level:'${level}'`,'g'))||[]).length,10);
 for(const marker of ['endlessweep-practice','Retry mistakes','practice_started','practice_completed'])assert(practice.includes(marker));
 const home=fs.readFileSync('index.html','utf8');
-for(const slug of ['easy-minesweeper','daily-minesweeper','zen-minesweeper','custom-minesweeper','time-attack-minesweeper','no-guess-minesweeper','minesweeper-unblocked']){
+for(const slug of ['endless-minesweeper','easy-minesweeper','daily-minesweeper','zen-minesweeper','custom-minesweeper','time-attack-minesweeper','no-guess-minesweeper','minesweeper-unblocked']){
   const html=fs.readFileSync(`${slug}/index.html`,'utf8');
   assert(!html.includes('http-equiv="refresh"'));
   assert(html.includes(`rel="canonical" href="https://endlessweep.com/${slug}/"`));
@@ -63,7 +64,7 @@ for(const slug of ['easy-minesweeper','daily-minesweeper','zen-minesweeper','cus
   assert((html.match(/<section class="mode-guide"/g)||[]).length===1);
 }
 assert(fs.readFileSync('no-guess-minesweeper/index.html','utf8').includes('100% Solvable by Pure Logic'));
-for(const slug of ['easy-minesweeper','no-guess-minesweeper']){
+for(const slug of ['endless-minesweeper','easy-minesweeper','no-guess-minesweeper']){
   const html=fs.readFileSync(`${slug}/index.html`,'utf8');
   assert(html.includes(`href="/${slug}/" aria-current="page"`));
   assert(!html.includes('<p id="page-subtitle">Play Beginner, Intermediate, or Expert Minesweeper'));

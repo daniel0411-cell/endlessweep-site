@@ -59,6 +59,8 @@ for(const [level,w,h,mines] of [['mini',5,5,3],['easy',7,7,6],['beginner',9,9,10
 ctx.location.pathname='/easy-minesweeper/';ctx.location.search='';run('loadShared()');assert.equal(run('currentLevel'),'easy');
 ctx.location.search='?level=mini';run('loadShared()');assert.equal(run('currentLevel'),'mini');
 ctx.location.search='?level=mini&seed=bad%20seed';run('loadShared()');assert.equal(run('currentLevel'),'beginner');
+ctx.location.pathname='/endless-minesweeper/';ctx.location.search='';run('loadShared()');assert.equal(run('currentLevel'),'endless');assert.equal(run('endlessMode'),true);
+ctx.location.pathname='/';
 ctx.location.pathname='/';ctx.location.search='?level=constructor&seed=valid';run('loadShared()');assert.equal(run('currentLevel'),'beginner');
 for(const game of ['dailyGame','zenGame','noGuessGame']){run(`${game}('mini')`);assert.equal(run('width'),9)}
 
