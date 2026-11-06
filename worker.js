@@ -1,4 +1,4 @@
-const events=new Set(['game_started','game_completed','game_abandoned','challenge_shared','practice_started','practice_completed','replay_opened','mistake_review_opened']);
+const events=new Set(['game_started','game_completed','game_abandoned','challenge_shared','practice_started','practice_completed','replay_opened','mistake_review_opened','game_restarted','shared_visit','shared_game_started']);
 const modes=new Set(['mini','easy','beginner','intermediate','expert','custom','daily','daily-beginner','daily-intermediate','daily-expert','time-attack-beginner','time-attack-intermediate','zen-beginner','zen-intermediate','zen-expert','no-guess','no-guess-beginner','no-guess-intermediate','no-guess-expert','unblocked','practice','replay','endless']);
 
 export default {
@@ -11,8 +11,8 @@ export default {
     if(url.pathname==='/api/events'&&request.method==='POST'){
       let data;
       try{data=await request.json()}catch{return new Response(null,{status:400})}
-      if(!events.has(data.event)||!modes.has(data.mode))return new Response(null,{status:400});
-      env.GAME_EVENTS.writeDataPoint({blobs:[data.event,data.mode,data.result||'',data.device||''],doubles:[Number(data.seconds)||0,Number(data.mistakes)||0],indexes:[data.event]});
+      if(!data||!events.has(data.event)||!modes.has(data.mode))return new Response(null,{status:400});
+      env.GAME_EVENTS.writeDataPoint({blobs:[data.event,data.mode,data.result||'',data.device||''],doubles:[Number(data.seconds)||0,Number(data.mistakes)||0,Number(data.streak)||0],indexes:[data.event]});
       return new Response(null,{status:204});
     }
     return env.ASSETS.fetch(request);

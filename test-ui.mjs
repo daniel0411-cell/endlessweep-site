@@ -64,6 +64,73 @@ ctx.location.pathname='/';
 ctx.location.pathname='/';ctx.location.search='?level=constructor&seed=valid';run('loadShared()');assert.equal(run('currentLevel'),'beginner');
 for(const game of ['dailyGame','zenGame','noGuessGame']){run(`${game}('mini')`);assert.equal(run('width'),9)}
 
+// Exercise Daily generation through the real entry points, not stubbed plant/reset calls.
+let testDate='2026-11-06T12:00:00Z';
+ctx.Date=class extends Date{constructor(...args){super(...(args.length?args:[testDate]))}static now(){return Date.parse(testDate)}};
+const beacons=[];
+ctx.navigator.sendBeacon=(url,body)=>{assert.equal(url,'/api/events');beacons.push(body);return true};
+const readEvents=()=>Promise.all(beacons.map(async body=>JSON.parse(await body.text())));
+for(const date of ['2026-11-06','2026-11-07','2026-11-08'])for(const level of ['beginner','intermediate','expert']){
+  testDate=`${date}T12:00:00Z`;
+  run(`endlessGame();dailyGame('${level}')`);
+  assert.equal(run('endlessMode||zenMode||timeAttack'),false);
+  assert.equal(run('noGuessMode'),true);
+  const center=run('Math.floor(height/2)*width+Math.floor(width/2)');
+  assert.equal(run('firstClick'),center);
+  assert.equal(run('cells.filter(c=>c.mine).length'),run('mineCount'));
+  assert.equal(run('cells[firstClick].open&&!cells[firstClick].mine&&cells[firstClick].count===0'),true);
+  assert.equal(run('isSolvable(firstClick,new Set(cells.flatMap((c,i)=>c.mine?[i]:[])))'),true);
+  const layout=run('cells.map(c=>c.mine).join()'),opening=run('cells.map(c=>c.open).join()');
+  run('playerReveal(cells.findIndex(c=>!c.open&&!c.mine))');
+  assert.equal(run('started'),true);assert.equal(run('firstClick'),center);
+  run('restartGame()');assert.equal(run('cells.map(c=>c.mine).join()'),layout);
+  run("zenGame();dailyGame('"+level+"')");
+  assert.equal(run('cells.map(c=>c.open).join()'),opening);
+  run('toggleFlag(cells.findIndex(c=>c.mine))');assert.equal(run('started'),true);
+  run('restartGame();chord(cells.findIndex(c=>c.open&&c.count))');
+  assert.equal(run('started'),true);assert.equal(run('firstClick'),center);
+  run('restartGame();cells.forEach((c,i)=>{if(!c.mine&&!c.open)playerReveal(i)})');
+  assert.equal(run('lastReplay.won'),true);
+  run('beginReplay();seekReplay(lastReplay.actions.length)');
+  assert.equal(run('cells.filter(c=>c.open&&!c.mine).length'),run('width*height-mineCount'));
+  run('seekReplay(0)');assert.equal(run('cells.map(c=>c.open).join()'),opening);
+  run('exitReplay()');
+}
+run("const actualPlant=plant;plant=()=>false;dailyGame('beginner')");
+assert.equal(run('firstClick'),null);assert.equal(run('cells.some(c=>c.open)'),false);
+let before=beacons.length;
+run('playerReveal(0);toggleFlag(1);chord(2)');
+assert.equal(run('started||ended'),false);assert.equal(beacons.length,before);
+run('plant=actualPlant;restartGame()');assert.equal(run('firstClick'),40);
+
+// Referral events use resolved modes; retries are not repeated referral conversions.
+beacons.length=0;
+ctx.location.pathname='/';ctx.location.search='?mode=no-guess&level=expert&seed=referral&ref=share';
+run('sharedVisitTracked=sharedStartTracked=false;loadShared();loadShared();toggleFlag(0);restartGame();toggleFlag(0)');
+let events=await readEvents();
+assert.equal(events.filter(e=>e.event==='shared_visit').length,1);
+assert.equal(events.find(e=>e.event==='shared_visit').mode,'no-guess-expert');
+assert.equal(events.filter(e=>e.event==='shared_game_started').length,1);
+assert.equal(events.find(e=>e.event==='shared_game_started').mode,'no-guess-expert');
+ctx.location.search='';run('sharedVisitTracked=sharedStartTracked=false;loadShared();toggleFlag(0)');
+assert.equal((await readEvents()).filter(e=>e.event==='shared_game_started').length,1);
+
+// Cancellation/copy errors are not successful shares; capture the mode before async completion.
+beacons.length=0;
+ctx.navigator.share=()=>Promise.reject(new Error('cancelled'));
+await run("sendChallenge('test')");assert.equal(beacons.length,0);
+delete ctx.navigator.share;
+ctx.navigator.clipboard={writeText:()=>Promise.reject(new Error('denied'))};
+await run("sendChallenge('test')");assert.equal(beacons.length,0);
+ctx.navigator.clipboard.writeText=()=>Promise.resolve();
+await run("sendChallenge('test')");
+assert.equal((await readEvents())[0].result,'clipboard');
+ctx.navigator.share=()=>Promise.resolve();
+run("dailyGame('beginner')");const pendingShare=run("sendChallenge('test')");run('newGame()');await pendingShare;
+assert.equal((await readEvents()).at(-1).mode,'daily');
+assert.equal((await readEvents()).at(-1).result,'native');
+console.log('Daily same-board, fail-closed generation, replay, referral, and share-result checks passed');
+
 const luminance=hex=>{const [r,g,b]=hex.match(/../g).map(n=>parseInt(n,16)/255).map(n=>n<=0.04045?n/12.92:((n+0.055)/1.055)**2.4);return r*0.2126+g*0.7152+b*0.0722};
 const contrast=(a,b)=>(Math.max(luminance(a),luminance(b))+0.05)/(Math.min(luminance(a),luminance(b))+0.05);
 for(const dark of [false,true])for(let n=1;n<=8;n++){

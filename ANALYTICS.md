@@ -4,12 +4,13 @@ Dataset: `endlessweep_game_events`
 
 Fields:
 
-- `blob1`: event
-- `blob2`: mode
-- `blob3`: result or practice pattern
+- `blob1`: event (`game_started`, `game_completed`, `game_abandoned`, `game_restarted`, `challenge_shared`, `shared_visit`, `shared_game_started`, `replay_opened`, `mistake_review_opened`, `practice_started`, `practice_completed`)
+- `blob2`: mode (`beginner`, `intermediate`, `expert`, `custom`, `daily`, `zen-*`, `no-guess-*`, `time-attack-*`, `unblocked-*`, `endless`)
+- `blob3`: result (`win`, `loss`) or practice pattern
 - `blob4`: input type (`touch` or `pointer`)
 - `double1`: elapsed seconds
 - `double2`: Zen mistakes
+- `double3`: current local Daily completion streak on Daily completion events; zero otherwise. Endless cleared counts are not currently sent.
 
 Use a recent interval while traffic is still low. These queries use the last 14 days.
 
@@ -77,6 +78,74 @@ ORDER BY completed_games DESC
 ```
 
 Do not compare modes until each has a useful sample. A practical first threshold is at least 30 starts per mode.
+
+## Replay and restart ratio by mode
+
+Counts restart commands after a run started or ended, not unique players or completed repeat games. Mode/difficulty switches can also trigger this command. Use subsequent starts as supporting evidence, not as a user retention rate.
+
+```sql
+SELECT blob2 AS mode,
+  COUNT_IF(blob1 = 'game_started') AS starts,
+  COUNT_IF(blob1 = 'game_restarted') AS restarts,
+  ROUND(COUNT_IF(blob1 = 'game_restarted') * 1.0 / NULLIF(COUNT_IF(blob1 = 'game_started'), 0), 3) AS restart_ratio
+FROM endlessweep_game_events
+WHERE timestamp >= NOW() - INTERVAL '14' DAY
+GROUP BY mode
+ORDER BY starts DESC
+```
+
+## Multi-day Daily Challenge streak distribution
+
+`double3` records consecutive UTC dates with a win in this browser's local storage, across Daily difficulties. This is a completion-streak distribution, NOT D1/D7 retention or a returning-player count: return visits without a win are absent, repeated wins contribute multiple events, and clearing storage or switching devices resets continuity. No stable visitor identity or cohort is collected; do not infer retention from these data.
+
+```sql
+SELECT
+  double3 AS daily_streak,
+  COUNT() AS completions
+FROM endlessweep_game_events
+WHERE blob1 = 'game_completed'
+  AND blob2 = 'daily'
+  AND blob3 = 'win'
+  AND timestamp >= NOW() - INTERVAL '14' DAY
+GROUP BY daily_streak
+ORDER BY daily_streak DESC
+```
+
+## Share actions, referral landings, and referred starts
+
+`challenge_shared` is sent only after the native share promise resolves or clipboard copying succeeds. It does not prove delivery, reading, or a new recipient. Cancellation and failure are not counted. Native results can vary by platform.
+
+`shared_visit` records a loaded game page with `ref=share` (or legacy `source=share`), using the resolved game mode. `shared_game_started` records the first game start after that landing, even if the player changes mode first. Each is emitted at most once per page load, not once per user or session; refreshes, repeated opens, and self-visits can count again. There is no recipient deduplication, share ID, or linked acquisition cohort. These aggregate event counts are NOT a viral coefficient, unique conversion rate, or attribution proof. Starts can occur in a different mode or reporting interval from landings; do not divide the per-mode counts into a funnel conversion rate.
+
+These definitions apply only after the release containing this change. Historical `challenge_shared` events were attempts, including cancellations, and historical referral events used entry-mode labels. Do not combine them into a like-for-like trend. Set the query start to the verified deployment timestamp in the release record below.
+
+```sql
+SELECT blob2 AS mode,
+  SUM(IF(blob1 = 'challenge_shared', _sample_interval, 0)) AS successful_share_actions,
+  SUM(IF(blob1 = 'shared_visit', _sample_interval, 0)) AS referral_page_loads,
+  SUM(IF(blob1 = 'shared_game_started', _sample_interval, 0)) AS referred_first_starts
+FROM endlessweep_game_events
+WHERE timestamp >= NOW() - INTERVAL '14' DAY
+GROUP BY mode
+ORDER BY successful_share_actions DESC
+```
+
+## Days 1–14 Behavioral Validation Framework (Codex Audit Baseline)
+
+Core focus: Validate "who is willing to play repeatedly" and "are players willing to invite friends" before expanding features.
+
+Explicitly out-of-scope for this cycle: Cloud accounts, username/PIN, rank/ladder system, UGC workshop, in-game items.
+
+| Stage | Focus | Minimum Delivery |
+|---|---|---|
+| Days 1–3 | Establish behavioral baseline | Track starts, completions, restart commands, local completion-streak distribution, and referred first starts. D1/D7 retention is not measurable yet. |
+| Days 4–7 | Polish daily challenge loop | Same UTC date, difficulty, and game version produce the same accepted board from a fixed center opening. Accept only boards passing the logic solver; if 150 attempts fail, block play rather than serve an unverified board. Share links open the current UTC day's challenge, not an archived date. |
+| Days 8–10 | Small scale authentic feedback | Observe target players: can they finish without guessing? Do they voluntarily retry or share? |
+| Days 11–14 | Evidence-based direction choice | Treat event counts and completion streaks as directional, with sample sizes and qualitative feedback. Validate actual Daily returns with consenting testers before choosing A; confirm Endless repeat play before B; validate solver/training demand before C. No automatic decision from streaks or share counts. |
+
+## Release record
+
+The screenshot's `f2852b8` is the pre-change Git baseline, not proof of a deployment. The committed code, freshly fetched remote branch, Cloudflare deployment version, and production content must be verified separately. Record the final commit and deployment timestamp/version in the delivery message; planned or locally tested changes are not production results.
 
 ## Search acquisition plan: 2026-10-16 to 2026-10-30
 

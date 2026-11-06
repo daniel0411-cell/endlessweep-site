@@ -9,6 +9,13 @@ const send=data=>worker.fetch(new Request('https://endlessweep.com/api/events',{
 assert.equal((await send({event:'game_started',mode:'daily',device:'touch'})).status,204);
 assert.equal(points.length,1);
 assert.deepEqual(points[0].blobs,['game_started','daily','','touch']);
+assert.deepEqual(points[0].doubles,[0,0,0]);
+assert.equal((await send({event:'game_restarted',mode:'daily'})).status,204);
+assert.equal((await send({event:'shared_visit',mode:'daily'})).status,204);
+assert.equal((await send({event:'shared_game_started',mode:'daily'})).status,204);
+assert.equal((await send({event:'game_completed',mode:'daily',result:'win',streak:3})).status,204);
+assert.deepEqual(points.at(-1).doubles,[0,0,3]);
+assert.equal((await send(null)).status,400);
 assert.equal((await send({event:'unknown',mode:'daily'})).status,400);
 assert.equal((await send({event:'game_started',mode:'unknown'})).status,400);
 for(const mode of ['mini','easy','endless'])assert.equal((await send({event:'game_started',mode})).status,204);

@@ -12,20 +12,21 @@ function reset(){cells=Array.from({length:81},()=>({mine:false}));seedRandom('te
 reset();const realSolver=isSolvable;isSolvable=()=>{calls++;return false};
 if(plant(40)!==false||calls!==150||cells.some(c=>c.mine))throw Error('Unverified board accepted');
 isSolvable=realSolver;reset();if(!plant(40))throw Error('Verified generation failed');const layout=JSON.stringify(cells.map(c=>c.mine));reset();plant(40);if(JSON.stringify(cells.map(c=>c.mine))!==layout)throw Error('Seed not deterministic');`,ctx);
-vm.runInContext(`let started=false,ended=false,paused=false,firstClick=null,gameSeed='audit',startedAt=0,message={},level='expert',currentLevel='no-guess-expert',zenMode=false,timeAttack=false,dailyDifficulty='expert',difficulty={value:'expert'},levels={beginner:[9,9,10],intermediate:[16,16,40],expert:[30,16,99]};let updateBest=()=>{},resetBoard=()=>{},abandon=()=>{},makeSeed=()=> 'new-seed';${funcs(['newGame','noGuessGame','restartGame','challengeUrl'])}
-const entryMode=()=> 'no-guess';restartGame();if(!noGuessMode||currentLevel!=='no-guess-expert')throw Error('Restart lost mode');
-gameSeed='audit';const url=challengeUrl();if(!url.includes('mode=no-guess')||!url.includes('level=expert')||!url.includes('seed=audit'))throw Error('Invalid share URL');`,ctx);
+vm.runInContext(`let started=false,ended=false,paused=false,firstClick=null,gameSeed='audit',startedAt=0,message={},level='expert',currentLevel='no-guess-expert',zenMode=false,timeAttack=false,dailyDifficulty='expert',difficulty={value:'expert'},levels={beginner:[9,9,10],intermediate:[16,16,40],expert:[30,16,99]};let updateBest=()=>{},resetBoard=()=>{},abandon=()=>{},makeSeed=()=> 'new-seed',restartedMode=null;let track=(ev,data)=>{if(ev==='game_restarted')restartedMode=data.mode;};${funcs(['newGame','noGuessGame','restartGame','challengeUrl'])}
+const entryMode=()=> 'no-guess';started=true;restartGame();started=false;if(!noGuessMode||currentLevel!=='no-guess-expert'||restartedMode!=='no-guess-expert')throw Error('Restart lost mode or untracked');
+gameSeed='audit';const url=challengeUrl();if(!url.includes('mode=no-guess')||!url.includes('level=expert')||!url.includes('seed=audit')||!url.includes('ref=share'))throw Error('Invalid share URL');`,ctx);
 vm.runInContext(`${funcs(['start'])}
-plant=()=>false;let performance={now:()=>0},track=()=>{throw Error('Failed board tracked')};
+plant=()=>false;let performance={now:()=>0};track=()=>{throw Error('Failed board tracked')};
 if(start(0)!==false||started)throw Error('Failed generation started game');`,ctx);
-for(const name of ['playerReveal','toggleFlag'])assert(home.split('\n').find(l=>l.startsWith(`function ${name}(`)).includes('if(!started&&!start(i))return;'));
-vm.runInContext(`let location={search:'?mode=no-guess&seed=shared&level=expert'},setPageMode=()=>{},loadReplays=()=>[],beginReplay=()=>{};${funcs(['loadShared'])}
-loadShared();if(gameSeed!=='shared'||currentLevel!=='no-guess-expert')throw Error('Shared seed not loaded');
+for(const name of ['playerReveal','toggleFlag','chord'])assert(home.split('\n').find(l=>l.startsWith(`function ${name}(`)).includes('if(!started&&!start(i))return;'));
+vm.runInContext(`let sharedVisitMode=null;track=(ev,data)=>{if(ev==='shared_visit')sharedVisitMode=data?.mode||currentLevel;};let location={search:'?mode=no-guess&seed=shared&level=expert&ref=share'},setPageMode=()=>{},loadReplays=()=>[],beginReplay=()=>{};let sharedVisitTracked=false;${funcs(['loadSharedGame','loadShared'])}
+loadShared();if(gameSeed!=='shared'||currentLevel!=='no-guess-expert'||sharedVisitMode!=='no-guess-expert')throw Error('Shared visit not loaded or untracked');
 location.search='?mode=no-guess&seed=%3Cbad%3E&level=expert';loadShared();if(noGuessMode||currentLevel!=='beginner')throw Error('Invalid seed accepted');`,ctx);
 let shared='';ctx.navigator={clipboard:{writeText:text=>{shared=text;return Promise.resolve()}}};
-vm.runInContext(`let lastReplay={won:false},seconds=12,zenMistakes=3,timeAttackLevel='beginner',dailyDate='2026-10-15',loadStats=()=>({});track=()=>{};${funcs(['shareResult'])}
+vm.runInContext(`let lastReplay={won:false},seconds=12,zenMistakes=3,timeAttackLevel='beginner',dailyDate='2026-10-15',loadStats=()=>({});track=()=>{};${funcs(['sendChallenge','shareResult'])}
 currentLevel='daily';ended=true;shareResult();`,ctx);
 assert(shared.includes('Lost in 12s'));assert(!shared.includes('Clear · 0'));
+assert(shared.includes('&ref=share'));
 assert(shared.includes('⬛'));
 vm.runInContext("currentLevel='daily';ended=true;lastReplay={won:true};shareResult()",ctx);
 assert(shared.includes('🟩🟩🟩🟩🟩'));
