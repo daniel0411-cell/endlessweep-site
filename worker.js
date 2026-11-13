@@ -1,5 +1,5 @@
 const events=new Set(['endless_milestone','game_started','game_completed','game_abandoned','challenge_shared','practice_started','practice_completed','replay_opened','mistake_review_opened','game_restarted','shared_visit','shared_game_started']);
-const modes=new Set(['mini','easy','beginner','intermediate','expert','custom','daily','daily-beginner','daily-intermediate','daily-expert','time-attack-beginner','time-attack-intermediate','zen-beginner','zen-intermediate','zen-expert','no-guess','no-guess-beginner','no-guess-intermediate','no-guess-expert','unblocked','practice','replay','endless']);
+const modes=new Set(['mini','easy','beginner','intermediate','expert','custom','daily','daily-archive','daily-beginner','daily-intermediate','daily-expert','time-attack-beginner','time-attack-intermediate','zen-beginner','zen-intermediate','zen-expert','no-guess','no-guess-beginner','no-guess-intermediate','no-guess-expert','unblocked','practice','replay','endless']);
 
 export default {
   async fetch(request,env){

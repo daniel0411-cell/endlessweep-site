@@ -89,7 +89,7 @@ for(const file of sitePages){
 for(const url of urls)assert(sitePages.includes(new URL(url).pathname.slice(1)+'index.html'),`Sitemap target missing: ${url}`);
 assert(fs.readFileSync('minesweeper-unblocked/index.html','utf8').includes('Play Free at School or Work'));
 const daily=fs.readFileSync('daily-minesweeper/index.html','utf8');
-for(const marker of ['data-daily-level="beginner"','data-daily-level="intermediate"','data-daily-level="expert"','seven-day strip'])assert(daily.includes(marker));
+for(const marker of ['data-daily-level="beginner"','data-daily-level="intermediate"','data-daily-level="expert"','30-day calendar'])assert(daily.includes(marker));
 assert(fs.readFileSync('zen-minesweeper/index.html','utf8').includes('total mistakes'));
 assert(fs.readFileSync('custom-minesweeper/index.html','utf8').includes('mine density'));
 const difficulty=fs.readFileSync('minesweeper-difficulty/index.html','utf8');
@@ -97,7 +97,7 @@ for(const marker of ['30 x 24 with 130 mines','What changes on a large Minesweep
 const statistics=fs.readFileSync('minesweeper-statistics/index.html','utf8');
 for(const marker of ['How to read your Minesweeper statistics','Endlessweep Efficiency is not 3BV/s','Local data and privacy','daily-beginner','daily-intermediate','daily-expert','time-attack-beginner','time-attack-intermediate'])assert(statistics.includes(marker));
 const gameModes=fs.readFileSync('game-modes/index.html','utf8');
-for(const marker of ['/time-attack-minesweeper/','/minesweeper-practice/','/minesweeper-statistics/','/minesweeper-logic/','seven days of local results'])assert(gameModes.includes(marker));
+for(const marker of ['/time-attack-minesweeper/','/minesweeper-practice/','/minesweeper-statistics/','/minesweeper-logic/','30 days of local results'])assert(gameModes.includes(marker));
 const timeAttack=fs.readFileSync('time-attack-minesweeper/index.html','utf8');
 for(const marker of ['Score as many safe squares as you can in 60 seconds','timeAttackGame','Safe squares score 1 point'])assert(timeAttack.includes(marker));
 console.log('Content build checks passed');

@@ -23,7 +23,7 @@ vm.runInContext(`let sharedVisitMode=null;track=(ev,data)=>{if(ev==='shared_visi
 loadShared();if(gameSeed!=='shared'||currentLevel!=='no-guess-expert'||sharedVisitMode!=='no-guess-expert')throw Error('Shared visit not loaded or untracked');
 location.search='?mode=no-guess&seed=%3Cbad%3E&level=expert';loadShared();if(noGuessMode||currentLevel!=='beginner')throw Error('Invalid seed accepted');`,ctx);
 let shared='';ctx.navigator={clipboard:{writeText:text=>{shared=text;return Promise.resolve()}}};
-vm.runInContext(`let lastReplay={won:false},seconds=12,zenMistakes=3,timeAttackLevel='beginner',dailyDate='2026-10-15',loadStats=()=>({});track=()=>{};${funcs(['sendChallenge','shareResult'])}
+vm.runInContext(`let lastReplay={won:false},seconds=12,zenMistakes=3,timeAttackLevel='beginner',dailyDate='2026-10-15',loadStats=()=>({});track=()=>{};${funcs(['isDailyArchive','utcToday','dayBefore','currentDailyStreak','sendChallenge','shareResult'])}
 currentLevel='daily';ended=true;shareResult();`,ctx);
 assert(shared.includes('Lost in 12s'));assert(!shared.includes('Clear · 0'));
 assert(shared.includes('&ref=share'));

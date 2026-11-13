@@ -15,6 +15,8 @@ assert.equal((await send({event:'shared_visit',mode:'daily'})).status,204);
 assert.equal((await send({event:'shared_game_started',mode:'daily'})).status,204);
 assert.equal((await send({event:'game_completed',mode:'daily',result:'win',streak:3})).status,204);
 assert.deepEqual(points.at(-1).doubles,[0,0,3,0,0]);
+assert.equal((await send({event:'game_completed',mode:'daily-archive',result:'win',streak:0})).status,204);
+assert.deepEqual(points.at(-1).doubles,[0,0,0,0,0]);
 assert.equal((await send(null)).status,400);
 assert.equal((await send({event:'unknown',mode:'daily'})).status,400);
 for(const data of [null,[],{},true,{event:'game_started',mode:'daily',seconds:'60'},{event:'game_started',mode:'daily',device:{}},{event:'game_started',mode:'daily',result:[] }])assert.equal((await send(data)).status,400);

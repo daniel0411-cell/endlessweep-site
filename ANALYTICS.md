@@ -5,12 +5,14 @@ Dataset: `endlessweep_game_events`
 Fields:
 
 - `blob1`: event (`game_started`, `game_completed`, `game_abandoned`, `game_restarted`, `challenge_shared`, `shared_visit`, `shared_game_started`, `replay_opened`, `mistake_review_opened`, `practice_started`, `practice_completed`)
-- `blob2`: mode (`beginner`, `intermediate`, `expert`, `custom`, `daily`, `zen-*`, `no-guess-*`, `time-attack-*`, `unblocked-*`, `endless`)
+- `blob2`: mode (`beginner`, `intermediate`, `expert`, `custom`, `daily`, `daily-archive`, `zen-*`, `no-guess-*`, `time-attack-*`, `unblocked-*`, `endless`)
 - `blob3`: result (`win`, `loss`) or practice pattern
 - `blob4`: input type (`touch` or `pointer`)
 - `double1`: elapsed seconds
 - `double2`: Zen mistakes
-- `double3`: current local Daily completion streak on Daily completion events; zero otherwise. Endless cleared counts are not currently sent.
+- `double3`: current local on-time Daily completion streak on Daily completion events; zero for archive play and all other modes.
+- `double4`: Endless cleared squares (or the crossed milestone threshold).
+- `double5`: Time Attack score.
 
 Use a recent interval while traffic is still low. These queries use the last 14 days.
 
@@ -206,3 +208,7 @@ not verified. Do not assume local test success fixes production.
 ## Endless exploration (2026-11-13)
 
 Existing doubles 1–3 remain elapsed seconds, Zen mistakes and Daily streak. `double4` is Endless cleared squares; `double5` is Time Attack score. `endless_milestone` records a crossed 50/100/250 threshold in double4 once per run and threshold (a single large reveal reports the highest newly crossed threshold). No persistent player identifier is collected, so these events do not establish unique-user retention. Compare milestone reach and subsequent starts directionally; shared visits and starts are separate events, not confirmed unique conversions. Personal bests are stored locally during a run, including before an unfinished run is abandoned.
+
+## Daily archive (2026-11-13)
+
+Dated boards played after their UTC date report mode `daily-archive`, including starts, outcomes, restarts and shares. Archive completion events carry a zero streak and must be grouped separately from on-time `daily` events. Classification uses the UTC date at event/recording time, so a run crossing midnight can start as `daily` and complete as `daily-archive`; completion/start ratios by mode are directional. Archive wins are saved locally under separate difficulty keys and never fill missed streak days. Calendar records and streaks are browser-local, not cross-device retention measurements.

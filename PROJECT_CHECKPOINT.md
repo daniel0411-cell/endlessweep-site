@@ -61,3 +61,15 @@
 - 八组检查通过：原七组测试加 `test-shared-opening.mjs`。新增检查覆盖五档边缘首击、Zen/Custom/No-Guess 布雷与揭开状态一致、旧链接、非法输入、生成失败、Daily/Time Attack 和分享事件顺序。原 10,000 棋盘检查通过。
 - 真实浏览器：390×844 初级棋盘顶部约 357px（此前审计约 724px），导航 58px；320×740 约 470px；均无整页横向溢出。Menu Enter 展开、More 点击/Enter 收起可用；1280×900 导航与工具可见；首击 40 的挑战入口自动揭开 55 格并显示恢复提示。
 - 已重建模式页面及 dist。实际发布提交和线上版本仍须发布后经 `/api/version` 核对，不能仅凭此记录推断。
+
+## 2026-11-13：Daily 日历与历史补玩
+
+基准提交 `0f6f2fcb8db8c4f990868a274fd8f96cf1e9194c`；开始前 fetch 成功，main 与 origin/main 一致，工作区干净。沿用用户已授予的测试、提交、推送和部署授权。
+
+- 棋盘下方增加默认折叠的近 30 天 UTC 日历；今天及过去 7 天可直接选择，更早日期仅展示完成记录。小屏五列／四列，桌面七列。
+- Daily 分享链接保留 date 和 level；更早的有效历史链接仍可玩。无日期旧链接打开今天，非法或未来日期回到今天并提示。布雷、求解器及中心开局算法未改变；相同日期、难度和游戏版本复现同盘。重开／换难度保留所选日期。
+- 当天完成写入原 dailyHistory（保留 30 条）、dailyLevels 和 daily 连续记录；历史补玩写入独立 dailyArchiveHistory（30 条）及 daily-archive-难度统计，不补签、不续连续天数。跨 UTC 午夜才完成算补玩；连续记录过期显示 0，最佳连续记录保留。兼容已有本地记录。
+- 回放保存 dailyDate/archive 元数据；统计页单列补玩难度。遥测增加 daily-archive，补玩事件 streak 为 0，详见 ANALYTICS.md。记录仍仅存在当前浏览器。
+- 九套检查通过：test-content、test-new-modes、test-replay、test-ui、test-worker、test-regressions、test-shared-opening、test-monte-carlo 及新增 test-daily-calendar（均为 .mjs）。包括 10,000 固定棋盘、真实获胜后的补玩隔离、跨午夜、旧记录、日期校验、31 条归档截断、相隔一个月的分享棋盘复现。
+- 真实浏览器验证：日历 30 日期／8 可选、键盘展开、选择历史日期、重开及换难度保留日期；390×844 和 320×740 无整页横向溢出。最后 320 宽四列每格约 66px。
+- 已重建模式页与 dist；本次不实施死因诊断或新无尽机制。实际发布提交须在推送后及线上 /api/version 独立核对，不能仅凭本记录推断部署状态。
