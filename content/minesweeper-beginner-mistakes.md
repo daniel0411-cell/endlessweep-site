@@ -43,4 +43,4 @@ Speed comes from recognition, not skipping logic. First develop a consistent sca
 
 ## 10. Starting over without reviewing the loss
 
-Use Mistake Review to return to the move before the mine. Ask whether the loss came from a wrong flag, a missed certain move, or a genuine guess. That distinction gives the next game a specific practice goal.
+After a loss on a finite board, use Review mistake to return to the position before the last move. The review checks revealed numbers using direct and subset deductions, highlights supporting clues, and explains a provable mine, a provably wrong chord flag, or an available safe move. Flags are player notes, not proof. When this review finds no conclusion, it does not mean guessing was unavoidable: other deductions may still exist. Use the replay controls to inspect the surrounding moves.
