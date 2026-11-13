@@ -10,13 +10,13 @@ export class Element {
   getBoundingClientRect(){return {width:32,height:32}}
   fire(name,event={}){for(const fn of this.handlers[name]||[])fn({preventDefault(){},target:this,...event})}
 }
-export function page(file='index.html',initial={}) {
-  const elements=new Map(),saved=new Map(Object.entries(initial)),beacons=[],intervals=new Map();let timerId=0;
+export function page(file='index.html',initial={},location={pathname:'/',search:''}) {
+  const elements=new Map(),saved=new Map(Object.entries(initial)),beacons=[],intervals=new Map(),timeouts=new Map();let timerId=0;
   const document={documentElement:new Element(),querySelector(selector){if(!elements.has(selector))elements.set(selector,new Element());return elements.get(selector)},querySelectorAll(){return []},createElement(){return new Element()},addEventListener(){}};
   document.querySelector('#difficulty').value='beginner';
   for(const [id,value] of [['width',9],['height',9],['mines',10]])document.querySelector('#custom-'+id).value=value;
-  const ctx=vm.createContext({document,window:{addEventListener(){}},location:{pathname:'/',search:''},URLSearchParams,crypto:globalThis.crypto,performance:{now:()=>1000},navigator:{sendBeacon:(url,blob)=>beacons.push(blob),clipboard:{writeText:async()=>{}}},Blob,matchMedia:()=>({matches:false}),localStorage:{getItem:key=>saved.get(key)||null,setItem:(key,value)=>saved.set(key,value),removeItem:key=>saved.delete(key)},setInterval:fn=>{intervals.set(++timerId,fn);return timerId},clearInterval:id=>intervals.delete(id),setTimeout:()=>1,clearTimeout(){},console,confirm:()=>false});
+  const ctx=vm.createContext({document,window:{addEventListener(){}},location,URLSearchParams,crypto:globalThis.crypto,performance:{now:()=>1000},navigator:{sendBeacon:(url,blob)=>beacons.push(blob),clipboard:{writeText:async()=>{}}},Blob,matchMedia:()=>({matches:false}),localStorage:{getItem:key=>saved.get(key)||null,setItem:(key,value)=>saved.set(key,value),removeItem:key=>saved.delete(key)},setInterval:fn=>{intervals.set(++timerId,fn);return timerId},clearInterval:id=>intervals.delete(id),setTimeout:fn=>{timeouts.set(++timerId,fn);return timerId},clearTimeout:id=>timeouts.delete(id),console,confirm:()=>false});
   const run=s=>vm.runInContext(s,ctx);
   run(fs.readFileSync(file,'utf8').match(/<script>([\s\S]*?)<\/script>/)[1]);
-  return {ctx,run,document,saved,beacons,intervals,el:s=>document.querySelector(s)};
+  return {ctx,run,document,saved,beacons,intervals,timeouts,el:s=>document.querySelector(s)};
 }
