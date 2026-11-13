@@ -96,7 +96,7 @@ footer a{color:var(--blue);font-weight:700;text-decoration:none;margin:0 8px}
 <main>
   <header>
     <h1>Minesweeper Solver &amp; Screenshot Calculator</h1>
-    <p>Paste a screenshot or input a board to calculate mine probabilities and safe moves. Supports Google, Windows, and Minesweeper.online.</p>
+    <p>Paste a screenshot for a candidate grid, or enter the complete board manually. Check every cell before using local probability estimates.</p>
   </header>
 
   <section class="solver-card">
@@ -105,7 +105,7 @@ footer a{color:var(--blue);font-weight:700;text-decoration:none;margin:0 8px}
         <span class="paste-icon" aria-hidden="true">📸</span>
         <div class="paste-text">
           <strong>Paste Screenshot (Ctrl+V / Cmd+V) or Drop Image</strong>
-          <span>Auto-extracts numbers and covered squares from your game</span>
+          <span>Attempts to recognize a grid; manual review is required</span>
         </div>
       </div>
       <button type="button" class="btn-upload" id="btn-upload">Browse Image</button>
@@ -113,6 +113,7 @@ footer a{color:var(--blue);font-weight:700;text-decoration:none;margin:0 8px}
     </div>
 
     <div class="scan-status" id="scan-status" hidden></div>
+    <label id="image-confirmation" hidden><input type="checkbox" id="confirm-image"> I checked every cell, all board edges, and all flags against the complete original board.</label>
 
     <div class="presets" aria-label="Common Dilemma Presets">
       <button data-preset="fifty" aria-pressed="true">Classic 50/50</button>
@@ -167,7 +168,7 @@ footer a{color:var(--blue);font-weight:700;text-decoration:none;margin:0 8px}
     <div class="faq-sec">
       <h2>Frequently Asked Questions</h2>
       <h3>How do I solve from a screenshot?</h3>
-      <p>Simply take a screenshot of your Minesweeper board (e.g. Win+Shift+S on Windows or Cmd+Shift+4 on Mac), return to this page, and press <strong>Ctrl+V</strong> (or Cmd+V). The computer vision algorithm automatically aligns the grid and identifies numbers.</p>
+      <p>Simply take a screenshot of your Minesweeper board (e.g. Win+Shift+S on Windows or Cmd+Shift+4 on Mac), return to this page, and press <strong>Ctrl+V</strong> (or Cmd+V). Recognition attempts to align the grid and identify cells. Check the complete board edges, every clue, and all flags, correct errors, then confirm your review before calculating.</p>
       <h3>How does this solver calculate mine probabilities?</h3>
       <p>The solver enumerates arrangements satisfying the entered clues, treating the rectangle as closed and flags as correct. Percentages weight these local arrangements equally; outside clues and the global mine total are not included.</p>
       <h3>What is the difference between this solver and No Guess mode?</h3>
@@ -194,6 +195,7 @@ const presets={
   custom:[[null,null,null,null],[1,2,2,1],[null,null,null,null]]
 };
 let curGrid=JSON.parse(JSON.stringify(presets.fifty));
+let imageInput=false;
 const gridEl=document.querySelector('#grid');
 const summaryEl=document.querySelector('#summary-text');
 const listEl=document.querySelector('#deductions-list');
@@ -247,11 +249,13 @@ function cycleCell(r,c){
 }
 
 function clearResults(){
+  if(imageInput)document.querySelector('#confirm-image').checked=false;
   summaryEl.textContent='Click "Calculate Probabilities" to analyze the grid above.';
   listEl.innerHTML='';
 }
 
 function calculate(){
+  if(imageInput&&!document.querySelector('#confirm-image').checked){renderGrid();summaryEl.textContent='Review the complete board and confirm every cell and edge before calculating.';listEl.innerHTML='';return}
   const h=curGrid.length,w=curGrid[0].length;
   const covered=[],clues=[];
   for(let r=0;r<h;r++){
@@ -331,6 +335,9 @@ function calculate(){
 }
 
 function parseImage(img){
+  imageInput=true;
+  document.querySelector('#image-confirmation').hidden=false;
+  clearResults();renderGrid();
   try{
     const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d'),maxDim=800;
     let w=img.width,h=img.height;
@@ -372,8 +379,9 @@ function parseImage(img){
       for(let y=y0;y<h;y+=bestPitch)sum+=dy[y];
       if(sum>maxYVal){maxYVal=sum;bestY0=y0}
     }
-    const cols=Math.max(2,Math.min(8,Math.floor((w-bestX0)/bestPitch)));
-    const rows=Math.max(2,Math.min(8,Math.floor((h-bestY0)/bestPitch)));
+    const cols=Math.round((w-bestX0)/bestPitch);
+    const rows=Math.round((h-bestY0)/bestPitch);
+    if(maxScore<=0||cols<1||rows<1||cols>40||rows>30)throw new Error('Unsupported grid');
     const newGrid=[];
     for(let r=0;r<rows;r++){
       const rowArr=[];
@@ -429,17 +437,18 @@ function parseImage(img){
     }
     curGrid=newGrid;
     renderGrid();
-    calculate();
+    summaryEl.textContent='Review the recognized cells and confirm the complete board before calculating.';
     const scanStatus=document.querySelector('#scan-status');
     if(scanStatus){
       scanStatus.hidden=false;
-      scanStatus.textContent=`✅ Auto-extracted ${cols}×${rows} grid from image (${bestPitch}px cell size). Review below or click squares to adjust.`;
+      scanStatus.textContent=`Recognized ${cols}×${rows} candidate grid. Check all cells and board edges; image recognition can be wrong.`;
+      scanStatus.style.background='';scanStatus.style.color='';scanStatus.style.borderColor='';
     }
   }catch(err){
     const scanStatus=document.querySelector('#scan-status');
     if(scanStatus){
       scanStatus.hidden=false;
-      scanStatus.textContent='Could not detect grid pattern. Please crop closer to the puzzle or enter squares manually.';
+      scanStatus.textContent='Could not recognize a complete grid up to 40 columns by 30 rows. No image cells were imported. Enter the complete board manually.';
       scanStatus.style.background='#fee2e2';scanStatus.style.color='#991b1b';scanStatus.style.borderColor='#fca5a5';
     }
   }
@@ -450,6 +459,7 @@ document.querySelectorAll('[data-preset]').forEach(btn=>{
     document.querySelectorAll('[data-preset]').forEach(b=>b.setAttribute('aria-pressed','false'));
     btn.setAttribute('aria-pressed','true');
     curGrid=JSON.parse(JSON.stringify(presets[btn.dataset.preset]));
+    imageInput=false;document.querySelector('#image-confirmation').hidden=true;
     renderGrid();
     calculate();
   });
@@ -464,9 +474,9 @@ document.querySelector('#btn-reset').addEventListener('click',()=>{
 
 const btnColAdd=document.querySelector('#btn-col-add'),btnColSub=document.querySelector('#btn-col-sub');
 const btnRowAdd=document.querySelector('#btn-row-add'),btnRowSub=document.querySelector('#btn-row-sub');
-if(btnColAdd)btnColAdd.addEventListener('click',()=>{if(curGrid[0].length<12){curGrid.forEach(r=>r.push(null));renderGrid();clearResults();calculate()}});
+if(btnColAdd)btnColAdd.addEventListener('click',()=>{if(curGrid[0].length<40){curGrid.forEach(r=>r.push(null));renderGrid();clearResults();calculate()}});
 if(btnColSub)btnColSub.addEventListener('click',()=>{if(curGrid[0].length>2){curGrid.forEach(r=>r.pop());renderGrid();clearResults();calculate()}});
-if(btnRowAdd)btnRowAdd.addEventListener('click',()=>{if(curGrid.length<12){curGrid.push(Array(curGrid[0].length).fill(null));renderGrid();clearResults();calculate()}});
+if(btnRowAdd)btnRowAdd.addEventListener('click',()=>{if(curGrid.length<30){curGrid.push(Array(curGrid[0].length).fill(null));renderGrid();clearResults();calculate()}});
 if(btnRowSub)btnRowSub.addEventListener('click',()=>{if(curGrid.length>2){curGrid.pop();renderGrid();clearResults();calculate()}});
 
 if(typeof window!=='undefined'){
@@ -558,7 +568,7 @@ calculate();
           "name": "How do I solve from a screenshot?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Simply take a screenshot of your Minesweeper board, return to this page, and press Ctrl+V. The computer vision algorithm automatically aligns the grid and identifies numbers."
+            "text": "Simply take a screenshot of your Minesweeper board, return to this page, and press Ctrl+V. Recognition attempts to align the grid and identify cells. Check the complete board edges, every clue, and all flags, correct errors, then confirm your review before calculating."
           }
         },
         {

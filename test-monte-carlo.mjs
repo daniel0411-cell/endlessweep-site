@@ -15,7 +15,7 @@ const ctx = vm.createContext({
 // Setup environment and load game functions
 vm.runInContext(`
 let width = 9, height = 9, mineCount = 10, cells = [], noGuessMode = false, randomState = 0;
-${funcs(['neighbors', 'seedRandom', 'random', 'plant', 'isSolvable'])}
+${funcs(['neighbors', 'seedRandom', 'random', 'plant', 'isSolvable', 'calc3BV'])}
 
 // Standard 3BV Calculation Function
 function compute3BV(w, h, mineCells) {
@@ -77,8 +77,8 @@ const configurations = [
   { name: 'Mini (5x5/3)', w: 5, h: 5, m: 3, rounds: 2000, testNoGuess: true },
   { name: 'Easy (7x7/6)', w: 7, h: 7, m: 6, rounds: 2500, testNoGuess: true },
   { name: 'Beginner (9x9/10)', w: 9, h: 9, m: 10, rounds: 3000, testNoGuess: true },
-  { name: 'Intermediate (16x16/40)', w: 16, h: 16, m: 40, rounds: 1500, testNoGuess: false },
-  { name: 'Expert (30x16/99)', w: 30, h: 16, m: 99, rounds: 1000, testNoGuess: false }
+  { name: 'Intermediate (16x16/40)', w: 16, h: 16, m: 40, rounds: 1500, testNoGuess: true },
+  { name: 'Expert (30x16/99)', w: 30, h: 16, m: 99, rounds: 1000, testNoGuess: true }
 ];
 
 let totalTested = 0;
@@ -93,14 +93,14 @@ for (const cfg of configurations) {
 
   for (let r = 0; r < cfg.rounds; r++) {
     totalTested++;
-    const first = Math.floor(Math.random() * (cfg.w * cfg.h));
+    const first = (r * 37 + 11) % (cfg.w * cfg.h);
     
     // Test standard board generation
     vm.runInContext(`
       width = ${cfg.w}; height = ${cfg.h}; mineCount = ${cfg.m};
       cells = Array.from({ length: width * height }, () => ({ mine: false, count: 0 }));
       noGuessMode = false;
-      seedRandom('mc-${cfg.name}-${r}-${Date.now()}');
+      seedRandom('mc-${cfg.name}-${r}');
       plant(${first});
     `, ctx);
 
@@ -109,6 +109,7 @@ for (const cfg of configurations) {
         firstMine: cells[${first}].mine,
         firstCount: cells[${first}].count,
         mineTotal: cells.filter(c => c.mine).length,
+        production3BV: calc3BV(),
         bbbvData: compute3BV(width, height, cells.map((c, i) => c.mine ? i : null).filter(i => i !== null))
       })
     `, ctx);
@@ -120,12 +121,13 @@ for (const cfg of configurations) {
     firstClickOpenings++;
 
     const bbbv = check.bbbvData.bbbv;
+    assert.equal(check.production3BV, bbbv, `Production 3BV differs from independent enumeration in ${cfg.name}, seed ${r}`);
     if (bbbv < min3BV) min3BV = bbbv;
     if (bbbv > max3BV) max3BV = bbbv;
     total3BV += bbbv;
 
     // Test No-Guess board verification on supported sizes
-    if (cfg.testNoGuess && r < 500) {
+    if (cfg.testNoGuess && r < (cfg.w > 9 ? 20 : 500)) {
       const ngCheck = vm.runInContext(`
         (() => {
           noGuessMode = true;
@@ -149,7 +151,8 @@ for (const cfg of configurations) {
   console.log(`   - 100% First-click opening rate (${firstClickOpenings}/${cfg.rounds})`);
   console.log(`   - 3BV range: ${min3BV} to ${max3BV}`);
   if (cfg.testNoGuess) {
-    console.log(`   - No-Guess verified generation: ${noGuessSuccesses}/500 attempts passed`);
+    assert(noGuessSuccesses > 0, `No accepted no-guess boards in ${cfg.name}`);
+    console.log(`   - Accepted no-guess boards rechecked with production solver: ${noGuessSuccesses}/${cfg.w > 9 ? 20 : 500}`);
   }
 }
 

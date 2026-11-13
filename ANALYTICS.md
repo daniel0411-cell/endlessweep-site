@@ -202,3 +202,7 @@ not verified. Do not assume local test success fixes production.
   unanswered query appears. With the present sample, zero CTR and isolated
   query rankings are too noisy to justify frequent title changes.
 - Keep GSC and Bing Chrome tabs open after checking them.
+
+## Endless exploration (2026-11-13)
+
+Existing doubles 1–3 remain elapsed seconds, Zen mistakes and Daily streak. `double4` is Endless cleared squares; `double5` is Time Attack score. `endless_milestone` records a crossed 50/100/250 threshold in double4 once per run and threshold (a single large reveal reports the highest newly crossed threshold). No persistent player identifier is collected, so these events do not establish unique-user retention. Compare milestone reach and subsequent starts directionally; shared visits and starts are separate events, not confirmed unique conversions. Personal bests are stored locally during a run, including before an unfinished run is abandoned.
