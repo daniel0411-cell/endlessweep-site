@@ -19,7 +19,7 @@ vm.runInContext(`${funcs(['start'])}
 plant=()=>false;let performance={now:()=>0};track=()=>{throw Error('Failed board tracked')};
 if(start(0)!==false||started)throw Error('Failed generation started game');`,ctx);
 for(const name of ['playerReveal','toggleFlag','chord'])assert(home.split('\n').find(l=>l.startsWith(`function ${name}(`)).includes('if(!started&&!start(i))return;'));
-vm.runInContext(`let sharedVisitMode=null;track=(ev,data)=>{if(ev==='shared_visit')sharedVisitMode=data?.mode||currentLevel;};let location={search:'?mode=no-guess&seed=shared&level=expert&ref=share'},setPageMode=()=>{},loadReplays=()=>[],beginReplay=()=>{};let sharedVisitTracked=false;${funcs(['loadSharedGame','loadShared'])}
+vm.runInContext(`let sharedVisitMode=null;track=(ev,data)=>{if(ev==='shared_visit')sharedVisitMode=data?.mode||currentLevel;};let location={search:'?mode=no-guess&seed=shared&level=expert&ref=share'},setPageMode=()=>{},loadReplays=()=>[],beginReplay=()=>{};let sharedVisitTracked=false;${funcs(['loadSharedGame','openSharedFirstClick','loadShared'])}
 loadShared();if(gameSeed!=='shared'||currentLevel!=='no-guess-expert'||sharedVisitMode!=='no-guess-expert')throw Error('Shared visit not loaded or untracked');
 location.search='?mode=no-guess&seed=%3Cbad%3E&level=expert';loadShared();if(noGuessMode||currentLevel!=='beginner')throw Error('Invalid seed accepted');`,ctx);
 let shared='';ctx.navigator={clipboard:{writeText:text=>{shared=text;return Promise.resolve()}}};
