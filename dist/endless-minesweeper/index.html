@@ -300,6 +300,15 @@
     </nav>
   </section>
   <section class="mode-guide" id="mode-guide"><h2>What is Endless Minesweeper?</h2><p>Endless Minesweeper transforms the classic game into an unbounded procedural world. Instead of solving a small bordered grid, the minefield stretches infinitely in every direction. Your mission is to explore as deeply as possible, clear safe squares, and build the highest exploration streak.</p><h3>How procedural generation works</h3><p>Coordinates across the infinite grid are deterministically generated from your game seed using spatial hashing. Your first click is protected with a safe opening (0 mines) so you always start with immediate deductions. As you reveal numbers along the boundary, the viewport tracks your frontier. Use the arrow controls to move the view or enable Pan and drag without revealing squares.</p><h3>Survival and scoring</h3><p>Every safe square you reveal adds to your Cleared count. Reach milestones of 50, 100, and 250 safe squares, then keep exploring toward the next goal. Your personal best is saved in this browser, including progress during a run. Milestones never change the minefield or its clues. Revealing numbers along the border allows you to safely deduce mines and expand the frontier. Review our <a href="/minesweeper-patterns/">pattern guide</a> and <a href="/minesweeper-strategy/">strategy guide</a> to sustain long runs. Share a challenge to reproduce the seed and protected first opening; different game versions may generate different boards.</p></section>
+  <footer class="site-footer" aria-label="Site information">
+    <p>Endlessweep is an independent Minesweeper game and learning project.</p>
+    <nav class="links" aria-label="Site information links">
+      <a href="/about/">About</a>
+      <a href="/contact/">Contact</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/terms/">Terms</a>
+    </nav>
+  </footer>
 </main>
 <script>
 const levels={mini:[5,5,3],easy:[7,7,6],beginner:[9,9,10],intermediate:[16,16,40],expert:[30,16,99]};
