@@ -64,6 +64,13 @@ for(const slug of ['endless-minesweeper','easy-minesweeper','daily-minesweeper',
   assert((html.match(/<section class="mode-guide"/g)||[]).length===1);
 }
 assert(fs.readFileSync('no-guess-minesweeper/index.html','utf8').includes('100% Solvable by Pure Logic'));
+for(const [slug,markers] of Object.entries({
+  'endless-minesweeper':['Frequently Asked Questions','Are Endless boards reproducible?'],
+  'no-guess-minesweeper':['Frequently Asked Questions','Does No-Guess mode guarantee an easy board?']
+})){
+  const html=fs.readFileSync(`${slug}/index.html`,'utf8');
+  for(const marker of markers)assert(html.includes(marker),`${slug}: missing FAQ marker ${marker}`);
+}
 for(const slug of ['endless-minesweeper','easy-minesweeper','no-guess-minesweeper']){
   const html=fs.readFileSync(`${slug}/index.html`,'utf8');
   assert(html.includes(`href="/${slug}/" aria-current="page"`));

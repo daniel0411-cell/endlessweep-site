@@ -1,5 +1,11 @@
 # Endlessweep 工作检查点
 
+## 2026-11-16：P0 发布与 P1 模式 FAQ
+
+- P0 信任结构已提交为 `1192331dabecaf04f87c4a1274cd62fb10d3f3f5`，推送至 `origin/main` 并完成 Wrangler 部署。
+- 发布后线上独立核验：`/api/version` 返回同一提交 ID；主页、`/about/` 和 `sitemap.xml` 返回 200。首次部署探针返回 `commit:null`，随后使用同一提交注入 `RELEASE_COMMIT` 重新部署并确认版本。
+- P1 已为 Endless 与 No-Guess 模式页补充面向用户的 FAQ 快速答案，并加强内容构建回归断言；本轮变更尚未提交或部署。
+
 ## 2026-11-15：近期 GSC / Bing 深度审计（方案阶段）
 
 - 本次仅审计并列方案；开始时工作区干净，直接确认 origin 默认 main，fetch 成功，main/origin/main 均为 `18460e9d80072003be30268f6ba5a0056b163b1a`、提交关系 0/0；线上 `/api/version` 独立确认相同提交。
