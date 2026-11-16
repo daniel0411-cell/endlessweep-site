@@ -4,7 +4,7 @@
 
 - P0 信任结构已提交为 `1192331dabecaf04f87c4a1274cd62fb10d3f3f5`，推送至 `origin/main` 并完成 Wrangler 部署。
 - 发布后线上独立核验：`/api/version` 返回同一提交 ID；主页、`/about/` 和 `sitemap.xml` 返回 200。首次部署探针返回 `commit:null`，随后使用同一提交注入 `RELEASE_COMMIT` 重新部署并确认版本。
-- P1 已为 Endless 与 No-Guess 模式页补充面向用户的 FAQ 快速答案，并加强内容构建回归断言；本轮变更尚未提交或部署。
+- P1 已为 Endless 与 No-Guess 模式页补充面向用户的 FAQ 快速答案，并加强内容构建回归断言；实现提交为 `ef17a11ad539a9df582b08dc8686c2c676f54cc3`，生成产物提交为 `4dfaea57bb016f4212ef87aebb6f856386c54aa9`，均已推送并部署。
 
 ## 2026-11-15：近期 GSC / Bing 深度审计（方案阶段）
 
